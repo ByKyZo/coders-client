@@ -1,0 +1,39 @@
+schema: 'http://localhost:8000/graphql'
+# we are looking for operations in .tsx files,
+#   but not the generated ones.
+documents: 'src/**/!(*.generated).{ts,tsx}'
+generates:
+  src/types.ts:
+    - typescript
+  src/:
+    preset: near-operation-file
+    presetConfig:
+      extension: .generated.tsx
+      baseTypesPath: types.ts
+    plugins:
+      - typescript
+      - typescript-operations
+      - typed-document-node
+    config:
+      withHooks: true
+# schema: http://localhost:8000/graphql
+# documents: './src/**/*.graphql'
+# generates:
+#   ./src/generated.ts:
+#     plugins:
+#       - typescript
+#       - typescript-operations
+#       - typed-document-node
+
+# overwrite: true
+# schema: "http://localhost:8000/graphql"
+# documents: "src/**/*.graphql"
+# generates:
+#   src/graphql/generated/graphql.tsx:
+#     plugins:
+#       - "typescript"
+#       - "typescript-operations"
+#       - "typescript-react-apollo"
+#   ./graphql.schema.json:
+#     plugins:
+#       - "introspection"

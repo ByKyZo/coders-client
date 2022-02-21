@@ -1,0 +1,42 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Raleway:wght@100;200;300;400;500;600;700;800;900&display=swap");
+.auth-input ~ .auth-label {
+  -webkit-transition: 200ms ease;
+  transition: 200ms ease;
+}
+
+.auth-input.auth-error {
+  @apply border-red-500;
+}
+
+.auth-input.auth-error ~ .auth-label {
+  @apply text-red-500;
+}
+
+.auth-input.auth-neutral:focus, .auth-input.auth-neutral:not(:placeholder-shown) {
+  @apply border-primary;
+}
+
+.auth-input.auth-neutral:focus ~ .auth-label, .auth-input.auth-neutral:not(:placeholder-shown) ~ .auth-label {
+  @apply text-primary;
+}
+
+.auth-input.auth-success {
+  @apply border-primary;
+}
+
+.auth-input.auth-success ~ .auth-label {
+  @apply text-primary;
+}
+
+.auth-input:focus ~ .auth-label, .auth-input:not(:placeholder-shown) ~ .auth-label {
+  background-color: white;
+  -webkit-transform: translateY(-110%);
+          transform: translateY(-110%);
+}
+
+.auth-input:-webkit-autofill, .auth-input:-webkit-autofill:hover, .auth-input:-webkit-autofill:focus, .auth-input:-webkit-autofill:active {
+  -webkit-transition: background-color 5000s ease-in-out 0s;
+  transition: background-color 5000s ease-in-out 0s;
+}
+/*# sourceMappingURL=index.css.map */
