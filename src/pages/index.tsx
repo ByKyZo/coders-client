@@ -1,4 +1,3 @@
-import { getUser } from '@redux/actions/user.actions';
 import { useGetUserByIdQuery } from '@redux/api';
 import { useAppDispatch, useAppSelector } from '@redux/hook';
 import { decrement, increment } from '@redux/reducers/counter.reducer';
@@ -20,8 +19,6 @@ const Home: NextPage = () => {
         setNextDataAPI(response.data);
       } catch (err) {}
     })();
-
-    dispatch(getUser());
   }, []);
 
   return (

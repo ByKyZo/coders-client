@@ -1,3 +1,6 @@
+import * as Types from '../../../types';
+
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -132,3 +135,11 @@ export type User = {
   roles: Array<RoleWithoutUser>;
   username: Scalars['String'];
 };
+
+export type RememberMeQueryVariables = Types.Exact<{ [key: string]: never; }>;
+
+
+export type RememberMeQuery = { __typename?: 'Query', rememberMe: { __typename?: 'LoginOutput', accessToken: string, user: { __typename?: 'User', id: number, username: string, roles: Array<{ __typename?: 'RoleWithoutUser', level: string }> } } };
+
+
+export const RememberMeDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"RememberMe"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"rememberMe"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"accessToken"}},{"kind":"Field","name":{"kind":"Name","value":"user"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"username"}},{"kind":"Field","name":{"kind":"Name","value":"roles"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"level"}}]}}]}}]}}]}}]} as unknown as DocumentNode<RememberMeQuery, RememberMeQueryVariables>;

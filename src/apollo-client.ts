@@ -1,5 +1,6 @@
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
+import { getAccessToken } from './helpers/index';
 
 // Modifier l'endpoint en fonction de l'environnement
 const endpoint =
@@ -14,7 +15,7 @@ const httpLink = createHttpLink({
 
 const authLink = setContext((_, { headers }) => {
   // Récupere le jwt token du local storage
-  const token = localStorage.getItem('token');
+  const token = getAccessToken();
   // Return le Bearer token dans le header authorization
   return {
     headers: {

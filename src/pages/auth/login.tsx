@@ -1,8 +1,8 @@
 import { useLazyQuery } from '@apollo/client';
 import Input from '@components/elements/input/Input';
 import AuthLayout from '@components/layouts/AuthLayout';
-import { login } from '@graphql/queries/userConnection/login';
-import { setAccessToken } from '@helpers/index';
+import { login } from '@graphql/queries/login/login';
+import { loginUser } from '@helpers/index';
 import { useFormik } from 'formik';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
@@ -10,7 +10,7 @@ import * as Yup from 'yup';
 import {
   LoginQuery,
   LoginQueryVariables,
-} from '../../graphql/queries/userConnection/login.generated';
+} from '../../graphql/queries/login/login.generated';
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -35,8 +35,10 @@ const Login = () => {
       try {
         const { data } = await loginQuery({
           variables: {
-            email: values.email,
-            password: values.password,
+            input: {
+              email: values.email,
+              password: values.password,
+            },
           },
         });
 
@@ -45,8 +47,8 @@ const Login = () => {
         }
 
         console.log('Connected', data);
-        setAccessToken(data.login.accessToken);
-        router.push('/explore');
+
+        loginUser(data.login.accessToken);
       } catch (err: any) {
         console.log('Authentication failed : ', err.message);
       }

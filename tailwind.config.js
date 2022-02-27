@@ -9,10 +9,6 @@ module.exports = {
     fontFamily: {
       sans: ['poppins', 'ui-sans-serif'],
       'sans-2': ['Montserrat', 'sans-serif'],
-      // 'serif': ['ui-serif', 'Georgia', ...],
-      // 'mono': ['ui-monospace', 'SFMono-Regular', ...],
-      // 'display': ['Oswald', ...],
-      // 'body': ['"Open Sans"', ...],
     },
     colors: {
       transparent: 'transparent',

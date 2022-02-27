@@ -1,3 +1,5 @@
+import Router from 'next/router';
+
 export const isEmpty = (value: any) => {
   return (
     value === undefined ||
@@ -8,7 +10,7 @@ export const isEmpty = (value: any) => {
 };
 
 export const getAccessToken = () => {
-  localStorage.getItem('ACCESS_TOKEN');
+  return localStorage.getItem('ACCESS_TOKEN');
 };
 
 export const setAccessToken = (token: string) => {
@@ -17,4 +19,9 @@ export const setAccessToken = (token: string) => {
 
 export const removeAccessToken = (token: string) => {
   localStorage.removeItem('ACCESS_TOKEN');
+};
+
+export const loginUser = (accessToken: string) => {
+  setAccessToken(accessToken);
+  Router.push('/explore');
 };

@@ -4,12 +4,14 @@ import React from 'react';
 
 interface CustomLinkProps extends React.PropsWithChildren<LinkProps> {
   activeClassName?: string;
+  notActiveClassName?: string;
   className?: string;
 }
 
 const Link = ({
   className,
   activeClassName = '',
+  notActiveClassName = '',
   children,
   ...rest
 }: CustomLinkProps) => {
@@ -19,7 +21,11 @@ const Link = ({
 
   return (
     <NextLink {...rest}>
-      <a className={`${className} ${isCurrent ? activeClassName : ''}`}>
+      <a
+        className={`${className ? className : ''} ${
+          isCurrent ? activeClassName : notActiveClassName
+        }`}
+      >
         {children}
       </a>
     </NextLink>

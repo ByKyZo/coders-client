@@ -2,12 +2,12 @@ import AppLayout from '@components/layouts/AppLayout';
 import React from 'react';
 import { NextComponent } from '../types/index';
 
-const Explore: NextComponent = () => {
-  return <div className="w-full">toto</div>;
+const Profile: NextComponent = () => {
+  return <div>Profile</div>;
 };
 
-Explore.getLayout = (page) => {
+Profile.getLayout = (page) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
-export default Explore;
+export default Profile;

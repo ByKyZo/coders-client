@@ -2,12 +2,12 @@ import AppLayout from '@components/layouts/AppLayout';
 import React from 'react';
 import { NextComponent } from '../types/index';
 
-const Explore: NextComponent = () => {
-  return <div className="w-full">toto</div>;
+const Bookmarks: NextComponent = () => {
+  return <div>Bookmarks</div>;
 };
 
-Explore.getLayout = (page) => {
+Bookmarks.getLayout = (page) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
-export default Explore;
+export default Bookmarks;

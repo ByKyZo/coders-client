@@ -1,10 +1,12 @@
-// import AuthInput from '@components/elements/input/input';
 import { useMutation } from '@apollo/client';
-// import { USER_CREATE } from '@apollo/mutations/createUser';
 import Input from '@components/elements/input/Input';
 import AuthLayout from '@components/layouts/AuthLayout';
-import { createUser, createUserInput } from '@graphql/mutations/createUser';
-// import axios from '@config/axios';
+import { createUser } from '@graphql/mutations/register/register';
+import {
+  CreateUserMutation,
+  CreateUserMutationVariables,
+} from '@graphql/mutations/register/register.generated';
+import { loginUser } from '@helpers/index';
 import { useFormik } from 'formik';
 import React, { useEffect } from 'react';
 import * as Yup from 'yup';
@@ -15,12 +17,14 @@ import * as Yup from 'yup';
  */
 
 const Register = () => {
-  const [queryRegister] = useMutation<any, createUserInput>(createUser);
+  const [registerQuery] = useMutation<
+    CreateUserMutation,
+    CreateUserMutationVariables
+  >(createUser);
 
   const formik = useFormik({
     initialValues: {
       username: '',
-      displayname: '',
       email: '',
       password: '',
       confirmPassword: '',
@@ -30,10 +34,6 @@ const Register = () => {
         .required('Username is required field')
         .min(2, 'Username is too short min 2 chars')
         .max(26, 'Username is too long max 26 chars'),
-      displayname: Yup.string()
-        .required('Display name is required field')
-        .min(2, 'Display name is too short min 2 chars')
-        .max(26, 'Display name is too long max 26 chars'),
       email: Yup.string().email().required('Email is required field'),
       password: Yup.string().required('Password is required field'),
       confirmPassword: Yup.string()
@@ -42,14 +42,22 @@ const Register = () => {
     }),
     onSubmit: async (values) => {
       try {
-        const { data } = await queryRegister({
+        const { data } = await registerQuery({
           variables: {
-            username: values.username,
-            displayname: values.displayname,
-            email: values.email,
-            password: values.password,
+            input: {
+              username: values.username,
+              email: values.email,
+              password: values.password,
+            },
           },
         });
+
+        if (!data) {
+          throw new Error();
+        }
+
+        loginUser(data.createUser.accessToken);
+
         console.log('Create user success : ', data);
       } catch (err: any) {
         console.log('Create user error : ', err.message);
@@ -68,25 +76,14 @@ const Register = () => {
       isFormSubmiting={formik.isSubmitting}
       isSignin={false}
     >
-      <div className="flex w-full">
-        <div className="mr-2">
-          <Input
-            {...formik.getFieldProps('username')}
-            error={formik.errors.username}
-            isTouched={formik.touched.username}
-            autoComplete="username"
-            type="text"
-            placeholder="Username"
-          />
-        </div>
-        <Input
-          {...formik.getFieldProps('displayname')}
-          error={formik.errors.displayname}
-          isTouched={formik.touched.displayname}
-          type="text"
-          placeholder="Display name"
-        />
-      </div>
+      <Input
+        {...formik.getFieldProps('username')}
+        error={formik.errors.username}
+        isTouched={formik.touched.username}
+        autoComplete="username"
+        type="text"
+        placeholder="Username"
+      />
       <Input
         {...formik.getFieldProps('email')}
         error={formik.errors.email}
