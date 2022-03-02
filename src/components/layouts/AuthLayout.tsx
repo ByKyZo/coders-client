@@ -10,6 +10,8 @@ interface IProps {
   onFormSubmit: (e: any) => void;
   isSignin: boolean;
   isLoading?: boolean;
+  isError?: boolean;
+  errorMessage?: string;
 }
 
 // TODO Animer legerement en fade le changement de page et les elements
@@ -24,6 +26,8 @@ const AuthLayout = ({
   isFormSubmiting,
   isLoading,
   children,
+  isError,
+  errorMessage,
 }: IProps) => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -85,6 +89,10 @@ const AuthLayout = ({
         >
           {!isSignin ? 'Log in' : 'Sign up'}
         </Button>
+
+        {isError && (
+          <span className="text-red-500 w-full text-sm">{errorMessage}</span>
+        )}
 
         <Link
           href="/explore"

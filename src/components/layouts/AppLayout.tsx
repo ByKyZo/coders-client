@@ -1,21 +1,68 @@
+import Link from '@components/elements/link/Link';
+import PageHeading from '@components/elements/pageHeading/PageHeading';
 import Header from '@components/modules/Header/Header';
-import React from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
+import { BsChevronRight } from 'react-icons/bs';
+import MediaQuery from 'react-responsive';
+import { splitURL } from '../../helpers/index';
 
 interface AppLayoutProps {
   children: React.ReactNode;
+  settingLayout?: boolean;
+  // noAside?: boolean;
+  onlyHeader?: boolean;
+  withTabs?: boolean;
+  tabs?: { label: string; href: string }[];
 }
 
-const AppLayout = ({ children }: AppLayoutProps) => {
+const AppLayout = ({ children, tabs, onlyHeader }: AppLayoutProps) => {
+  const router = useRouter();
+
+  const currentRootPathname = splitURL(router.pathname)[0];
+
+  useEffect(() => {
+    console.log('layoutzzzz moubnt');
+  }, []);
   return (
-    // <div className="m max-w max-w-5xl flex">
-    <div className="min-h-screen max-w w-min flex mx-auto">
+    <div className="min-h-screen flex justify-center mx-auto max-w-[1224px]">
       <Header />
-      <div className="flex">
-        <div className="bg-blue-300 flex-grows w-[600px] max-w-[600px]">
-          {children}
+      {!onlyHeader ? (
+        <>
+          <div className="w-[600px] max-w-[600px] border-x">
+            <PageHeading title={currentRootPathname} />
+            {children}
+          </div>
+
+          <MediaQuery minWidth={1024}>
+            <div className="bg-slate-300 flex-grow">Aside</div>
+          </MediaQuery>
+        </>
+      ) : (
+        <div className="flex-grow flex">
+          <div className="max-w-sm w-96 border-x">
+            <PageHeading title={currentRootPathname} />
+            <ul>
+              {tabs?.map(({ label, href }) => {
+                return (
+                  <li>
+                    <Link
+                      className="flex box-border border-r-2  justify-between items-center px-4 py-6 text-sm hover:bg-gray-100"
+                      notActiveClassName="border-transparent"
+                      activeClassName="border-primary"
+                      href={href}
+                    >
+                      <span>{label}</span>
+                      <BsChevronRight />
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+          <div className="flex-grow">{children}</div>
         </div>
-        <div className="bg-slate-300  w-96">Aside</div>
-      </div>
+      )}
     </div>
   );
 };

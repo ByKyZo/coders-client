@@ -1,53 +1,65 @@
 import Link from '@components/elements/link/Link';
-import React from 'react';
+import React, { useMemo } from 'react';
 import { AiFillHome } from 'react-icons/ai';
 import { FaUser } from 'react-icons/fa';
 import { IoIosNotifications } from 'react-icons/io';
 import { MdSettings } from 'react-icons/md';
-import { RiBookmarkFill, RiCodeLine } from 'react-icons/ri';
+import { RiBookmarkFill, RiCodeLine, RiMessage2Fill } from 'react-icons/ri';
+import { useMediaQuery } from 'react-responsive';
 import { v4 as uuidv4 } from 'uuid';
+import Profile from '../../elements/profile/Profile';
+import ProfileMenu from '../ProfileMenu/ProfileMenu';
 
 const Header = () => {
   const baseClassName = 'h-7 w-7';
-  const activeClassName = 'text-primary';
 
-  const nav = [
-    {
-      label: 'Home',
-      href: '/home',
-      icon: <AiFillHome className={baseClassName} />,
-    },
-    {
-      label: 'Explore',
-      href: '/explore',
-      icon: <RiCodeLine className={baseClassName} />,
-    },
-    {
-      label: 'Notifications',
-      href: '/notifications',
-      icon: <IoIosNotifications className={baseClassName} />,
-    },
-    {
-      label: 'Bookmarks',
-      href: '/bookmarks',
-      icon: <RiBookmarkFill className={baseClassName} />,
-    },
-    {
-      label: 'Profile',
-      href: '/profile',
-      icon: <FaUser className={baseClassName} />,
-    },
-    {
-      label: 'Settings',
-      href: '/settings',
-      icon: <MdSettings className={baseClassName} />,
-    },
-  ];
+  const isLaptop = useMediaQuery({ minWidth: 1280 });
+
+  const nav = useMemo(() => {
+    return [
+      {
+        label: 'Home',
+        href: '/home',
+        icon: <AiFillHome className={baseClassName} />,
+      },
+      {
+        label: 'Explore',
+        href: '/explore',
+        icon: <RiCodeLine className={baseClassName} />,
+      },
+      {
+        label: 'Notifications',
+        href: '/notifications',
+        icon: <IoIosNotifications className={baseClassName} />,
+      },
+      {
+        label: 'Bookmarks',
+        href: '/bookmarks',
+        icon: <RiBookmarkFill className={baseClassName} />,
+      },
+      {
+        label: 'Messages',
+        href: '/messages',
+        icon: <RiMessage2Fill className={baseClassName} />,
+      },
+      {
+        label: 'Profile',
+        href: '/profile',
+        icon: <FaUser className={baseClassName} />,
+      },
+      {
+        label: 'Settings',
+        href: '/settings/account',
+        icon: <MdSettings className={baseClassName} />,
+        activeOnRootPathName: true,
+      },
+    ];
+  }, []);
 
   return (
     <header className="pt-4 pb-8 px-2 flex flex-growS  justify-end bg-red-3s00">
-      <div className="w-56 flex flex-col">
-        <div className="pl-3 flex items-center">
+      <div className="w-auto flex flex-col xl:w-56">
+        <div className="pl-3 flex items-center mb-4">
           {/* prettier-ignore */}
           <svg className="h-8 w-8 fill-blue" viewBox="0 0 80 69" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M39.8372 0L79.6743 69H0L39.8372 0Z" fill="#BD00FF"/>
@@ -56,39 +68,33 @@ const Header = () => {
           </svg>
         </div>
         <div className="h-full flex flex-col justify-between">
-          <nav>
+          <nav className="">
             <ul>
-              {nav.map(({ label, href, icon }) => {
+              {nav.map(({ label, href, icon, activeOnRootPathName }) => {
                 return (
                   <li key={uuidv4()} className="">
                     <Link
-                      className="font-sans-s2 flex items-center px-3 py-4 text-xl transition-colors duration-300 hover:bg-slate-100"
-                      notActiveClassName="text-slate-500"
-                      activeClassName="text-slate-900 text-bold font-semibold"
+                      activeOnRootPathName={activeOnRootPathName}
+                      className="font-sans-s2 flex items-center px-3 py-4 text-xl transition-colors duration-300 hover:bg-gray-50"
+                      notActiveClassName=" text-gray-500"
+                      activeClassName=" text-gray-900 text-bold font-semibold "
                       href={href}
                     >
                       <span>{icon}</span>
-                      <span className="ml-4">{label}</span>
+                      {isLaptop && <span className="ml-4">{label}</span>}
                     </Link>
                   </li>
                 );
               })}
             </ul>
           </nav>
-          <div className="px-1 flex">
-            <img
-              className="h-10 w-10 rounded-full"
-              src="https://picsum.photos/200/300"
-              alt="picture"
-            />
-            <div className="ml-3 flex flex-col leading-5">
-              <span className="font-bold text-gray-800">KyZo</span>
-              <span>
-                <span className="text-gray-400">@</span>
-                <span className="text-sm text-gray-400">Id_KyZo</span>
-              </span>
-            </div>
-          </div>
+          <ProfileMenu
+            menuButton={
+              <button>
+                <Profile avatarOnly={!isLaptop} />
+              </button>
+            }
+          />
         </div>
       </div>
     </header>

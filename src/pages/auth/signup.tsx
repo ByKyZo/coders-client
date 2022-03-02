@@ -10,6 +10,7 @@ import { loginUser } from '@helpers/index';
 import { useFormik } from 'formik';
 import React, { useEffect } from 'react';
 import * as Yup from 'yup';
+import { withNoAuth } from '../../hoc/withNoAuth';
 
 /**
  * ? First and displayname min and max chars source :
@@ -112,4 +113,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default withNoAuth(Register);

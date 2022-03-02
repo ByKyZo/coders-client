@@ -20,6 +20,8 @@ const customJestConfig = {
     '^@helpers/(.*)$': '<rootDir>/src/helpers/$1',
 
     '^@graphql/(.*)$': '<rootDir>/src/graphql/$1',
+
+    '^@types/(.*)$': '<rootDir>/src/types/$1',
   },
   testEnvironment: 'jest-environment-jsdom',
 };

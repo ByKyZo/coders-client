@@ -1,13 +1,14 @@
 import AppLayout from '@components/layouts/AppLayout';
+import withAuth from 'hoc/withAuth';
 import React from 'react';
 import { NextComponent } from '../types/index';
 
-const Settings: NextComponent = () => {
-  return <div>Settings</div>;
+const Home: NextComponent = () => {
+  return <div></div>;
 };
 
-Settings.getLayout = (page) => {
+Home.getLayout = (page) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
-export default Settings;
+export default withAuth(Home);

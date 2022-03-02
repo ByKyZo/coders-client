@@ -1,13 +1,14 @@
 import AppLayout from '@components/layouts/AppLayout';
+import withAuth from 'hoc/withAuth';
 import React from 'react';
 import { NextComponent } from '../types/index';
 
 const Profile: NextComponent = () => {
-  return <div>Profile</div>;
+  return <div></div>;
 };
 
 Profile.getLayout = (page) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
-export default Profile;
+export default withAuth(Profile);

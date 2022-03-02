@@ -1,23 +1,28 @@
 import NextLink, { LinkProps } from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
+import { splitURL } from '../../../helpers/index';
 
 interface CustomLinkProps extends React.PropsWithChildren<LinkProps> {
   activeClassName?: string;
   notActiveClassName?: string;
   className?: string;
+  activeOnRootPathName?: boolean;
 }
 
 const Link = ({
   className,
   activeClassName = '',
   notActiveClassName = '',
+  activeOnRootPathName,
   children,
   ...rest
 }: CustomLinkProps) => {
   const router = useRouter();
 
-  const isCurrent = router.pathname === rest.href;
+  const isCurrent = activeOnRootPathName
+    ? splitURL(router.pathname)[0] === splitURL(rest.href as string)[0]
+    : router.pathname === rest.href;
 
   return (
     <NextLink {...rest}>

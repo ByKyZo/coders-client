@@ -32,7 +32,6 @@ const Home: NextPage = () => {
       <h1 className="text-blue-600">Using TailwindCSS</h1>
 
       <h1 data-testid="counter">{counter.value.toString()}</h1>
-
       {isLoading && <div>RTK Loading...</div>}
       {error && <div>RTK Error!</div>}
       <h1>Using RTK data : {data && data.name}</h1>

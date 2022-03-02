@@ -9,19 +9,37 @@ export const isEmpty = (value: any) => {
   );
 };
 
+const ACCESS_TOKEN = 'ACCESS_TOKEN';
+
+export const isBrowser = typeof window !== 'undefined';
+
 export const getAccessToken = () => {
-  return localStorage.getItem('ACCESS_TOKEN');
+  if (!isBrowser) return;
+  return localStorage.getItem(ACCESS_TOKEN);
 };
 
 export const setAccessToken = (token: string) => {
-  localStorage.setItem('ACCESS_TOKEN', token);
+  if (!isBrowser) return;
+  localStorage.setItem(ACCESS_TOKEN, token);
 };
 
-export const removeAccessToken = (token: string) => {
-  localStorage.removeItem('ACCESS_TOKEN');
+export const removeAccessToken = () => {
+  if (!isBrowser) return;
+  localStorage.removeItem(ACCESS_TOKEN);
 };
 
 export const loginUser = (accessToken: string) => {
   setAccessToken(accessToken);
   Router.push('/explore');
+};
+
+export const logout = () => {
+  if (!isBrowser) return null;
+  removeAccessToken();
+  Router.push('/auth/login');
+  window.location.reload();
+};
+
+export const splitURL = (url: string) => {
+  return url.split('/').filter((v) => v);
 };

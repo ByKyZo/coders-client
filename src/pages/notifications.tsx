@@ -1,13 +1,14 @@
 import AppLayout from '@components/layouts/AppLayout';
+import withAuth from 'hoc/withAuth';
 import React from 'react';
 import { NextComponent } from '../types/index';
 
 const Notifications: NextComponent = () => {
-  return <div>Notifications</div>;
+  return <div></div>;
 };
 
 Notifications.getLayout = (page) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
-export default Notifications;
+export default withAuth(Notifications);

@@ -5,7 +5,7 @@ import { getAccessToken } from './helpers/index';
 // Modifier l'endpoint en fonction de l'environnement
 const endpoint =
   process.env.NODE_ENV === 'production'
-    ? 'PROD_URL'
+    ? 'http://localhost:8000/graphql'
     : 'http://localhost:8000/graphql';
 
 const httpLink = createHttpLink({

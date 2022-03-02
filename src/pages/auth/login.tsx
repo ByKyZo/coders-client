@@ -4,6 +4,7 @@ import AuthLayout from '@components/layouts/AuthLayout';
 import { login } from '@graphql/queries/login/login';
 import { loginUser } from '@helpers/index';
 import { useFormik } from 'formik';
+import { withNoAuth } from 'hoc/withNoAuth';
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import * as Yup from 'yup';
@@ -14,6 +15,7 @@ import {
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [loginQuery] = useLazyQuery<LoginQuery, LoginQueryVariables>(login);
 
   const router = useRouter();
@@ -31,6 +33,7 @@ const Login = () => {
       if (isLoading) return;
 
       setIsLoading(true);
+      setIsError(false);
 
       try {
         const { data } = await loginQuery({
@@ -43,6 +46,7 @@ const Login = () => {
         });
 
         if (!data) {
+          setIsError(true);
           throw new Error();
         }
 
@@ -50,6 +54,7 @@ const Login = () => {
 
         loginUser(data.login.accessToken);
       } catch (err: any) {
+        setIsError(true);
         console.log('Authentication failed : ', err.message);
       }
 
@@ -60,6 +65,8 @@ const Login = () => {
   return (
     <AuthLayout
       isLoading={isLoading}
+      isError={isError}
+      errorMessage="Incorrect email or password"
       onFormSubmit={formik.handleSubmit}
       isFormValid={formik.isValidating}
       isFormSubmiting={formik.isSubmitting}
@@ -85,4 +92,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default withNoAuth(Login);

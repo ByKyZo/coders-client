@@ -21,7 +21,8 @@
       "@styles/*": ["styles/*"],
       "@redux/*": ["redux/*"],
       "@helpers/*": ["helpers/*"],
-      "@graphql/*": ["graphql/*"]
+      "@graphql/*": ["graphql/*"],
+      "@types/*": ["types/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "types.d.ts"],

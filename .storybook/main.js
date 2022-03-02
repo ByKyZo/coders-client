@@ -24,6 +24,7 @@ module.exports = {
       '@redux': path.resolve(__dirname, '../src/redux'),
       '@helpers': path.resolve(__dirname, '../src/helpers'),
       '@graphql': path.resolve(__dirname, '../src/graphql'),
+      '@types': path.resolve(__dirname, '../src/types'),
     };
     // config.resolve.alias = {
     //   ...config.resolve.alias,
