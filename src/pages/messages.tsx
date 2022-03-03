@@ -3,12 +3,14 @@ import withAuth from 'hoc/withAuth';
 import React from 'react';
 import { NextComponent } from '../types/index';
 
-const Home: NextComponent = () => {
+const Messages: NextComponent = () => {
   return <div></div>;
 };
 
-Home.getLayout = (page) => {
+const MessagesWithAuth = withAuth(Messages);
+
+MessagesWithAuth.getLayout = (page: any) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
-export default withAuth(Home);
+export default MessagesWithAuth;

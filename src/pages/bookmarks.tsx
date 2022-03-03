@@ -7,8 +7,10 @@ const Bookmarks: NextComponent = () => {
   return <div></div>;
 };
 
-Bookmarks.getLayout = (page) => {
+const BookmarksWithAuth = withAuth(Bookmarks);
+
+BookmarksWithAuth.getLayout = (page: any) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
-export default withAuth(Bookmarks);
+export default BookmarksWithAuth;

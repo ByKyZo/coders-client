@@ -11,6 +11,7 @@ import { ReactElement, ReactNode, useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
 import client from '../apollo-client';
 import PageLoader from '../components/modules/PageLoader/PageLoader';
+import { isBrowser } from '../helpers/index';
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;
@@ -25,6 +26,7 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
   const router = useRouter();
 
   useEffect(() => {
+    if (!isBrowser) return;
     client
       .query({
         query: rememberMe,
@@ -41,17 +43,13 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
       });
   }, []);
 
-  const getLayout = Component.getLayout ?? ((page) => page);
-
-  // if (isLoading) return <PageLoader isVisible={isLoading} />;
+  const getLayout = Component.getLayout || ((page) => page);
 
   return (
     <Provider store={store}>
       <ApolloProvider client={client}>
         <PageLoader isVisible={isLoading} />
-        {/* {!isLoading && getLayout(<Component {...pageProps} />)} */}
         {getLayout(<Component {...pageProps} />)}
-        {/* {getLayout(<Component {...pageProps} />)} */}
       </ApolloProvider>
     </Provider>
   );

@@ -7,8 +7,10 @@ const Profile: NextComponent = () => {
   return <div></div>;
 };
 
-Profile.getLayout = (page) => {
+const ProfileWithAuth = withAuth(Profile);
+
+ProfileWithAuth.getLayout = (page: any) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
-export default withAuth(Profile);
+export default ProfileWithAuth;

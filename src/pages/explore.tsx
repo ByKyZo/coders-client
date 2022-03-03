@@ -4,11 +4,13 @@ import React from 'react';
 import { NextComponent } from '../types/index';
 
 const Explore: NextComponent = () => {
-  return <div className="w-full"></div>;
+  return <div className="w-full">Explore</div>;
 };
 
-Explore.getLayout = (page) => {
+const ExploreWithAuth = withAuth(Explore);
+
+ExploreWithAuth.getLayout = (page: any) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
-export default withAuth(Explore);
+export default ExploreWithAuth;

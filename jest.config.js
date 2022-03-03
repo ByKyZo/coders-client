@@ -22,6 +22,8 @@ const customJestConfig = {
     '^@graphql/(.*)$': '<rootDir>/src/graphql/$1',
 
     '^@types/(.*)$': '<rootDir>/src/types/$1',
+
+    '^@lib/(.*)$': '<rootDir>/src/lib/$1',
   },
   testEnvironment: 'jest-environment-jsdom',
 };

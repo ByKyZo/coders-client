@@ -1,9 +1,17 @@
+import Heading from '@components/elements/heading/Heading';
 import SettingsLayout from '@components/layouts/SettingsLayout';
 import React from 'react';
+import { useMediaQuery } from 'react-responsive';
 import { NextComponent } from '../../types/index';
 
 const Account: NextComponent = () => {
-  return <div className="bg-red-300">Account</div>;
+  const isBreakPoint = useMediaQuery({ minWidth: 1024 });
+
+  return (
+    <div>
+      <Heading withGoBack={!isBreakPoint} noBorder title="Account" />
+    </div>
+  );
 };
 
 Account.getLayout = (page) => {

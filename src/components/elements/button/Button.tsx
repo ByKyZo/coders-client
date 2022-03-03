@@ -1,8 +1,14 @@
-import Link, { LinkProps } from 'next/link';
+import Link from 'next/link';
 import * as React from 'react';
 import { useRef } from 'react';
 import { Transition } from 'react-transition-group';
 import Loader from '../loader/Loader';
+import {
+  ButtonAsButton,
+  ButtonAsExternal,
+  ButtonAsLink,
+  ButtonAsUnstyled,
+} from './Types';
 
 const defaultClassName =
   // 'font-sans font-medium transition-[box-shadow,transform] overflow-hidden disabled:bg-opacity-60 hover:-translate-y-1 active:translate-y-0 active:shadow-none';
@@ -15,9 +21,6 @@ const styles: any = {
 };
 
 const sizes: any = {
-  //   small: 'text-sm py-1 px-3',
-  //   medium: 'text-base py-2 px-5',
-  //   large: 'text-lg py-2 px-7',
   small: 'h-6 text-sm py-1 px-3',
   medium: 'h-8 text-base py-1 px-5',
   large: 'h-10 text-base py-2 px-7',
@@ -29,39 +32,6 @@ const transitionStyles: any = {
   exiting: 'opacity-0 -translate-y-4',
   exited: 'opacity-0 -translate-y-4',
 };
-
-type styleType = 'primary' | 'primaryOutline' | 'secondary' | 'tertiary';
-type sizeType = 'small' | 'medium' | 'large';
-
-// ? Finir le loading du button
-type BaseProps = {
-  children: React.ReactNode;
-  styleType: styleType;
-  className?: string;
-  sizeType?: sizeType;
-  isLoading?: boolean;
-};
-
-type ButtonAsButton = BaseProps &
-  Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, keyof BaseProps> & {
-    as?: 'button';
-  };
-
-type ButtonAsUnstyled = Omit<ButtonAsButton, 'as' | 'styleType'> & {
-  as: 'unstyled';
-  styleType?: BaseProps['styleType'];
-  sizeType?: BaseProps['sizeType'];
-};
-
-type ButtonAsLink = BaseProps &
-  Omit<LinkProps, keyof BaseProps> & {
-    as: 'link';
-  };
-
-type ButtonAsExternal = BaseProps &
-  Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, keyof BaseProps> & {
-    as: 'externalLink';
-  };
 
 type ButtonProps =
   | ButtonAsButton

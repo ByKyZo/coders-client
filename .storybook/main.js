@@ -25,6 +25,7 @@ module.exports = {
       '@helpers': path.resolve(__dirname, '../src/helpers'),
       '@graphql': path.resolve(__dirname, '../src/graphql'),
       '@types': path.resolve(__dirname, '../src/types'),
+      '@lib': path.resolve(__dirname, '../src/lib'),
     };
     // config.resolve.alias = {
     //   ...config.resolve.alias,

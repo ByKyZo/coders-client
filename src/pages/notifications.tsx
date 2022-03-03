@@ -7,8 +7,10 @@ const Notifications: NextComponent = () => {
   return <div></div>;
 };
 
-Notifications.getLayout = (page) => {
+const NotificationsWithAuth = withAuth(Notifications);
+
+NotificationsWithAuth.getLayout = (page: any) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
-export default withAuth(Notifications);
+export default NotificationsWithAuth;

@@ -2,27 +2,25 @@ import { useRouter } from 'next/router';
 import { getAccessToken } from '../helpers/index';
 import { NextComponent } from '../types/index';
 
-const withAuth = (WrappedComponent: NextComponent) => {
+const withAuth = (WrappedComponent: NextComponent): NextComponent => {
   return (props: any) => {
-    // checks whether we are on client / browser or server.
+    // Verifie si on est sur le client ou le serveur
     if (typeof window !== 'undefined') {
       const Router = useRouter();
 
       const accessToken = getAccessToken();
 
-      // If there is no access token we redirect to "/auth/login" page.
+      // Si il n'y a pas de token le user est redirigé vers la page de connexion
       if (!accessToken) {
         Router.replace('/auth/login');
         return null;
       }
 
-      // If this is an accessToken we just render the component that was passed with all its props
-      const getLayout = WrappedComponent.getLayout ?? ((page) => page);
-
-      return getLayout(<WrappedComponent {...props} />);
+      // On return le composant apres le traitement
+      return <WrappedComponent {...props} />;
     }
 
-    // If we are on server, return null
+    // Si on est sur le serveur on return null
     return null;
   };
 };

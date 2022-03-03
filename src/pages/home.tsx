@@ -4,11 +4,22 @@ import React from 'react';
 import { NextComponent } from '../types/index';
 
 const Home: NextComponent = () => {
-  return <div></div>;
+  return (
+    <div>
+      <div className="h-96 mb-2 bg-red-100"></div>
+      <div className="h-96 mb-2 bg-red-100"></div>
+      <div className="h-96 mb-2 bg-red-100"></div>
+      <div className="h-96 mb-2 bg-red-100"></div>
+      <div className="h-96 mb-2 bg-red-100"></div>
+      <div className="h-96 mb-2 bg-red-100"></div>
+    </div>
+  );
 };
 
-Home.getLayout = (page) => {
+const HomeWithAuth = withAuth(Home);
+
+HomeWithAuth.getLayout = (page: any) => {
   return <AppLayout>{page}</AppLayout>;
 };
 
-export default withAuth(Home);
+export default HomeWithAuth;
