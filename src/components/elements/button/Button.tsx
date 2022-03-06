@@ -7,7 +7,7 @@ import {
   ButtonAsButton,
   ButtonAsExternal,
   ButtonAsLink,
-  ButtonAsUnstyled,
+  ButtonAsUnstyled
 } from './Types';
 
 const defaultClassName =
@@ -24,6 +24,7 @@ const sizes: any = {
   small: 'h-6 text-sm py-1 px-3',
   medium: 'h-8 text-base py-1 px-5',
   large: 'h-10 text-base py-2 px-7',
+  extralarge: 'h-12 text-base py-2 px-7',
 };
 
 const transitionStyles: any = {

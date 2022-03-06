@@ -1,7 +1,7 @@
 import { LinkProps } from 'next/link';
 
 export type styleType = 'primary' | 'primaryOutline' | 'secondary' | 'tertiary';
-export type sizeType = 'small' | 'medium' | 'large';
+export type sizeType = 'small' | 'medium' | 'large' | 'extralarge';
 
 // ? Finir le loading du button
 export type BaseProps = {

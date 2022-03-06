@@ -1,20 +1,21 @@
+import { getAccessToken, isBrowser } from '@helpers/index';
+import { NextComponent } from '@typescript/index';
 import { useRouter } from 'next/router';
-import { getAccessToken } from '../helpers/index';
-import { NextComponent } from '../types/index';
 
 const withAuth = (WrappedComponent: NextComponent): NextComponent => {
   return (props: any) => {
     // Verifie si on est sur le client ou le serveur
-    if (typeof window !== 'undefined') {
+    if (isBrowser) {
       const Router = useRouter();
 
       const accessToken = getAccessToken();
 
-      // Si il n'y a pas de token le user est redirigé vers la page de connexion
       if (!accessToken) {
-        Router.replace('/auth/login');
+        Router.push('/auth/login');
         return null;
       }
+
+      // Si il n'y a pas de token le user est redirigé vers la page de connexion
 
       // On return le composant apres le traitement
       return <WrappedComponent {...props} />;

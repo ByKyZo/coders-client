@@ -1,7 +1,7 @@
 import AppLayout from '@components/layouts/AppLayout';
+import { NextComponent } from '@typescript/index';
 import withAuth from 'hoc/withAuth';
 import React from 'react';
-import { NextComponent } from '../types/index';
 
 const Bookmarks: NextComponent = () => {
   return <div></div>;

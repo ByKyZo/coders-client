@@ -1,28 +1,16 @@
-import { NextComponent } from '@types/index';
+import { getSettingsLayout } from '@components/layouts/SettingsLayout';
+import { NextComponent } from '@typescript/index';
 import withAuth from 'hoc/withAuth';
 import React from 'react';
-import SettingsLayout from '../../components/layouts/SettingsLayout';
 
 const Settings: NextComponent = () => {
   console.log('Settings mount');
 
-  return (
-    // <div>
-    // {/* <nav className="w-96 border-r">
-    //   <ul>
-    //     <SubNavItem href="/settings/account" label="Account" />
-    //     <SubNavItem href="/settings/accessibility" label="Accessibility" />
-    //   </ul>
-    // </nav> */}
-    // </div>
-    <></>
-  );
+  return <></>;
 };
 
 const SettingsWithAuth = withAuth(Settings);
 
-SettingsWithAuth.getLayout = (page: any) => {
-  return <SettingsLayout>{page}</SettingsLayout>;
-};
+SettingsWithAuth.getLayout = getSettingsLayout;
 
 export default SettingsWithAuth;

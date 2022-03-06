@@ -1,24 +1,16 @@
-import { useLazyQuery } from '@apollo/client';
 import Input from '@components/elements/input/Input';
 import AuthLayout from '@components/layouts/AuthLayout';
-import { login } from '@graphql/queries/login/login';
 import { loginUser } from '@helpers/index';
 import { useFormik } from 'formik';
 import { withNoAuth } from 'hoc/withNoAuth';
-import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import * as Yup from 'yup';
-import {
-  LoginQuery,
-  LoginQueryVariables,
-} from '../../graphql/queries/login/login.generated';
+import { useLoginLazyQuery } from '../../graphql/users/login/index.generated';
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [loginQuery] = useLazyQuery<LoginQuery, LoginQueryVariables>(login);
-
-  const router = useRouter();
+  const [loginQuery] = useLoginLazyQuery();
 
   const formik = useFormik({
     initialValues: {
@@ -74,6 +66,7 @@ const Login = () => {
     >
       <Input
         {...formik.getFieldProps('email')}
+        id={'login-input-email'}
         error={formik.errors.email}
         isTouched={formik.touched.email}
         type="email"
@@ -82,6 +75,7 @@ const Login = () => {
       />
       <Input
         {...formik.getFieldProps('password')}
+        id={'login-input-password'}
         error={formik.errors.password}
         isTouched={formik.touched.password}
         type="password"

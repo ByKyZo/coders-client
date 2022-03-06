@@ -45,7 +45,7 @@ export type LoginOutput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createUser: LoginOutput;
-  updateUser: User;
+  updateSelf: User;
 };
 
 
@@ -54,7 +54,7 @@ export type MutationCreateUserArgs = {
 };
 
 
-export type MutationUpdateUserArgs = {
+export type MutationUpdateSelfArgs = {
   update: UpdateUserInput;
 };
 
@@ -87,7 +87,7 @@ export type QueryLoginArgs = {
 
 
 export type QueryUserArgs = {
-  id: Scalars['Int'];
+  username: Scalars['String'];
 };
 
 
@@ -113,14 +113,10 @@ export type SubUpdateProfileInput = {
   displayname?: InputMaybe<Scalars['String']>;
 };
 
-export type SubUpdateUserInput = {
-  email?: InputMaybe<Scalars['String']>;
-  username?: InputMaybe<Scalars['String']>;
-};
-
 export type UpdateUserInput = {
+  email?: InputMaybe<Scalars['String']>;
   profile?: InputMaybe<SubUpdateProfileInput>;
-  user?: InputMaybe<SubUpdateUserInput>;
+  username?: InputMaybe<Scalars['String']>;
 };
 
 export type User = {

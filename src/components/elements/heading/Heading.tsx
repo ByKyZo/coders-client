@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import React from 'react';
 import { FiChevronLeft } from 'react-icons/fi';
-import { isBrowser } from '../../../helpers/index';
 interface HeadingProps {
   title: string;
   withGoBack?: boolean;
@@ -10,8 +9,6 @@ interface HeadingProps {
 
 const Heading = ({ title, withGoBack, noBorder }: HeadingProps) => {
   const router = useRouter();
-
-  if (!isBrowser) return null;
 
   return (
     <div

@@ -1,16 +1,32 @@
 import AppLayout from '@components/layouts/AppLayout';
-import withAuth from 'hoc/withAuth';
+import { NextComponent } from '@typescript/index';
+import withAccess from 'hoc/withAccess';
 import React from 'react';
-import { NextComponent } from '../types/index';
 
-const Explore: NextComponent = () => {
+const Explore: NextComponent = (props: any) => {
+  console.log('Ecplorre page props : ', props);
+
   return <div className="w-full">Explore</div>;
 };
+// const ExploreWithAuth = withAuth(Explore);
+// ExploreWithAuth.getLayout = (page: any) => {
+//   return <AppLayout>{page}</AppLayout>;
+// };
 
-const ExploreWithAuth = withAuth(Explore);
+// export default ExploreWithAuth;
+// const ExploreWithPublic = withPublic(Explore);
 
-ExploreWithAuth.getLayout = (page: any) => {
+const ExploreWithPublic = withAccess(Explore, { accessType: 'public' });
+
+ExploreWithPublic.getLayout = (page: React.Component) => {
+  console.log('Explore Get layout page : ', page);
   return <AppLayout>{page}</AppLayout>;
 };
 
-export default ExploreWithAuth;
+export default ExploreWithPublic;
+
+// Explore.getLayout = (page: any) => {
+//   return <AppLayout>{page}</AppLayout>;
+// };
+
+// export default Explore;

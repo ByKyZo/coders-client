@@ -1,15 +1,10 @@
-import { useMutation } from '@apollo/client';
 import Input from '@components/elements/input/Input';
 import AuthLayout from '@components/layouts/AuthLayout';
-import { createUser } from '@graphql/mutations/register/register';
-import {
-  CreateUserMutation,
-  CreateUserMutationVariables,
-} from '@graphql/mutations/register/register.generated';
 import { loginUser } from '@helpers/index';
 import { useFormik } from 'formik';
 import React, { useEffect } from 'react';
 import * as Yup from 'yup';
+import { useCreateUserMutation } from '../../graphql/users/create-user/index.generated';
 import { withNoAuth } from '../../hoc/withNoAuth';
 
 /**
@@ -18,10 +13,7 @@ import { withNoAuth } from '../../hoc/withNoAuth';
  */
 
 const Register = () => {
-  const [registerQuery] = useMutation<
-    CreateUserMutation,
-    CreateUserMutationVariables
-  >(createUser);
+  const [createUserMutation] = useCreateUserMutation();
 
   const formik = useFormik({
     initialValues: {
@@ -43,7 +35,7 @@ const Register = () => {
     }),
     onSubmit: async (values) => {
       try {
-        const { data } = await registerQuery({
+        const { data } = await createUserMutation({
           variables: {
             input: {
               username: values.username,
@@ -79,6 +71,7 @@ const Register = () => {
     >
       <Input
         {...formik.getFieldProps('username')}
+        id={'registe-input-username'}
         error={formik.errors.username}
         isTouched={formik.touched.username}
         autoComplete="username"
@@ -87,6 +80,7 @@ const Register = () => {
       />
       <Input
         {...formik.getFieldProps('email')}
+        id={'registe-input-email'}
         error={formik.errors.email}
         isTouched={formik.touched.email}
         type="email"
@@ -95,6 +89,7 @@ const Register = () => {
       />
       <Input
         {...formik.getFieldProps('password')}
+        id={'registe-input-password'}
         error={formik.errors.password}
         isTouched={formik.touched.password}
         type="password"
@@ -103,6 +98,7 @@ const Register = () => {
       />
       <Input
         {...formik.getFieldProps('confirmPassword')}
+        id={'registe-input-confirmPassword'}
         error={formik.errors.confirmPassword}
         isTouched={formik.touched.confirmPassword}
         type="password"

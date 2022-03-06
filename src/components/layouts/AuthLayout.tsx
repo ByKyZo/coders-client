@@ -70,8 +70,7 @@ const AuthLayout = ({
             as="button"
             isLoading={isLoading}
             styleType="primary"
-            sizeType="large"
-            // className="h-12 py-3 mb-6"
+            sizeType="extralarge"
             className="h-12 mb-6"
             type="submit"
           >
@@ -83,9 +82,8 @@ const AuthLayout = ({
           as="link"
           href={isSignin ? '/auth/signup' : '/auth/login'}
           styleType="primaryOutline"
-          // className="h-12 py-3 mb-6 w-full"
           className="mb-6 w-full"
-          sizeType="large"
+          sizeType="extralarge"
         >
           {!isSignin ? 'Log in' : 'Sign up'}
         </Button>

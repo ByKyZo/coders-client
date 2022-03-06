@@ -1,16 +1,19 @@
+// !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { getAccessToken } from './helpers/index';
 
 // Modifier l'endpoint en fonction de l'environnement
-const endpoint =
-  process.env.NODE_ENV === 'production'
-    ? 'http://localhost:8000/graphql'
-    : 'http://localhost:8000/graphql';
+const endpoint = {
+  production: 'http://localhost:8000/graphql',
+  development: 'http://localhost:8000/graphql',
+};
 
 const httpLink = createHttpLink({
   // Endpoint de l'API graphql
-  uri: endpoint,
+  // @ts-ignore
+  uri: endpoint[process.env.NODE_ENV],
 });
 
 const authLink = setContext((_, { headers }) => {
@@ -27,8 +30,15 @@ const authLink = setContext((_, { headers }) => {
 
 // Initialise apollo client et la mise en cache des données
 const client = new ApolloClient({
+  credentials: 'include',
   link: authLink.concat(httpLink),
-  cache: new InMemoryCache(),
+  cache: new InMemoryCache({
+    // typePolicies: {
+    //   User: {
+    //     keyFields: ['id', 'username'],
+    //   },
+    // },
+  }),
 });
 
 export default client;

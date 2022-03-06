@@ -1,7 +1,7 @@
 import NextLink, { LinkProps } from 'next/link';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { isBrowser, splitURL } from '../../../helpers/index';
+import { splitURL } from '../../../helpers/index';
 
 interface CustomLinkProps extends React.PropsWithChildren<LinkProps> {
   activeClassName?: string;
@@ -24,7 +24,7 @@ const Link = ({
     ? splitURL(router.pathname)[0] === splitURL(rest.href as string)[0]
     : router.pathname === rest.href;
 
-  if (!isBrowser) return null;
+  // if (!isBrowser) return null;
 
   return (
     <NextLink {...rest}>

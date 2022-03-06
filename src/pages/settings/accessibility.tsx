@@ -1,8 +1,9 @@
 import Heading from '@components/elements/heading/Heading';
-import SettingsLayout from '@components/layouts/SettingsLayout';
+import { NextComponent } from '@typescript/index';
+import withAuth from 'hoc/withAuth';
 import React from 'react';
 import { useMediaQuery } from 'react-responsive';
-import { NextComponent } from '../../types/index';
+import { getSettingsLayout } from '../../components/layouts/SettingsLayout';
 
 const Accessibility: NextComponent = () => {
   const isBreakPoint = useMediaQuery({ minWidth: 1024 });
@@ -14,8 +15,8 @@ const Accessibility: NextComponent = () => {
   );
 };
 
-Accessibility.getLayout = (page) => {
-  return <SettingsLayout>{page}</SettingsLayout>;
-};
+const AccessibilityWithAuth = withAuth(Accessibility);
 
-export default Accessibility;
+AccessibilityWithAuth.getLayout = getSettingsLayout;
+
+export default AccessibilityWithAuth;

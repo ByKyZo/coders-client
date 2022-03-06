@@ -1,7 +1,7 @@
 import { logout } from '@helpers/index';
 import { Menu, MenuDivider, MenuItem } from '@szhsin/react-menu';
 import React from 'react';
-import Profile from '../../elements/profile/Profile';
+import Profile from '../profile/Profile';
 
 interface ProfileMenuProps {
   menuButton: JSX.Element;

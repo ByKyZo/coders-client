@@ -22,7 +22,7 @@
       "@redux/*": ["redux/*"],
       "@helpers/*": ["helpers/*"],
       "@graphql/*": ["graphql/*"],
-      "@types/*": ["types/*"],
+      "@typescript/*": ["typescript/*"],
       "@lib/*": ["lib/*"],
     }
   },
