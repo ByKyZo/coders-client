@@ -17,7 +17,7 @@ const Header = () => {
   const headerRef = useRef<HTMLDivElement>(null);
   const [headerWidth, setHeaderWith] = useState<number>(0);
 
-  const { data: user } = useMeQuery();
+  const { data: user, loading } = useMeQuery();
 
   const isLaptop = useMediaQuery({ minWidth: 1280 });
 
@@ -74,6 +74,10 @@ const Header = () => {
       activeOnRootPathName: true,
     },
   ];
+
+  console.log('from header : ', user);
+
+  // if (loading) return null;
 
   return (
     <>

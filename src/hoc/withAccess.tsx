@@ -1,5 +1,4 @@
 import { getAccessToken, isBrowser } from '@helpers/index';
-import { NextComponent } from '@typescript/index';
 import { useRouter } from 'next/router';
 
 interface WithAccessProps {
@@ -7,10 +6,10 @@ interface WithAccessProps {
 }
 
 const withAccess = (
-  WrappedComponent: NextComponent,
+  WrappedComponent: any,
   options: WithAccessProps
   //   accessType: 'auth' | 'noAuth' | 'public'
-): NextComponent => {
+): any => {
   return (props: any) => {
     // Verifie si on est sur le client ou le serveur
     if (isBrowser) {

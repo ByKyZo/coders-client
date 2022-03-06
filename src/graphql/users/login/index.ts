@@ -7,6 +7,9 @@ export default gql`
       user {
         id
         username
+        profile {
+          displayname
+        }
         roles {
           level
           label

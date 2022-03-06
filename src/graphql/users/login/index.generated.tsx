@@ -139,7 +139,7 @@ export type LoginQueryVariables = Types.Exact<{
 }>;
 
 
-export type LoginQuery = { __typename?: 'Query', login: { __typename?: 'LoginOutput', accessToken: string, user: { __typename?: 'User', id: number, username: string, roles: Array<{ __typename?: 'RoleWithoutUser', level: string, label: string }> } } };
+export type LoginQuery = { __typename?: 'Query', login: { __typename?: 'LoginOutput', accessToken: string, user: { __typename?: 'User', id: number, username: string, profile: { __typename?: 'ProfileWithoutUser', displayname?: string | null }, roles: Array<{ __typename?: 'RoleWithoutUser', level: string, label: string }> } } };
 
 
 export const LoginDocument = gql`
@@ -149,6 +149,9 @@ export const LoginDocument = gql`
     user {
       id
       username
+      profile {
+        displayname
+      }
       roles {
         level
         label

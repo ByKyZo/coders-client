@@ -1,24 +1,30 @@
 import { getProfileLayout } from '@components/layouts/ProfileLayout';
-import { UserDocument } from '@graphql/users/get-user/index.generated';
 import withAccess from 'hoc/withAccess';
 import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { initializeApollo } from '../../apollo-client';
-import { UserQuery } from '../../graphql/users/get-user/index.generated';
+import {
+  UserDocument,
+  UserQuery,
+} from '../../graphql/users/get-user/index.generated';
 import { NextComponent } from '../../typescript/index';
-interface TweetsProps {
+
+interface TweetsAndRepliesProps {
   data: UserQuery;
   error: any;
 }
 
-const Tweets: NextComponent<TweetsProps> = ({ data, error }) => {
+const TweetsAndReplies: NextComponent<TweetsAndRepliesProps> = ({
+  data,
+  error,
+}) => {
   const router = useRouter();
 
   console.log('SSR Data : ', data?.user);
   console.log('SSR Error : ', error);
 
-  return <div>Tweets</div>;
+  return <div>TweetsAndReplies & replies</div>;
 };
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
@@ -45,12 +51,14 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 }
 
-const TweetsWithAuth = withAccess(Tweets, { accessType: 'public' });
+const TweetsAndRepliesWithAuth = withAccess(TweetsAndReplies, {
+  accessType: 'public',
+});
 
-TweetsWithAuth.getLayout = getProfileLayout;
+TweetsAndRepliesWithAuth.getLayout = getProfileLayout;
 
-export default TweetsWithAuth;
+export default TweetsAndRepliesWithAuth;
 
-// TweetsWithAuth.getLayout = getProfileLayout;
+// TweetsAndRepliesWithAuth.getLayout = getProfileLayout;
 
-// export default TweetsWithAuth;
+// export default TweetsAndRepliesWithAuth;

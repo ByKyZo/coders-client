@@ -8,15 +8,9 @@ const Explore: NextComponent = (props: any) => {
 
   return <div className="w-full">Explore</div>;
 };
-// const ExploreWithAuth = withAuth(Explore);
-// ExploreWithAuth.getLayout = (page: any) => {
-//   return <AppLayout>{page}</AppLayout>;
-// };
-
-// export default ExploreWithAuth;
-// const ExploreWithPublic = withPublic(Explore);
 
 const ExploreWithPublic = withAccess(Explore, { accessType: 'public' });
+// const ExploreWithPublic = withAuth(Explore);
 
 ExploreWithPublic.getLayout = (page: React.Component) => {
   console.log('Explore Get layout page : ', page);
@@ -24,9 +18,3 @@ ExploreWithPublic.getLayout = (page: React.Component) => {
 };
 
 export default ExploreWithPublic;
-
-// Explore.getLayout = (page: any) => {
-//   return <AppLayout>{page}</AppLayout>;
-// };
-
-// export default Explore;

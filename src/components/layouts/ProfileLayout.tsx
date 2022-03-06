@@ -4,6 +4,7 @@ import Link from '@components/elements/link/Link';
 import Username from '@components/elements/username';
 import { UserQuery } from '@graphql/users/get-user/index.generated';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import AppLayout from './AppLayout';
 
 interface ProfileLayoutProps {
@@ -13,18 +14,15 @@ interface ProfileLayoutProps {
 }
 
 interface NavItemProps {
-  label: string;
-  username: string;
+  children: string;
+  username?: string;
   href: string;
 }
 
-const NavItem = ({ label, username, href }: NavItemProps) => {
+const NavItem = ({ children, username, href }: NavItemProps) => {
   const router = useRouter();
   const path = `/${username}${href}`;
   const isActive = router.asPath === path;
-
-  // console.log('pathname : ', router.asPath);
-  // console.log('custom path : ', path);
 
   return (
     <li className="flex-grow">
@@ -37,7 +35,7 @@ const NavItem = ({ label, username, href }: NavItemProps) => {
             isActive ? 'before:bg-red-600' : 'before:bg-transparent'
           }  before:w-full`}
         >
-          Tweets
+          {children}
         </span>
       </Link>
     </li>
@@ -46,14 +44,12 @@ const NavItem = ({ label, username, href }: NavItemProps) => {
 
 const ProfileLayout = ({ data, children }: ProfileLayoutProps) => {
   const router = useRouter();
-  // const user = data?.user;
-  const user = {
-    username: 'MockedUsername',
-    profile: {
-      displayname: 'Mocked displayname',
-    },
-  };
-  console.log('SRR Profile Layout data : ', data?.user);
+
+  const user = data?.user;
+
+  useEffect(() => {
+    console.log('Prrofile mount');
+  }, []);
 
   //   if (!user)
   //     return (
@@ -75,16 +71,22 @@ const ProfileLayout = ({ data, children }: ProfileLayoutProps) => {
       <div>
         <div className="p-6 pb-0 mb-8">
           <div className="flex justify-end h-16">
-            <Button as="button" styleType="primaryOutline" sizeType="small">
+            <Button
+              as="button"
+              onClick={() => router.replace('/settings/profile')}
+              styleType="primaryOutline"
+              sizeType="small"
+            >
               Edit Profile
             </Button>
           </div>
           <div className="flex flex-col">
             <div className="flex flex-col mb-3">
               <Displayname size="large">
-                {user.profile?.displayname!}
+                {user?.profile?.displayname!}
               </Displayname>
-              <Username>{user.username}</Username>
+              <Username>{user?.username}</Username>
+              {user?.profile.bio && <p className="mt-2">{user.profile.bio}</p>}
             </div>
             <div className="flex">
               <span className="mr-4">
@@ -101,12 +103,18 @@ const ProfileLayout = ({ data, children }: ProfileLayoutProps) => {
 
         <nav className="">
           <ul className="flex justify-between border-b border-b-gray-200">
-            <NavItem label="tweets" username={user.username} href="" />
-            <NavItem label="reply" username={user.username} href={`/reply`} />
-            <NavItem label="reply" username={user.username} href={`/reply`} />
-            {/* <NavItem label="tweets" href={`/${user}/tweets`} />
-            <NavItem label="tweets" href={`/${user}/tweets`} />
-            <NavItem label="tweets" href={`/${user}/tweets`} /> */}
+            <NavItem username={user?.username} href="">
+              Tweets
+            </NavItem>
+            <NavItem username={user?.username} href="/with_replies">
+              Tweets & Replies
+            </NavItem>
+            <NavItem username={user?.username} href="">
+              Media
+            </NavItem>
+            <NavItem username={user?.username} href="">
+              Likes
+            </NavItem>
             {/* <li>Tweets & Replies</li>
                 <li>Media</li>
                 <li>Likes</li> */}

@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 import NProgress from 'nprogress';
 import { ReactElement, ReactNode, useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
-import client from '../apollo-client';
+import { useApollo } from '../apollo-client';
 
 NProgress.configure({
   minimum: 0.3,
@@ -28,18 +28,22 @@ type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout;
 };
 
-const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
+const App = ({ Component, pageProps }: AppPropsWithLayout) => {
   const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+
+  const apollo = useApollo(pageProps);
 
   useEffect(() => {
     if (!isBrowser) return;
 
-    client
+    apollo
       .query({
         query: RememberMeDocument,
       })
-      .then((res) => {})
+      .then((res) => {
+        console.log(res);
+      })
       .catch((err) => {
         // router.push('/auth/login');
         removeAccessToken();
@@ -59,7 +63,7 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
 
   return (
     <Provider store={store}>
-      <ApolloProvider client={client}>
+      <ApolloProvider client={apollo}>
         <PageLoader isVisible={isLoading} />
         {getLayout(<Component {...pageProps} />)}
       </ApolloProvider>
@@ -67,4 +71,5 @@ const MyApp = ({ Component, pageProps }: AppPropsWithLayout) => {
   );
 };
 
-export default MyApp;
+// export default withApollo(App);
+export default App;

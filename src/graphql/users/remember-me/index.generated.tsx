@@ -137,7 +137,7 @@ export type User = {
 export type RememberMeQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type RememberMeQuery = { __typename?: 'Query', rememberMe: { __typename?: 'LoginOutput', accessToken: string, user: { __typename?: 'User', id: number, username: string, roles: Array<{ __typename?: 'RoleWithoutUser', level: string }> } } };
+export type RememberMeQuery = { __typename?: 'Query', rememberMe: { __typename?: 'LoginOutput', accessToken: string, user: { __typename?: 'User', id: number, username: string, profile: { __typename?: 'ProfileWithoutUser', displayname?: string | null }, roles: Array<{ __typename?: 'RoleWithoutUser', level: string }> } } };
 
 
 export const RememberMeDocument = gql`
@@ -147,6 +147,9 @@ export const RememberMeDocument = gql`
     user {
       id
       username
+      profile {
+        displayname
+      }
       roles {
         level
       }

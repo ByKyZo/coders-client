@@ -1,8 +1,7 @@
 import { getAccessToken, isBrowser } from '@helpers/index';
-import { NextComponent } from '@typescript/index';
 import { useRouter } from 'next/router';
 
-const withAuth = (WrappedComponent: NextComponent): NextComponent => {
+const withAuth = (WrappedComponent: any): any => {
   return (props: any) => {
     // Verifie si on est sur le client ou le serveur
     if (isBrowser) {

@@ -1,3 +1,4 @@
+import Cookies from 'js-cookie';
 import Router from 'next/router';
 
 export const isEmpty = (value: any) => {
@@ -9,23 +10,29 @@ export const isEmpty = (value: any) => {
   );
 };
 
-const ACCESS_TOKEN = 'ACCESS_TOKEN';
+export const ACCESS_TOKEN = 'access_token';
 
 export const isBrowser = typeof window !== 'undefined';
 
 export const getAccessToken = () => {
-  if (!isBrowser) return;
-  return localStorage.getItem(ACCESS_TOKEN);
+  // if (!isBrowser) return;
+  // return localStorage.getItem(ACCESS_TOKEN);
+  return Cookies.get(ACCESS_TOKEN);
 };
 
 export const setAccessToken = (token: string) => {
-  if (!isBrowser) return;
-  localStorage.setItem(ACCESS_TOKEN, token);
+  // if (!isBrowser) return;
+  // localStorage.setItem(ACCESS_TOKEN, token);
+  return Cookies.set(ACCESS_TOKEN, token, {
+    secure: true,
+    expires: 999,
+  });
 };
 
 export const removeAccessToken = () => {
-  if (!isBrowser) return;
-  localStorage.removeItem(ACCESS_TOKEN);
+  // if (!isBrowser) return;
+  // localStorage.removeItem(ACCESS_TOKEN);
+  return Cookies.remove(ACCESS_TOKEN);
 };
 
 export const loginUser = (accessToken: string) => {
@@ -34,7 +41,7 @@ export const loginUser = (accessToken: string) => {
 };
 
 export const logout = () => {
-  if (!isBrowser) return null;
+  if (!isBrowser) return;
   removeAccessToken();
   Router.push('/auth/login');
   window.location.reload();
