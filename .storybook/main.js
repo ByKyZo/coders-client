@@ -26,12 +26,13 @@ module.exports = {
       '@graphql': path.resolve(__dirname, '../src/graphql'),
       '@types': path.resolve(__dirname, '../src/types'),
       '@lib': path.resolve(__dirname, '../src/lib'),
+      '@hooks': path.resolve(__dirname, '../src/hooks'),
+      '@hoc': path.resolve(__dirname, '../src/hoc'),
     };
     // config.resolve.alias = {
     //   ...config.resolve.alias,
     //   '@': path.resolve(__dirname, '../'),
     // };
-    //
 
     // ? Permet d'importer le fichier index.scss
     config.module.rules.push({

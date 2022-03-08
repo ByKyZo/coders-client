@@ -7,7 +7,7 @@ import {
   ButtonAsButton,
   ButtonAsExternal,
   ButtonAsLink,
-  ButtonAsUnstyled
+  ButtonAsUnstyled,
 } from './Types';
 
 const defaultClassName =
@@ -18,6 +18,9 @@ const styles: any = {
   primary: 'text-white bg-primary hover:shadow-lg',
   primaryOutline:
     'text-primary ring-1 ring-primary ring-opacity-40 hover:ring-opacity-100',
+  secondary: 'text-white bg-gray-800 hover:shadow-lg',
+  secondaryOutline:
+    'text-gray-800 ring-1 ring-gray-800 ring-opacity-40 hover:ring-opacity-100',
 };
 
 const sizes: any = {
@@ -47,18 +50,17 @@ const Button = (props: ButtonProps): JSX.Element => {
   const allClassNames = `${props.styleType ? styles[props.styleType] : ''}  ${
     props.sizeType ? sizes[props.sizeType] : ''
   } ${props.className ? props.className : ''} ${
-    //   props.isLoading ? 'cursor-auto' : ''
-    // }`;
     props.isLoading
       ? 'cursor-auto'
       : 'hover:-translate-y-1 active:translate-y-0 active:shadow-none'
-  }`;
+  } ${props.rounded ? 'rounded-full' : ''}`;
 
   if (props.as === 'link') {
     // don't pass unnecessary props to component
-    const { className, styleType, sizeType, as, children, ...rest } = props;
+    const { className, styleType, sizeType, as, children, rounded, ...rest } =
+      props;
     return (
-      <Link {...rest}>
+      <Link as={props.linkAs} {...rest}>
         <a
           className={`flex justify-center  items-center ${defaultClassName} ${allClassNames}`}
         >
@@ -67,7 +69,7 @@ const Button = (props: ButtonProps): JSX.Element => {
       </Link>
     );
   } else if (props.as === 'externalLink') {
-    const { className, styleType, sizeType, as, ...rest } = props;
+    const { className, styleType, sizeType, as, rounded, ...rest } = props;
     return (
       <a
         className={`${defaultClassName} ${allClassNames}`}
@@ -80,7 +82,7 @@ const Button = (props: ButtonProps): JSX.Element => {
       </a>
     );
   } else if (props.as === 'unstyled') {
-    const { className, styleType, as, ...rest } = props;
+    const { className, styleType, as, rounded, ...rest } = props;
     return <button className={`${className}`} {...rest} />;
   } else {
     const {
@@ -90,6 +92,7 @@ const Button = (props: ButtonProps): JSX.Element => {
       disabled,
       sizeType,
       children,
+      rounded,
       as,
       ...rest
     } = props;

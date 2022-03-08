@@ -7,9 +7,9 @@ interface UsernameProps {
 }
 
 const sizeStyle: any = {
-  small: 'text-sm',
-  medium: 'text-base',
-  large: 'text-xl',
+  small: 'text-sm leading-none',
+  medium: 'text-base leading-none',
+  large: 'text-xl leading-none',
 };
 
 const Displayname = ({ children, size = 'medium' }: UsernameProps) => {

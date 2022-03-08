@@ -1,6 +1,11 @@
 import { LinkProps } from 'next/link';
 
-export type styleType = 'primary' | 'primaryOutline' | 'secondary' | 'tertiary';
+export type styleType =
+  | 'primary'
+  | 'primaryOutline'
+  | 'secondary'
+  | 'secondaryOutline';
+
 export type sizeType = 'small' | 'medium' | 'large' | 'extralarge';
 
 // ? Finir le loading du button
@@ -10,6 +15,7 @@ export type BaseProps = {
   className?: string;
   sizeType?: sizeType;
   isLoading?: boolean;
+  rounded?: boolean;
 };
 
 export type ButtonAsButton = BaseProps &
@@ -26,6 +32,7 @@ export type ButtonAsUnstyled = Omit<ButtonAsButton, 'as' | 'styleType'> & {
 export type ButtonAsLink = BaseProps &
   Omit<LinkProps, keyof BaseProps> & {
     as: 'link';
+    linkAs: string;
   };
 
 export type ButtonAsExternal = BaseProps &

@@ -24,6 +24,8 @@
       "@graphql/*": ["graphql/*"],
       "@typescript/*": ["typescript/*"],
       "@lib/*": ["lib/*"],
+      "@hooks/*": ["hooks/*"],
+      "@hoc/*": ["hoc/*"],
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "types.d.ts"],

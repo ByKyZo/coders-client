@@ -10,6 +10,7 @@ import type { AppProps } from 'next/app';
 import { useRouter } from 'next/router';
 import NProgress from 'nprogress';
 import { ReactElement, ReactNode, useEffect, useState } from 'react';
+import ReactModal from 'react-modal';
 import { Provider } from 'react-redux';
 import { useApollo } from '../apollo-client';
 
@@ -19,6 +20,8 @@ NProgress.configure({
   speed: 500,
   showSpinner: false,
 });
+
+ReactModal.setAppElement('#__next');
 
 type NextPageWithLayout = NextPage & {
   getLayout?: (page: ReactElement) => ReactNode;

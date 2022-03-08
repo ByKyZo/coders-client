@@ -42,7 +42,9 @@ const Profile = ({
           />
         )}
         {!avatarOnly && (
-          <div className={`ml-3 flex flex-col leading-5 text-left `}>
+          <div
+            className={`ml-3 flex flex-col justify-center leading-5 text-left `}
+          >
             <Displayname>{data?.me?.profile?.displayname!}</Displayname>
             <Username size="small">{data?.me.username}</Username>
           </div>
