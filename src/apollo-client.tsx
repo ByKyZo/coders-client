@@ -1,6 +1,7 @@
-import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
+import { ApolloClient, InMemoryCache } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
 import { ACCESS_TOKEN, getAccessToken } from '@helpers/index';
+import { createUploadLink } from 'apollo-upload-client';
 import { useMemo } from 'react';
 
 let apolloClient: ApolloClient<InMemoryCache>;
@@ -11,7 +12,7 @@ function createApolloClient(ctx?: any) {
     development: 'http://localhost:8000/graphql',
   };
 
-  const httpLink = createHttpLink({
+  const httpLink = createUploadLink({
     // Endpoint de l'API graphql
     // @ts-ignore
     uri: endpoint[process.env.NODE_ENV],

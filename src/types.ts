@@ -12,6 +12,8 @@ export type Scalars = {
   Float: number;
   /** A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format. */
   DateTime: any;
+  /** The `Upload` scalar type represents a file upload. */
+  Upload: any;
 };
 
 export type CreateUserInput = {
@@ -55,20 +57,26 @@ export type MutationCreateUserArgs = {
 
 
 export type MutationUpdateSelfArgs = {
-  update: UpdateUserInput;
+  backgroundPictureFile?: InputMaybe<Scalars['Upload']>;
+  profilePictureFile?: InputMaybe<Scalars['Upload']>;
+  update?: InputMaybe<UpdateUserInput>;
 };
 
 export type Profile = {
   __typename?: 'Profile';
+  backroundPicture?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['String']>;
   displayname?: Maybe<Scalars['String']>;
+  profilePicture?: Maybe<Scalars['String']>;
   user: User;
 };
 
 export type ProfileWithoutUser = {
   __typename?: 'ProfileWithoutUser';
+  backroundPicture?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['String']>;
   displayname?: Maybe<Scalars['String']>;
+  profilePicture?: Maybe<Scalars['String']>;
 };
 
 export type Query = {
@@ -109,8 +117,10 @@ export type RoleWithoutUser = {
 };
 
 export type SubUpdateProfileInput = {
+  backroundPicture?: InputMaybe<Scalars['String']>;
   bio?: InputMaybe<Scalars['String']>;
   displayname?: InputMaybe<Scalars['String']>;
+  profilePicture?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateUserInput = {

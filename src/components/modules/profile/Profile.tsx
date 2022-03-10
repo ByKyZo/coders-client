@@ -1,3 +1,4 @@
+import ProfilePicture from '@components/elements/profile-picture/ProfilePicture';
 import Username from '@components/elements/username';
 import { useMeQuery } from '@graphql/users/get-me/index.generated';
 import React from 'react';
@@ -32,18 +33,14 @@ const Profile = ({
   if (loading) return null;
 
   return (
-    <div className={`flex justify-between items-center w-full `}>
-      <div className="flex">
+    <div className={`flex justify-start items-center w-full `}>
+      <div className="flex flex-grow max-w-full">
         {!infosOnly && (
-          <img
-            className="h-10 w-10 rounded-full"
-            src="https://picsum.photos/200/300"
-            alt="picture"
-          />
+          <ProfilePicture size="small" url={data?.me.profile.profilePicture!} />
         )}
         {!avatarOnly && (
           <div
-            className={`ml-3 flex flex-col justify-center leading-5 text-left `}
+            className={`ml-3  min-w-0 flex flex-col justify-center leading-5 text-left `}
           >
             <Displayname>{data?.me?.profile?.displayname!}</Displayname>
             <Username size="small">{data?.me.username}</Username>

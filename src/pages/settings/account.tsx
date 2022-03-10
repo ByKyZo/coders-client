@@ -48,14 +48,6 @@ const Account = () => {
             update: {
               username: values.username,
               email: values.email,
-              // profile: {
-              //   displayname: values.displayname,
-              //   bio: values.bio,
-              // },
-              // profile: {
-              //   displayname: null,
-              //   bio: null,
-              // },
             },
           },
         });
@@ -91,13 +83,6 @@ const Account = () => {
             isTouched={formik.touched.username}
             placeholder="Username"
           />
-          {/* <Input
-            {...formik.getFieldProps('displayname')}
-            id={'update-account-input-displayname'}
-            error={formik.errors.username}
-            isTouched={formik.touched.username}
-            placeholder="Displayname"
-          /> */}
           <Input
             {...formik.getFieldProps('email')}
             id={'update-account-input-email'}
@@ -105,13 +90,6 @@ const Account = () => {
             isTouched={formik.touched.email}
             placeholder="Email"
           />
-          {/* <Input
-            {...formik.getFieldProps('bio')}
-            id={'update-account-input-bio'}
-            error={formik.errors.bio}
-            isTouched={formik.touched.bio}
-            placeholder="Bio"
-          /> */}
           <Button
             type="submit"
             className="w-full"

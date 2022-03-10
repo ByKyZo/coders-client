@@ -32,15 +32,21 @@ const InputFile = ({
 
   return (
     <>
-      <input
-        multiple={multipleFile}
-        accept={acceptFile}
-        onChange={handleChange}
-        id={id}
-        type="file"
-        hidden
-      />
-      <label {...rest} className={`cursor-pointer ${className}`} htmlFor={id}>
+      <label
+        // tabIndex={0}
+        {...rest}
+        className={`cursor-pointer ${className}`}
+        htmlFor={id}
+      >
+        <input
+          className="absolute opacity-0"
+          multiple={multipleFile}
+          accept={acceptFile}
+          onChange={handleChange}
+          id={id}
+          type="file"
+          // hidden
+        />
         {children}
       </label>
     </>

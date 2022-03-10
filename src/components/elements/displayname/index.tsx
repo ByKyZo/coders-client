@@ -14,9 +14,11 @@ const sizeStyle: any = {
 
 const Displayname = ({ children, size = 'medium' }: UsernameProps) => {
   return (
-    <span className={`font-bold text-gray-800 ${sizeStyle[size]}`}>
+    <span
+      // className={`font-bold flex w-full text-gray-800 ${sizeStyle[size]} overflow-ellipsis whitespace-nowrap overflow-hidden`}
+      className={`font-bold text-gray-800 ${sizeStyle[size]} overflow-ellipsis whitespace-nowrap overflow-hidden`}
+    >
       {children}
-      {/* {data.user?.username} */}
     </span>
   );
 };

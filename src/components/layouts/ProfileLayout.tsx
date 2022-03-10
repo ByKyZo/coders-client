@@ -1,3 +1,4 @@
+import BackgroundPicture from '@components/elements/background-picture/BackgroundPicture';
 import Button from '@components/elements/button/Button';
 import Displayname from '@components/elements/displayname';
 import Link from '@components/elements/link/Link';
@@ -9,6 +10,7 @@ import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { MdDateRange } from 'react-icons/md';
 import { useIsCurrentUser } from '../../hooks/useIsCurrentUser';
+import ProfilePicture from '../elements/profile-picture/ProfilePicture';
 import AppLayout from './AppLayout';
 
 interface ProfileLayoutProps {
@@ -79,13 +81,27 @@ const ProfileLayout = ({ data, children }: ProfileLayoutProps) => {
         closeFn={handleCloseEditProfileModal}
       />
       <div>
-        <div className="h-56 bg-gray-300 relative">
-          <img
-            className="absolute left-4 bottom-0 translate-y-1/2 h-auto  w-3/12 rounded-full"
-            src="https://picsum.photos/300/300"
-            alt=""
+        <div className="relative">
+          <BackgroundPicture url={user?.profile.backroundPicture!} />
+          <ProfilePicture
+            size="large"
+            className="absolute left-4 bottom-0 translate-y-1/2"
+            url={user?.profile.profilePicture!}
           />
         </div>
+        {/* <div
+          style={{ backgroundImage: `url(${user?.profile.backroundPicture!})` }}
+          // className="h-56 bg-gray-300 relative bg-cover bg-no-repeat h-[20vw]"
+          className="bg-gray-300 relative bg-cover bg-no-repeat max-h-[220px] min-h-[80px] h-[20vw]"
+        >
+          <div className="absolute left-4 bottom-0 translate-y-1/2 flex min-h-[60px] min-w-[60px] max-h-[120px] max-w-[120px] h-[20vw] w-[20vw]">
+            <img
+              className="object-cover h-full w-full rounded-full"
+              src={user?.profile.profilePicture!}
+              alt={`${user?.username} profile`}
+            />
+          </div>
+        </div> */}
         <div>
           <div className="p-6 pb-0 mb-8">
             <div className="flex justify-end h-16">

@@ -44,6 +44,7 @@ const Modal = ({
         </div>
         {btnAction && (
           <Button
+            type="submit"
             as="button"
             styleType="secondary"
             sizeType="medium"

@@ -8,6 +8,8 @@ export default gql`
       profile {
         displayname
         bio
+        profilePicture
+        backroundPicture
       }
       email
       createdAt
