@@ -1,7 +1,8 @@
 import React from 'react';
 interface ProfilePictureProps {
-  url: string;
+  url: string | null;
   className?: string;
+  empty?: boolean;
   size: 'small' | 'medium' | 'large';
 }
 
@@ -12,14 +13,25 @@ const sizeStyle = {
     'min-h-[60px] min-w-[60px] max-h-[120px] max-w-[120px] h-[20vw] w-[20vw]',
 };
 
-const ProfilePicture = ({ url, className, size }: ProfilePictureProps) => {
+const BASE_CLASS = 'h-full w-full rounded-full ring-2 ring-white';
+
+const ProfilePicture = ({
+  url,
+  className,
+  size,
+  empty,
+}: ProfilePictureProps) => {
   return (
     <div className={`flex ${sizeStyle[size]}  ${className}`}>
-      <img
-        className="object-cover h-full w-full rounded-full ring-2 ring-white"
-        src={url}
-        alt={`profile`}
-      />
+      {!url || empty ? (
+        <div className={`bg-gray-800 ${BASE_CLASS}`}></div>
+      ) : (
+        <img
+          className={`object-cover ${BASE_CLASS}`}
+          src={url}
+          alt={`profile`}
+        />
+      )}
     </div>
   );
 };

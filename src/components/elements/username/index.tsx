@@ -15,8 +15,9 @@ const sizeStyle: any = {
 const Username = ({ children, size = 'medium' }: UsernameProps) => {
   return (
     <span className={sizeStyle[size]}>
-      <span className="text-gray-400">@</span>
-      <span className="text-sm text-gray-400">{children}</span>
+      <span className="text-gray-500">@</span>
+      {/* <span className="text-sm text-gray-400">{children}</span> */}
+      <span className="text-gray-500">{children}</span>
     </span>
   );
 };

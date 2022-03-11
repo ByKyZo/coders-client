@@ -1,17 +1,24 @@
 import React from 'react';
 
 interface BackgroundPictureProps {
-  url: string;
+  url: string | null;
+  empty?: boolean;
 }
 
-const BackgroundPicture = ({ url }: BackgroundPictureProps) => {
+const BASE_CLASS = 'max-h-[200px] h-[30vw] min-h-[80px] w-full';
+
+const BackgroundPicture = ({ url, empty }: BackgroundPictureProps) => {
   return (
     <>
-      <img
-        className="object-cover max-h-[200px] h-[30vw] min-h-[80px]  w-full"
-        src={url}
-        alt="background picture"
-      />
+      {!url || empty ? (
+        <div className={`bg-gray-400 ${BASE_CLASS}`}></div>
+      ) : (
+        <img
+          className={`object-cover ${BASE_CLASS}`}
+          src={url}
+          alt="background picture"
+        />
+      )}
     </>
   );
 };

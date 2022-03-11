@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import MediaQuery from 'react-responsive';
 import { isBrowser, splitURL } from '../../helpers/index';
+
 interface AppLayoutProps {
   children: React.ReactNode;
   onlyHeader?: boolean;

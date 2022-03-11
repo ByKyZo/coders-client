@@ -1,0 +1,118 @@
+.Toastify__toast-container {
+  @media (max-width: 480px) {
+    padding: 10px;
+  }
+}
+
+.Toastify__toast {
+  min-height: 30px;
+  padding: 4px;
+  border-radius: 0;
+  border: 1px rgba(255, 255, 255, 0.4) solid;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+
+  @media (max-width: 480px) {
+    margin-bottom: 10px;
+  }
+}
+
+.__toast-message {
+  opacity: 0;
+  transform: translateX(70px) skew(-12deg);
+  animation: toastMessage 0.4s ease forwards;
+  animation-delay: 0.2s;
+  color: white;
+}
+
+.__toast-icon {
+  opacity: 0;
+  transform: scale(0) skew(12deg);
+  animation: toastIcon 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation-delay: 0.3s;
+  color: white;
+}
+
+.Toastify__toast-icon {
+  color: white;
+  @apply text-xl;
+}
+.Toastify__toast-body {
+  color: white;
+  @apply text-sm;
+}
+.Toastify__close-button {
+  color: white;
+}
+.Toastify__toast--success {
+  @apply bg-opacity-50;
+  background: rgba(85, 197, 113, 0.9) !important;
+}
+.Toastify__toast--error {
+  background: rgba(224, 109, 109, 0.9) !important;
+}
+.Toastify__toast--warning {
+  background: rgba(223, 165, 99, 0.9) !important;
+}
+.Toastify__toast--info {
+  background: rgba(112, 172, 240, 0.9) !important;
+}
+
+.Toastify__progress-bar {
+  height: 2px;
+  background: rgb(226, 226, 226);
+}
+
+.Toastify__close-button {
+  margin: auto;
+}
+
+.__toast-enter {
+  animation: toast-enter 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+}
+.__toast-exit {
+  animation: toast-exit 0.4s ease both;
+}
+
+@keyframes toast-enter {
+  0% {
+    transform: rotateY(-30deg) translateY(-300px) skewY(30deg);
+    opacity: 0;
+  }
+  100% {
+    transform: rotateY(0deg) translateY(0) skewY(0deg);
+    opacity: 1;
+  }
+}
+@keyframes toast-exit {
+  0% {
+    transform: rotateY(0deg) translateY(0) skewY(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: rotateY(-30deg) translateY(-300px) skewY(30deg);
+    opacity: 0;
+  }
+}
+
+@keyframes toastMessage {
+  0% {
+    opacity: 0;
+    transform: translateX(70px) skew(-12deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0) skew(0deg);
+  }
+}
+@keyframes toastIcon {
+  0% {
+    opacity: 0.4;
+    transform: scale(0) skew(12deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) skew(0deg);
+  }
+}

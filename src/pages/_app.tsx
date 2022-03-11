@@ -3,6 +3,7 @@ import PageLoader from '@components/modules/PageLoader/PageLoader';
 import { RememberMeDocument } from '@graphql/users/remember-me/index.generated';
 import { isBrowser, removeAccessToken } from '@helpers/index';
 import { store } from '@redux/store';
+import 'react-toastify/dist/ReactToastify.css';
 import '@styles/index.scss';
 import '@styles/tailwind.css';
 import { NextPage } from 'next';
@@ -12,6 +13,7 @@ import NProgress from 'nprogress';
 import { ReactElement, ReactNode, useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
 import { Provider } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
 import { useApollo } from '../apollo-client';
 
 NProgress.configure({
@@ -67,6 +69,18 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
   return (
     <Provider store={store}>
       <ApolloProvider client={apollo}>
+        <ToastContainer
+          position="bottom-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          limit={3}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
         <PageLoader isVisible={isLoading} />
         {getLayout(<Component {...pageProps} />)}
       </ApolloProvider>

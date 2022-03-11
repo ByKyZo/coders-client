@@ -62,6 +62,7 @@ const ProfileLayout = ({ data, children }: ProfileLayoutProps) => {
   const handleOpenEditProfileModal = () => {
     setIsOpenProfileModal(true);
   };
+
   const handleCloseEditProfileModal = () => {
     setIsOpenProfileModal(false);
   };
@@ -89,19 +90,6 @@ const ProfileLayout = ({ data, children }: ProfileLayoutProps) => {
             url={user?.profile.profilePicture!}
           />
         </div>
-        {/* <div
-          style={{ backgroundImage: `url(${user?.profile.backroundPicture!})` }}
-          // className="h-56 bg-gray-300 relative bg-cover bg-no-repeat h-[20vw]"
-          className="bg-gray-300 relative bg-cover bg-no-repeat max-h-[220px] min-h-[80px] h-[20vw]"
-        >
-          <div className="absolute left-4 bottom-0 translate-y-1/2 flex min-h-[60px] min-w-[60px] max-h-[120px] max-w-[120px] h-[20vw] w-[20vw]">
-            <img
-              className="object-cover h-full w-full rounded-full"
-              src={user?.profile.profilePicture!}
-              alt={`${user?.username} profile`}
-            />
-          </div>
-        </div> */}
         <div>
           <div className="p-6 pb-0 mb-8">
             <div className="flex justify-end h-16">
@@ -119,52 +107,66 @@ const ProfileLayout = ({ data, children }: ProfileLayoutProps) => {
             </div>
             <div className="flex flex-col">
               <div className="flex flex-col mb-3">
-                <Displayname size="large">
-                  {user?.profile?.displayname!}
-                </Displayname>
-                <Username>{user?.username}</Username>
-                {user?.profile.bio && (
-                  <p className="mt-2">{user.profile.bio}</p>
+                {user ? (
+                  <>
+                    <Displayname size="large">
+                      {user?.profile?.displayname!}
+                    </Displayname>
+                    <Username>{user?.username}</Username>
+                    {user?.profile.bio && (
+                      <p className="mt-2">{user.profile.bio}</p>
+                    )}
+                    <span className="flex items-center mt-2 text-sm text-gray-500">
+                      <MdDateRange className="mr-1 text-xl" />
+                      <span>
+                        Joined {dayjs(user?.createdAt).format('MMMM YYYY')}
+                      </span>
+                    </span>
+                    <div className="flex mt-2">
+                      <span className="mr-4">
+                        <strong>99</strong>
+                        <span>Following</span>
+                      </span>
+                      <span>
+                        <strong>99</strong>
+                        <span>Followers</span>
+                      </span>
+                    </div>
+                  </>
+                ) : (
+                  <Username size="large">
+                    {router.query.username as string}
+                  </Username>
                 )}
-              </div>
-              <span className="flex items-center mb-3 text-sm text-gray-500">
-                <MdDateRange className="mr-1" />
-                <span>Joined {dayjs(user?.createdAt).format('MMMM YYYY')}</span>
-              </span>
-              <div className="flex">
-                <span className="mr-4">
-                  <strong>99</strong>
-                  <span>Following</span>
-                </span>
-                <span>
-                  <strong>99</strong>
-                  <span>Followers</span>
-                </span>
               </div>
             </div>
           </div>
-
-          <nav className="">
-            <ul className="flex justify-between border-b border-b-gray-200">
-              <NavItem username={user?.username} href="">
-                Tweets
-              </NavItem>
-              <NavItem username={user?.username} href="/with_replies">
-                Tweets & Replies
-              </NavItem>
-              <NavItem username={user?.username} href="">
-                Media
-              </NavItem>
-              <NavItem username={user?.username} href="">
-                Likes
-              </NavItem>
-              {/* <li>Tweets & Replies</li>
-                <li>Media</li>
-                <li>Likes</li> */}
-            </ul>
-          </nav>
+          {user && (
+            <nav className="">
+              <ul className="flex justify-between border-b border-b-gray-200">
+                <NavItem username={user?.username} href="">
+                  Tweets
+                </NavItem>
+                <NavItem username={user?.username} href="/with_replies">
+                  Tweets & Replies
+                </NavItem>
+                <NavItem username={user?.username} href="">
+                  Media
+                </NavItem>
+                <NavItem username={user?.username} href="">
+                  Likes
+                </NavItem>
+              </ul>
+            </nav>
+          )}
         </div>
-        {children}
+        {user ? (
+          children
+        ) : (
+          <p className="text-2xl text-center px-4">
+            This account doesn’t exist
+          </p>
+        )}
       </div>
     </>
   );

@@ -10,12 +10,19 @@ import { useFormik } from 'formik';
 import React, { useEffect } from 'react';
 import Dropzone from 'react-dropzone';
 import * as Yup from 'yup';
+import { toastError } from '../../../helpers/index';
+import { IoAdd } from 'react-icons/io5';
 
-interface EditProfileModal extends ModalProps {}
+interface EditProfileModalProps extends ModalProps {}
 
 const IMAGE_MAX_SIZE = 2_000_000;
+const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp'];
 
-const EditProfileModal = ({ closeFn, isOpen, ...rest }: EditProfileModal) => {
+const EditProfileModal = ({
+  closeFn,
+  isOpen,
+  ...rest
+}: EditProfileModalProps) => {
   const { data: user } = useMeQuery();
   const [updateSelfMutation, { error }] = useUpdateSelfMutation();
   const refreshRouter = useRouterRefresh();
@@ -38,7 +45,7 @@ const EditProfileModal = ({ closeFn, isOpen, ...rest }: EditProfileModal) => {
     }),
     onSubmit: async (values) => {
       try {
-        const { data, errors, extensions } = await updateSelfMutation({
+        const { data, extensions } = await updateSelfMutation({
           variables: {
             update: {
               profile: {
@@ -51,19 +58,11 @@ const EditProfileModal = ({ closeFn, isOpen, ...rest }: EditProfileModal) => {
               backgroundImage.images && backgroundImage.images[0],
           },
         });
-        console.log(extensions);
 
         refreshRouter();
         closeFn && closeFn();
-
-        console.log('Update user success : ', data);
       } catch (err: any) {
-        // if (errorData.error.maxFileSize) {
-        // }
-        // console.log(
-        //   'Update user error : ',
-        //   err.graphQLErrors[0].extensions.exception.response
-        // );
+        toastError();
       }
     },
   });
@@ -92,12 +91,10 @@ const EditProfileModal = ({ closeFn, isOpen, ...rest }: EditProfileModal) => {
     <Modal
       isOpen={isOpen}
       closeFn={closeFn}
-      onAfterClose={() => console.log('close')}
       title="Edit Profile"
       btnAction={{
         fn: () => {
           formik.handleSubmit();
-          console.log('save');
         },
         label: 'Save',
       }}
@@ -107,7 +104,8 @@ const EditProfileModal = ({ closeFn, isOpen, ...rest }: EditProfileModal) => {
         <Dropzone
           maxSize={IMAGE_MAX_SIZE}
           maxFiles={1}
-          accept={['image/jpeg', 'image/png', 'image/webp']}
+          multiple={false}
+          accept={ALLOWED_MIME}
           onDrop={(acceptedFiles: File[]) => {
             setBackgroundImage({
               images: acceptedFiles,
@@ -123,15 +121,18 @@ const EditProfileModal = ({ closeFn, isOpen, ...rest }: EditProfileModal) => {
                   backgroundImage.preview || user?.me.profile.backroundPicture!
                 }
               />
+              <div className="text-white bg-gray-800 bg-opacity-60 rounded-full p-1 text-2xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                <IoAdd />
+              </div>
             </div>
           )}
         </Dropzone>
 
         <Dropzone
           maxSize={IMAGE_MAX_SIZE}
-          onDropRejected={() => console.log('rejects')}
           maxFiles={1}
-          accept={['image/jpeg', 'image/png', 'image/webp']}
+          multiple={false}
+          accept={ALLOWED_MIME}
           onDrop={(acceptedFiles) =>
             setProfileImage({
               images: acceptedFiles,
@@ -140,13 +141,18 @@ const EditProfileModal = ({ closeFn, isOpen, ...rest }: EditProfileModal) => {
           }
         >
           {({ getRootProps, getInputProps }) => (
-            <div {...getRootProps()}>
+            <div
+              className="absolute bottom-0 left-4 translate-y-1/2"
+              {...getRootProps()}
+            >
               <input {...getInputProps()} />
               <ProfilePicture
                 size="large"
-                className="absolute bottom-0 left-4 translate-y-1/2"
                 url={profileImage.preview || user?.me.profile.profilePicture!}
               />
+              <div className="text-white bg-gray-800 bg-opacity-60 rounded-full p-1 text-2xl absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                <IoAdd />
+              </div>
             </div>
           )}
         </Dropzone>
@@ -154,12 +160,16 @@ const EditProfileModal = ({ closeFn, isOpen, ...rest }: EditProfileModal) => {
 
       <Input
         {...formik.getFieldProps('displayname')}
+        error={formik.errors.displayname}
+        isTouched={formik.touched.bio}
         id="edit_profile-input-displayname"
         placeholder="Displayname"
       />
 
       <Input
         {...formik.getFieldProps('bio')}
+        error={formik.errors.bio}
+        isTouched={formik.touched.bio}
         as="texarea"
         id="edit_profile-input-displayname"
         placeholder="Bio"
