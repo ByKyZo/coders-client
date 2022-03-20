@@ -15,9 +15,15 @@ export const removeHtmlStyle = (html: string) => {
 export const removeHtmlAttributes = (html: string) => {
   return html.replaceAll(/<\s*(\w+).*?>/gi, '');
 };
+export const removeScripTag = (html: string) => {
+  return html.replaceAll(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
+};
 
 interface EditorProps {
-  value?: (arg: { plain: string; html: string }) => void;
+  className?: string;
+  // value?: (arg: { plain: string; html: string }) => void;
+  value?: { plain: string; html: string };
+  onChange?: (arg: { plain: string; html: string }) => void;
   searchValues: {
     value?: string | RegExp;
     valueCallback?: (content: string) => string;
@@ -26,17 +32,26 @@ interface EditorProps {
   readonly?: boolean;
 }
 
-const test: string | RegExp = /toto/gm;
-
-const Editor = ({ searchValues, value, readonly }: EditorProps) => {
+const Editor = ({
+  searchValues,
+  value,
+  onChange,
+  readonly,
+  className,
+}: EditorProps) => {
+  // const [content, setContent] = useState({
+  //   plain: '',
+  //   html: '',
+  // });
   const [content, setContent] = useState({
-    plain: '',
-    html: '',
+    plain: value?.plain || '',
+    html: value?.html || '',
   });
+
   const editorRef = useRef<HTMLDivElement>(null);
   const outputRef = useRef<HTMLDivElement>(null);
 
-  const parseValue = (value: string) => {
+  const parser = (value: string) => {
     searchValues.forEach(({ value: searchValue, className, valueCallback }) => {
       value = valueCallback
         ? valueCallback(value)
@@ -48,15 +63,20 @@ const Editor = ({ searchValues, value, readonly }: EditorProps) => {
     return value;
   };
 
+  const setOutputValue = (value: string) => {
+    if (!outputRef.current) return;
+    outputRef.current.innerHTML = parser(removeScripTag(value));
+    // outputRef.current.innerHTML = parser(value);
+  };
+
   useEffect(() => {
-    value && value(content);
+    onChange && onChange(content);
+    setOutputValue(content.html || content.plain);
   }, [content]);
 
-  const handleSetDescription = (e: any) => {
+  const handleInput = (e: any) => {
+    setOutputValue(e.target.innerHTML);
     if (!outputRef.current) return;
-    outputRef.current.innerHTML = removeHtmlStyle(
-      parseValue(e.target.innerHTML)
-    );
     setContent({
       plain: outputRef.current.innerText,
       html: outputRef.current.innerHTML,
@@ -67,14 +87,14 @@ const Editor = ({ searchValues, value, readonly }: EditorProps) => {
     <div className="relative min-h-24">
       <div
         spellCheck={false}
-        onInput={handleSetDescription}
+        onInput={handleInput}
         ref={editorRef}
-        className="py-4 h-full w-full outline-none cursor-text"
+        className={`cursor-text ${className}`}
         contentEditable={!readonly}
       />
       <div
         ref={outputRef}
-        className="py-4 absolute z-0 top-0 left-0 h-full w-full outline-none select-none pointer-events-none"
+        className={`absolute z-0 top-0 left-0 select-none pointer-events-none ${className}`}
       />
     </div>
   );

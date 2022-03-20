@@ -14,6 +14,8 @@ export const isEmpty = (value: any) => {
   );
 };
 
+export const HASHTAG_REGEX = /\B#(\w+)/gm;
+export const MENTIONS_REGEX = /\B@(\w+)/gm;
 export const ACCESS_TOKEN = 'access_token';
 
 export const isBrowser = typeof window !== 'undefined';
