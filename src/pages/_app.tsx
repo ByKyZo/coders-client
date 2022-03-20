@@ -1,6 +1,6 @@
 import { ApolloProvider } from '@apollo/client';
 import PageLoader from '@components/modules/PageLoader/PageLoader';
-import { RememberMeDocument } from '@graphql/users/remember-me/index.generated';
+import { RememberMeDocument } from '@graphql/queries/remember-me/index.generated';
 import { isBrowser, removeAccessToken } from '@helpers/index';
 import { store } from '@redux/store';
 import 'react-toastify/dist/ReactToastify.css';
@@ -15,6 +15,7 @@ import ReactModal from 'react-modal';
 import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import { useApollo } from '../apollo-client';
+import { getAccessToken } from '../helpers/index';
 
 NProgress.configure({
   minimum: 0.3,
@@ -42,26 +43,30 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
   useEffect(() => {
     if (!isBrowser) return;
 
-    apollo
-      .query({
-        query: RememberMeDocument,
-      })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        // router.push('/auth/login');
-        removeAccessToken();
-      })
-      .finally(() => {
-        setTimeout(() => {
+    if (!getAccessToken()) {
+      setIsLoading(false);
+    } else {
+      apollo
+        .query({
+          query: RememberMeDocument,
+        })
+        .catch((err) => {
+          removeAccessToken();
+        })
+        .finally(() => {
           setIsLoading(false);
-        }, 1000);
-      });
+        });
+    }
 
-    router.events.on('routeChangeStart', () => NProgress.start());
-    router.events.on('routeChangeComplete', () => NProgress.done());
-    router.events.on('routeChangeError', () => NProgress.done());
+    router.events.on('routeChangeStart', NProgress.start);
+    router.events.on('routeChangeComplete', NProgress.done);
+    router.events.on('routeChangeError', NProgress.done);
+
+    return () => {
+      router.events.off('routeChangeStart', NProgress.start);
+      router.events.off('routeChangeComplete', NProgress.done);
+      router.events.off('routeChangeError', NProgress.done);
+    };
   }, []);
 
   const getLayout = Component.getLayout || ((page) => page);
@@ -82,7 +87,7 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
           pauseOnHover
         />
         <PageLoader isVisible={isLoading} />
-        {getLayout(<Component {...pageProps} />)}
+        {!isLoading && getLayout(<Component {...pageProps} />)}
       </ApolloProvider>
     </Provider>
   );

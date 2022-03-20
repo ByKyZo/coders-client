@@ -33,6 +33,23 @@ export type FindAllUserOutput = {
   users: Array<User>;
 };
 
+export type FollowInput = {
+  page?: InputMaybe<Scalars['Int']>;
+  take?: InputMaybe<Scalars['Int']>;
+};
+
+export type FollowMutationOutput = {
+  __typename?: 'FollowMutationOutput';
+  follower: User;
+  following: User;
+};
+
+export type FollowOutput = {
+  __typename?: 'FollowOutput';
+  list: Array<User>;
+  total: Scalars['Int'];
+};
+
 export type LoginInput = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -47,12 +64,18 @@ export type LoginOutput = {
 export type Mutation = {
   __typename?: 'Mutation';
   createUser: LoginOutput;
+  toggleFollow: FollowMutationOutput;
   updateSelf: User;
 };
 
 
 export type MutationCreateUserArgs = {
   input: CreateUserInput;
+};
+
+
+export type MutationToggleFollowArgs = {
+  followingId: Scalars['Int'];
 };
 
 
@@ -67,6 +90,7 @@ export type Profile = {
   backroundPicture?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['String']>;
   displayname?: Maybe<Scalars['String']>;
+  id: Scalars['Int'];
   profilePicture?: Maybe<Scalars['String']>;
   user: User;
 };
@@ -76,16 +100,24 @@ export type ProfileWithoutUser = {
   backroundPicture?: Maybe<Scalars['String']>;
   bio?: Maybe<Scalars['String']>;
   displayname?: Maybe<Scalars['String']>;
+  id: Scalars['Int'];
   profilePicture?: Maybe<Scalars['String']>;
 };
 
 export type Query = {
   __typename?: 'Query';
+  isFollow: Scalars['Boolean'];
   login: LoginOutput;
   me: User;
   rememberMe: LoginOutput;
   user: User;
   users: FindAllUserOutput;
+};
+
+
+export type QueryIsFollowArgs = {
+  followerId: Scalars['Int'];
+  followingId: Scalars['Int'];
 };
 
 
@@ -123,8 +155,14 @@ export type SubUpdateProfileInput = {
   profilePicture?: InputMaybe<Scalars['String']>;
 };
 
+export type Subscription = {
+  __typename?: 'Subscription';
+  follow: FollowMutationOutput;
+};
+
 export type UpdateUserInput = {
   email?: InputMaybe<Scalars['String']>;
+  isFollow?: InputMaybe<Scalars['Boolean']>;
   profile?: InputMaybe<SubUpdateProfileInput>;
   username?: InputMaybe<Scalars['String']>;
 };
@@ -133,8 +171,21 @@ export type User = {
   __typename?: 'User';
   createdAt: Scalars['DateTime'];
   email: Scalars['String'];
+  followers: FollowOutput;
+  followings: FollowOutput;
   id: Scalars['Int'];
+  isFollow: Scalars['Boolean'];
   profile: ProfileWithoutUser;
   roles: Array<RoleWithoutUser>;
   username: Scalars['String'];
+};
+
+
+export type UserFollowersArgs = {
+  input?: InputMaybe<FollowInput>;
+};
+
+
+export type UserFollowingsArgs = {
+  input?: InputMaybe<FollowInput>;
 };

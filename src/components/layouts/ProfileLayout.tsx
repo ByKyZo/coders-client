@@ -4,14 +4,22 @@ import Displayname from '@components/elements/displayname';
 import Link from '@components/elements/link/Link';
 import Username from '@components/elements/username';
 import EditProfileModal from '@components/modules/EditProfileModal/EditProfileModal';
-import { UserQuery } from '@graphql/users/get-user/index.generated';
+import { UserQuery } from '@graphql/queries/get-user/index.generated';
+import { useToggleFollowMutation } from '@graphql/mutations/toggle-follow/index.generated';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { MdDateRange } from 'react-icons/md';
-import { useIsCurrentUser } from '../../hooks/useIsCurrentUser';
-import ProfilePicture from '../elements/profile-picture/ProfilePicture';
+import { useIsCurrentUser } from '@hooks/useIsCurrentUser';
+import ProfilePicture from '@components/elements/profile-picture/ProfilePicture';
 import AppLayout from './AppLayout';
+import { useUserQuery } from '@graphql/queries/get-user/index.generated';
+import { useIsFollowQuery } from '@graphql/queries/is-follow/index.generated';
+import { useMeQuery } from '@graphql/queries/get-me/index.generated';
+import HorizontalTabItem from '@components/elements/horizontal-tab-item/HorizontalTabItem';
+import { NextComponent } from '@typescript/index';
+import { useFollowSubscription } from '@graphql/subscriptions/follow/index.generated';
+import FollowButton from '@components/elements/follow-button/FollowButton';
 
 interface ProfileLayoutProps {
   data?: UserQuery;
@@ -19,45 +27,35 @@ interface ProfileLayoutProps {
   children: React.ReactNode;
 }
 
-interface NavItemProps {
-  children: string;
-  username?: string;
-  href: string;
-}
+//? Ssr : Server side rendering
+//? Csr : Client side rendering
 
-const NavItem = ({ children, username, href }: NavItemProps) => {
-  const router = useRouter();
-  const path = `/${username}${href}`;
-  const isActive = router.asPath === path;
-
-  return (
-    <li className="flex-grow">
-      <Link
-        className="flex justify-center items-center w-full h-12 transition hover:bg-gray-200"
-        href={path}
-      >
-        <span
-          className={`h-full inline-flex justify-center font-semibold text-sm items-center relative before:left-0 before:absolute before:bottom-0 before:h-1 ${
-            isActive ? 'before:bg-red-600' : 'before:bg-transparent'
-          }  before:w-full`}
-        >
-          {children}
-        </span>
-      </Link>
-    </li>
-  );
-};
-
-const ProfileLayout = ({ data, children }: ProfileLayoutProps) => {
+// TODO: Optimiser les requetes / hooks
+const ProfileLayout: NextComponent<ProfileLayoutProps> = ({
+  data: userSsr,
+  error,
+  children,
+}) => {
   const [isOpenEditProfileModal, setIsOpenProfileModal] = useState(false);
-  const router = useRouter();
-  const isCurrenUser = useIsCurrentUser({
-    username: router.query.username as string,
+  // On recupere également le meme user coté client pour pouvoir afficher les followers en temps réel
+  const { data: userCsr } = useUserQuery({
+    variables: { username: userSsr?.user.username! },
   });
 
-  console.log('is Current user : ', isCurrenUser);
+  // On récupere le user connecté pour faire du rendu conditonnel
+  const { data: meData } = useMeQuery();
 
-  const user = data?.user;
+  // Socket qui ecoute les follows
+  //! La mise en cache va rafraichir tout seul les utilisateurs return par la query
+  const {} = useFollowSubscription();
+
+  const usernameRouterParams = useRouter().query.username as string;
+  const isCurrenUser = useIsCurrentUser({
+    username: usernameRouterParams,
+  });
+
+  const userSsrMemo = useMemo(() => userSsr?.user, [userSsr]);
+  const userCsrMemo = useMemo(() => userCsr?.user, [userCsr]);
 
   const handleOpenEditProfileModal = () => {
     setIsOpenProfileModal(true);
@@ -67,14 +65,6 @@ const ProfileLayout = ({ data, children }: ProfileLayoutProps) => {
     setIsOpenProfileModal(false);
   };
 
-  //   if (!user)
-  //     return (
-  //       <>
-  //         Not Found
-  //         <button onClick={() => router.back()}>Go back</button>
-  //       </>
-  //     );
-
   return (
     <>
       <EditProfileModal
@@ -83,84 +73,105 @@ const ProfileLayout = ({ data, children }: ProfileLayoutProps) => {
       />
       <div>
         <div className="relative">
-          <BackgroundPicture url={user?.profile.backroundPicture!} />
+          <BackgroundPicture url={userSsrMemo?.profile?.backroundPicture!} />
           <ProfilePicture
             size="large"
             className="absolute left-4 bottom-0 translate-y-1/2"
-            url={user?.profile.profilePicture!}
+            url={userSsrMemo?.profile?.profilePicture!}
           />
         </div>
         <div>
           <div className="p-6 pb-0 mb-8">
             <div className="flex justify-end h-16">
-              {isCurrenUser && (
-                <Button
-                  as="button"
-                  onClick={handleOpenEditProfileModal}
-                  styleType="secondaryOutline"
-                  sizeType="medium"
-                  rounded
-                >
-                  Edit Profile
-                </Button>
-              )}
+              {meData &&
+                (!isCurrenUser ? (
+                  <FollowButton followingId={userSsrMemo?.id!} />
+                ) : (
+                  <Button
+                    as="button"
+                    onClick={handleOpenEditProfileModal}
+                    styleType="secondaryOutline"
+                    sizeType="medium"
+                    rounded
+                  >
+                    Edit Profile
+                  </Button>
+                ))}
             </div>
             <div className="flex flex-col">
               <div className="flex flex-col mb-3">
-                {user ? (
+                {userSsrMemo ? (
                   <>
                     <Displayname size="large">
-                      {user?.profile?.displayname!}
+                      {userSsrMemo?.profile?.displayname!}
                     </Displayname>
-                    <Username>{user?.username}</Username>
-                    {user?.profile.bio && (
-                      <p className="mt-2">{user.profile.bio}</p>
+                    <Username>{userSsrMemo?.username}</Username>
+                    {userSsrMemo?.profile?.bio && (
+                      <p className="mt-2">{userSsrMemo.profile.bio}</p>
                     )}
                     <span className="flex items-center mt-2 text-sm text-gray-500">
                       <MdDateRange className="mr-1 text-xl" />
                       <span>
-                        Joined {dayjs(user?.createdAt).format('MMMM YYYY')}
+                        Joined{' '}
+                        {dayjs(userSsrMemo?.createdAt).format('MMMM YYYY')}
                       </span>
                     </span>
                     <div className="flex mt-2">
-                      <span className="mr-4">
-                        <strong>99</strong>
+                      <Link
+                        withHover
+                        href={`/${usernameRouterParams}/followings`}
+                        className="mr-4"
+                      >
+                        <strong className="mr-1">
+                          {userCsrMemo?.followings?.total}
+                        </strong>
                         <span>Following</span>
-                      </span>
-                      <span>
-                        <strong>99</strong>
+                      </Link>
+                      <Link
+                        withHover
+                        href={`/${usernameRouterParams}/followers`}
+                      >
+                        <strong className="mr-1">
+                          {userCsrMemo?.followers?.total}
+                        </strong>
                         <span>Followers</span>
-                      </span>
+                      </Link>
                     </div>
                   </>
                 ) : (
-                  <Username size="large">
-                    {router.query.username as string}
-                  </Username>
+                  <Username size="large">{usernameRouterParams}</Username>
                 )}
               </div>
             </div>
           </div>
-          {user && (
+          {userSsrMemo && (
             <nav className="">
-              <ul className="flex justify-between border-b border-b-gray-200">
-                <NavItem username={user?.username} href="">
+              <ul className="flex justify-between">
+                <HorizontalTabItem href={`/${userSsrMemo?.username}`}>
                   Tweets
-                </NavItem>
-                <NavItem username={user?.username} href="/with_replies">
+                </HorizontalTabItem>
+                <HorizontalTabItem
+                  href={`/${userSsrMemo?.username}/with_replies`}
+                >
                   Tweets & Replies
-                </NavItem>
-                <NavItem username={user?.username} href="">
+                </HorizontalTabItem>
+                <HorizontalTabItem
+                  username={userSsrMemo?.username}
+                  href={`/${userSsrMemo?.username}/followings`}
+                >
                   Media
-                </NavItem>
-                <NavItem username={user?.username} href="">
+                </HorizontalTabItem>
+                <HorizontalTabItem
+                  username={userSsrMemo?.username}
+                  href={`/${userSsrMemo?.username}/followings`}
+                >
                   Likes
-                </NavItem>
+                </HorizontalTabItem>
               </ul>
             </nav>
           )}
         </div>
-        {user ? (
+        {userSsrMemo ? (
           children
         ) : (
           <p className="text-2xl text-center px-4">

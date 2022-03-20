@@ -1,7 +1,8 @@
 import Toast from '@components/elements/toast/Toast';
 import Cookies from 'js-cookie';
 import Router from 'next/router';
-import { RiForbid2Fill } from 'react-icons/ri';
+import { IoCheckmarkCircle } from 'react-icons/io5';
+import { RiErrorWarningFill, RiForbid2Fill } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 
 export const isEmpty = (value: any) => {
@@ -49,7 +50,12 @@ export const splitURL = (url: string) => {
 };
 
 export const toastSuccess = (content: string) => {
-  return toast.success(<Toast type="success" content={content} />);
+  // return toast.success(<Toast type="success" content={content} />);
+  return toast.success(
+    // <Toast type="error" content={content ? content : 'An error has occurred'} />,
+    content,
+    { icon: <IoCheckmarkCircle /> }
+  );
 };
 
 /**
@@ -60,13 +66,16 @@ export const toastSuccess = (content: string) => {
 export const toastError = (content?: string) => {
   return toast.error(
     // <Toast type="error" content={content ? content : 'An error has occurred'} />,
-    'An error has occurred',
+    content || 'An error has occurred',
     { icon: <RiForbid2Fill /> }
   );
 };
 
 export const toastWarning = (content?: string) => {
-  return toast.warning(<Toast type="warning" content={content} />);
+  // return toast.warning(<Toast type="warning" content={content} />);
+  return toast.warning(content, {
+    icon: <RiErrorWarningFill />,
+  });
 };
 
 export const toastInfo = (content?: string) => {

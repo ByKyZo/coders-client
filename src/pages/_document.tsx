@@ -6,7 +6,8 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head></Head>
-        <body>
+        {/* Important pour ne pas créer de décalage entre les pages */}
+        <body className="overflow-y-scroll">
           <Main />
           <NextScript />
         </body>

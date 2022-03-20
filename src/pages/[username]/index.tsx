@@ -1,12 +1,12 @@
 import { getProfileLayout } from '@components/layouts/ProfileLayout';
-import { UserDocument } from '@graphql/users/get-user/index.generated';
-import withAccess from 'hoc/withAccess';
+import { UserDocument } from '@graphql/queries/get-user/index.generated';
+import withAccess from '@hoc/withAccess';
 import { GetServerSidePropsContext } from 'next';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { initializeApollo } from '../../apollo-client';
-import { UserQuery } from '../../graphql/users/get-user/index.generated';
-import { NextComponent } from '../../typescript/index';
+import { UserQuery } from '@graphql/queries/get-user/index.generated';
+import { NextComponent } from '@typescript/index';
 interface TweetsProps {
   data: UserQuery;
   error: any;
@@ -45,7 +45,9 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 }
 
-const TweetsWithAuth = withAccess(Tweets, { accessType: 'public' });
+const TweetsWithAuth = withAccess<NextComponent>(Tweets, {
+  accessType: 'public',
+});
 
 TweetsWithAuth.getLayout = getProfileLayout;
 

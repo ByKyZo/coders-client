@@ -7,7 +7,7 @@ import { initializeApollo } from '../../apollo-client';
 import {
   UserDocument,
   UserQuery,
-} from '../../graphql/users/get-user/index.generated';
+} from '@graphql/queries/get-user/index.generated';
 import { NextComponent } from '../../typescript/index';
 
 interface TweetsAndRepliesProps {
@@ -51,7 +51,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
   }
 }
 
-const TweetsAndRepliesWithAuth = withAccess(TweetsAndReplies, {
+const TweetsAndRepliesWithAuth = withAccess<NextComponent>(TweetsAndReplies, {
   accessType: 'public',
 });
 

@@ -31,11 +31,7 @@ const PageLoader = ({ isVisible }: PageLoaderProps) => {
             transition={{ type: 'spring', duration: 0.3 }}
             className="fixed z-50 bg-white top-0 left-0 w-full h-screen flex justify-center items-center"
           >
-            <Loader
-              className="h-16 w-16"
-              appearance="primary"
-              strokeWidth={2}
-            />
+            <Loader className="h-16 w-16 text-primary" strokeWidth={2} />
           </motion.div>
         )}
       </AnimatePresence>

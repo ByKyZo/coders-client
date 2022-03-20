@@ -2,8 +2,8 @@ import BackgroundPicture from '@components/elements/background-picture/Backgroun
 import Input from '@components/elements/input/Input';
 import Modal, { ModalProps } from '@components/elements/modal';
 import ProfilePicture from '@components/elements/profile-picture/ProfilePicture';
-import { useMeQuery } from '@graphql/users/get-me/index.generated';
-import { useUpdateSelfMutation } from '@graphql/users/update-self/index.generated';
+import { useMeQuery } from '@graphql/queries/get-me/index.generated';
+import { useUpdateSelfMutation } from '@graphql/mutations/update-self/index.generated';
 import { useImage } from '@hooks/useImageFile';
 import useRouterRefresh from '@hooks/useRouterRefresh';
 import { useFormik } from 'formik';

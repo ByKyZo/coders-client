@@ -5,7 +5,7 @@ import { useFormik } from 'formik';
 import { withNoAuth } from 'hoc/withNoAuth';
 import React, { useState } from 'react';
 import * as Yup from 'yup';
-import { useLoginLazyQuery } from '../../graphql/users/login/index.generated';
+import { useLoginLazyQuery } from '@graphql/queries/login/index.generated';
 
 const Login = () => {
   const [isLoading, setIsLoading] = useState(false);

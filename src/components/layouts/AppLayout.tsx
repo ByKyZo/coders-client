@@ -8,33 +8,28 @@ import { isBrowser, splitURL } from '../../helpers/index';
 interface AppLayoutProps {
   children: React.ReactNode;
   onlyHeader?: boolean;
+  noHeading?: boolean;
 }
 
-const AppLayout = ({ children, onlyHeader = false }: AppLayoutProps) => {
+const AppLayout = ({
+  children,
+  noHeading,
+  onlyHeader = false,
+}: AppLayoutProps) => {
   const router = useRouter();
-  const currentRootPathname = splitURL(router.pathname)[0];
-
-  useEffect(() => {
-    if (!isBrowser) return;
-
-    document.body.style.overflowY = 'scroll';
-    console.log('App layout mount');
-
-    return () => {
-      console.log('App layout unmount');
-    };
-  }, []);
-
-  // if (!user
+  const currentRootPathname = splitURL(router.asPath)[0];
 
   return (
-    <div className="min-h-screen flex mx-auto justify-center max-w-[1224px]">
+    <div
+      id="app-body"
+      className="min-h-screen flex mx-auto justify-center max-w-[1224px]"
+    >
       <Header />
       <main className="flex justify-center w-full md:w-auto">
         {!onlyHeader ? (
           <>
             <div className="w-full max-w-none md:w-[600px] md:max-w-[600px] border-x">
-              <Heading title={currentRootPathname} />
+              {!noHeading && <Heading title={currentRootPathname} />}
               {children}
             </div>
             {/* {renderToString( */}

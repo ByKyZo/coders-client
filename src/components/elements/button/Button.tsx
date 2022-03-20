@@ -12,7 +12,7 @@ import {
 
 const defaultClassName =
   // 'font-sans font-medium transition-[box-shadow,transform] overflow-hidden disabled:bg-opacity-60 hover:-translate-y-1 active:translate-y-0 active:shadow-none';
-  'font-sans font-medium transition-[box-shadow,transform] overflow-hidden disabled:bg-opacity-60';
+  'font-sans font-medium transition-[box-shadow,transform,background-color] overflow-hidden disabled:bg-opacity-60';
 
 const styles: any = {
   primary: 'text-white bg-primary hover:shadow-lg',
@@ -21,13 +21,28 @@ const styles: any = {
   secondary: 'text-white bg-gray-800 hover:shadow-lg',
   secondaryOutline:
     'text-gray-800 ring-1 ring-gray-800 ring-opacity-40 hover:ring-opacity-100',
+  transparent: 'text-gray-800 hover:bg-gray-100',
 };
 
 const sizes: any = {
   small: 'h-6 text-sm py-1 px-3',
-  medium: 'h-8 text-base py-1 px-5',
+  medium: 'h-8 text-base py-2 px-5',
   large: 'h-10 text-base py-2 px-7',
   extralarge: 'h-12 text-base py-2 px-7',
+};
+
+const sizesOnlyIcon: any = {
+  small: 'h-6z text-sm p-1',
+  medium: 'h-8z text-base p-2',
+  large: 'h-10z text-base p-3',
+  extralarge: 'h-12z text-base p-4',
+};
+
+const withIconMarginSize: any = {
+  small: 'ml-1',
+  medium: 'ml-2',
+  large: 'ml-3',
+  extralarge: 'ml-4',
 };
 
 const transitionStyles: any = {
@@ -48,12 +63,16 @@ const Button = (props: ButtonProps): JSX.Element => {
   const loadingButtonRef = useRef<HTMLElement>(null);
 
   const allClassNames = `${props.styleType ? styles[props.styleType] : ''}  ${
-    props.sizeType ? sizes[props.sizeType] : ''
+    props.sizeType
+      ? props.onlyIcon
+        ? sizesOnlyIcon[props.sizeType]
+        : sizes[props.sizeType]
+      : ''
   } ${props.className ? props.className : ''} ${
     props.isLoading
       ? 'cursor-auto'
       : 'hover:-translate-y-1 active:translate-y-0 active:shadow-none'
-  } ${props.rounded ? 'rounded-full' : ''}`;
+  } ${props.rounded ? 'rounded-full' : ''} ${props.onlyIcon ? '' : ''}`;
 
   if (props.as === 'link') {
     // don't pass unnecessary props to component
@@ -90,61 +109,88 @@ const Button = (props: ButtonProps): JSX.Element => {
       isLoading,
       styleType,
       disabled,
-      sizeType,
+      sizeType = 'medium',
       children,
       rounded,
+      icon,
+      onlyIcon,
       as,
       ...rest
     } = props;
     return (
       <button
-        disabled={disabled}
+        disabled={isLoading || disabled}
         className={`inline-flex justify-center items-center ${defaultClassName} ${allClassNames}`}
         {...rest}
       >
-        <span className="relative flex justify-center items-center h-full w-full">
-          <Transition
-            nodeRef={loadingButtonRef}
-            mountOnEnter
-            unmountOnExit
-            in={isLoading}
-            timeout={150}
+        {isLoading ? (
+          <span
+            ref={loadingButtonRef}
+            data-testid="button-loader"
+            // className={`transition-[opacity_transform] inline-block translate-y-0 ${transitionStyles[state]}`}
+            className={`transition-[opacity,transform]  h-full w-full flex justify-center translate-y-0 `}
           >
-            {(state: any) => (
-              <span
-                ref={loadingButtonRef}
-                data-testid="button-loader"
-                // className={`transition-[opacity_transform] inline-block translate-y-0 ${transitionStyles[state]}`}
-                className={`transition-[opacity,transform]  h-full w-full flex justify-center translate-y-0 ${transitionStyles[state]}`}
-              >
-                <Loader
-                  className="h-full w-full"
-                  appearance={styleType === 'primary' ? 'secondary' : 'primary'}
-                  //   appearance={'secondary'}
-                />
-              </span>
-            )}
-          </Transition>
-          <Transition
-            nodeRef={idleButtonRef}
-            mountOnEnter
-            unmountOnExit
-            in={!isLoading}
-            timeout={150}
-          >
-            {(state: any) => (
+            <Loader className="h-full w-full" />
+          </span>
+        ) : (
+          <>
+            {/* <span>{icon}</span> */}
+            {icon}
+            {!onlyIcon && (
               <span
                 ref={idleButtonRef}
-                className={`transition-[opacity,transform] inline-block translate-y-0 ${transitionStyles[state]}`}
+                className={`${
+                  icon ? withIconMarginSize[sizeType] : ''
+                } transition-[opacity,transform] inline-block translate-y-0`}
               >
                 {children}
               </span>
             )}
-          </Transition>
-        </span>
+          </>
+        )}
       </button>
     );
   }
 };
 
 export default Button;
+
+//! Ancienne mise en place du loader
+{
+  /* <span className="relative flex justify-center items-center h-full w-full">
+<Transition
+  nodeRef={loadingButtonRef}
+  mountOnEnter
+  unmountOnExit
+  in={isLoading}
+  timeout={150}
+>
+  {(state: any) => (
+    <span
+      ref={loadingButtonRef}
+      data-testid="button-loader"
+      // className={`transition-[opacity_transform] inline-block translate-y-0 ${transitionStyles[state]}`}
+      className={`transition-[opacity,transform]  h-full w-full flex justify-center translate-y-0 ${transitionStyles[state]}`}
+    >
+      <Loader className="h-full w-full" />
+    </span>
+  )}
+</Transition>
+<Transition
+  nodeRef={idleButtonRef}
+  mountOnEnter
+  unmountOnExit
+  in={!isLoading}
+  timeout={150}
+>
+  {(state: any) => (
+    <span
+      ref={idleButtonRef}
+      className={`transition-[opacity,transform] inline-block translate-y-0 ${transitionStyles[state]}`}
+    >
+      {children}
+    </span>
+  )}
+</Transition>
+</span> */
+}

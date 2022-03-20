@@ -8,8 +8,8 @@ import { MdSettings } from 'react-icons/md';
 import { RiBookmarkFill, RiCodeLine, RiMessage2Fill } from 'react-icons/ri';
 import { useMediaQuery } from 'react-responsive';
 import { v4 as uuidv4 } from 'uuid';
-import { useMeQuery } from '../../../graphql/users/get-me/index.generated';
-import ProfileMenu from '../ProfileMenu/ProfileMenu';
+import { useMeQuery } from '@graphql/queries/get-me/index.generated';
+import ProfileMenu from '../dropdown/my-profile/MyProfileMenu';
 
 const Header = () => {
   const baseClassName = 'h-7 w-7';
@@ -18,6 +18,7 @@ const Header = () => {
   const [headerWidth, setHeaderWith] = useState<number>(0);
 
   const { data: user, loading } = useMeQuery();
+  console.log('from header : ', user);
 
   const isLaptop = useMediaQuery({ minWidth: 1280 });
 
@@ -74,10 +75,6 @@ const Header = () => {
       activeOnRootPathName: true,
     },
   ];
-
-  console.log('from header : ', user);
-
-  // if (loading) return null;
 
   return (
     <>

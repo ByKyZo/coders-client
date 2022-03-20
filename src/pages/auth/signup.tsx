@@ -4,7 +4,7 @@ import { loginUser } from '@helpers/index';
 import { useFormik } from 'formik';
 import React, { useEffect } from 'react';
 import * as Yup from 'yup';
-import { useCreateUserMutation } from '../../graphql/users/create-user/index.generated';
+import { useCreateUserMutation } from '@graphql/mutations/create-user/index.generated';
 import { withNoAuth } from '../../hoc/withNoAuth';
 
 /**

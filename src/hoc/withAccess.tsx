@@ -5,12 +5,10 @@ interface WithAccessProps {
   accessType: 'auth' | 'noAuth' | 'public';
 }
 
-const withAccess = (
-  WrappedComponent: any,
-  options: WithAccessProps
-  //   accessType: 'auth' | 'noAuth' | 'public'
-): any => {
-  return (props: any) => {
+// TODO: Remplacer tout les HOC d'accés (withAuth/withNoAuth/withPublic) par celui-ci
+const withAccess = <T,>(WrappedComponent: any, options: WithAccessProps): T => {
+  // @ts-ignore
+  return (props: any): any => {
     // Verifie si on est sur le client ou le serveur
     if (isBrowser) {
       const Router = useRouter();
@@ -26,7 +24,7 @@ const withAccess = (
           }
           break;
         case 'noAuth':
-          // Si il n'y a pas de token le user est redirigé vers la page explore
+          // Si il a un de token le user est redirigé vers la page explore
           if (accessToken) {
             Router.push('/auth/explore');
             return null;

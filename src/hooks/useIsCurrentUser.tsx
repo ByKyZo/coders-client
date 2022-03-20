@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useMeQuery } from '../graphql/users/get-me/index.generated';
+import { useMeQuery } from '@graphql/queries/get-me/index.generated';
 
 interface UseIsCurrentUserArgs {
   id?: string;

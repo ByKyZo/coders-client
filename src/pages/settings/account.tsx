@@ -2,13 +2,13 @@ import Button from '@components/elements/button/Button';
 import Heading from '@components/elements/heading/Heading';
 import Input from '@components/elements/input/Input';
 import { getSettingsLayout } from '@components/layouts/SettingsLayout';
-import { useMeQuery } from '@graphql/users/get-me/index.generated';
+import { useMeQuery } from '@graphql/queries/get-me/index.generated';
 import { useFormik } from 'formik';
 import withAuth from 'hoc/withAuth';
 import React, { useEffect } from 'react';
 import { useMediaQuery } from 'react-responsive';
 import * as Yup from 'yup';
-import { useUpdateSelfMutation } from '../../graphql/users/update-self/index.generated';
+import { useUpdateSelfMutation } from '@graphql/mutations/update-self/index.generated';
 
 const Account = () => {
   const isBreakPoint = useMediaQuery({ minWidth: 1024 });

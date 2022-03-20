@@ -1,6 +1,6 @@
 import React from 'react';
 interface ProfilePictureProps {
-  url: string | null;
+  url: string | undefined | null;
   className?: string;
   empty?: boolean;
   size: 'small' | 'medium' | 'large';
@@ -22,7 +22,7 @@ const ProfilePicture = ({
   empty,
 }: ProfilePictureProps) => {
   return (
-    <div className={`flex ${sizeStyle[size]}  ${className}`}>
+    <div className={`flex flex-shrink-0 ${sizeStyle[size]}  ${className}`}>
       {!url || empty ? (
         <div className={`bg-gray-800 ${BASE_CLASS}`}></div>
       ) : (

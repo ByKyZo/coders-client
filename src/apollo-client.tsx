@@ -1,22 +1,67 @@
-import { ApolloClient, InMemoryCache } from '@apollo/client';
+import { ApolloClient, InMemoryCache, split } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
-import { ACCESS_TOKEN, getAccessToken } from '@helpers/index';
+import { ACCESS_TOKEN, getAccessToken, isBrowser } from '@helpers/index';
 import { createUploadLink } from 'apollo-upload-client';
 import { useMemo } from 'react';
+import { WebSocketLink } from 'apollo-link-ws';
+import { getMainDefinition, Reference } from '@apollo/client/utilities';
 
 let apolloClient: ApolloClient<InMemoryCache>;
 
 function createApolloClient(ctx?: any) {
-  const endpoint = {
+  type TNodeEnv = { [k in typeof process['env']['NODE_ENV']]: string };
+
+  // TODO : Penser a changer les endpoint en fonction de l'environnement
+  const httpEndpoint: TNodeEnv = {
     production: 'http://localhost:8000/graphql',
     development: 'http://localhost:8000/graphql',
+    test: 'http://localhost:8000/graphql',
+  };
+
+  const wsEndpoint: TNodeEnv = {
+    production: 'ws://localhost:8000/graphql',
+    development: 'ws://localhost:8000/graphql',
+    test: 'ws://localhost:8000/graphql',
   };
 
   const httpLink = createUploadLink({
     // Endpoint de l'API graphql
-    // @ts-ignore
-    uri: endpoint[process.env.NODE_ENV],
+    uri: httpEndpoint[process.env.NODE_ENV],
   });
+
+  const wsLink = isBrowser
+    ? new WebSocketLink({
+        uri: wsEndpoint[process.env.NODE_ENV],
+        options: {
+          reconnect: true,
+          // lazy: false,
+          connectionParams: {
+            authToken: getAccessToken(),
+          },
+          connectionCallback: () => {
+            console.log('graphql ws connected');
+          },
+        },
+      })
+    : null;
+
+  // using the ability to split links, you can send data to each link
+  // depending on what kind of operation is being sent
+  const link = isBrowser
+    ? split(
+        // split based on operation type
+        ({ query }) => {
+          const definition = getMainDefinition(query);
+          return (
+            definition.kind === 'OperationDefinition' &&
+            definition.operation === 'subscription'
+          );
+        },
+        // @ts-ignore
+        wsLink,
+        httpLink
+      )
+    : httpLink;
 
   const authLink = setContext((_, { headers }) => {
     // Récupere le jwt token du local storage
@@ -42,8 +87,51 @@ function createApolloClient(ctx?: any) {
 
   return new ApolloClient({
     ssrMode: typeof window === 'undefined',
-    link: authLink.concat(httpLink),
-    cache: new InMemoryCache(),
+    // link: authLink.concat(httpLink),
+    link: authLink.concat(link),
+    // link: authLink.concat(httpLink),
+    // link: link,
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            // user: {
+            //   // keyArgs: false,
+            //   keyArgs: false,
+            /**
+             * NOTE : Utiliser la fonction merge() pour les paginations plutôt que la 'updateQuery()' de la fonction fetchmore
+             */
+            // merge(existing, incoming) {
+            // let users: Reference[] = [];
+            // // users
+            // if (existing && existing.users) {
+            //   users = users.concat(existing.users);
+            // }
+            // if (incoming && incoming.users) {
+            //   users = users.concat(incoming.users);
+            // }
+            // return {
+            //   ...incoming,
+            //   users,
+            // };
+            // console.log('existing : ', existing);
+            // console.log('incoming : ', incoming);
+            // if (!incoming?.user) {
+            //   console.log('NO DATA');
+            //   console.log('*******');
+            //   // setHasMore(false);
+            //   return existing;
+            // }
+            // const prevEntries = existing.followers.list || [];
+            // const lastEntries = incoming.followers.list || [];
+            // incoming.user.followers.list = [...prevEntries, ...lastEntries];
+            // return { ...incoming };
+            // },
+            // },
+          },
+        },
+      },
+    }),
   });
 }
 

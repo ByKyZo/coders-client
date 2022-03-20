@@ -1,10 +1,13 @@
 import NextLink, { LinkProps } from 'next/link';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { splitURL } from '../../../helpers/index';
 
+// TODO: Créer les props : activeCallback (qui se declenche quand l'url match)
 interface CustomLinkProps extends React.PropsWithChildren<LinkProps> {
   activeClassName?: string;
+  // activeCallback?: boolean;
+  withHover?: boolean;
   notActiveClassName?: string;
   className?: string;
   activeOnRootPathName?: boolean;
@@ -15,14 +18,19 @@ const Link = ({
   activeClassName = '',
   notActiveClassName = '',
   activeOnRootPathName,
+  withHover,
   children,
   ...rest
 }: CustomLinkProps) => {
   const router = useRouter();
 
   const isCurrent = activeOnRootPathName
-    ? splitURL(router.pathname)[0] === splitURL(rest.href as string)[0]
-    : router.pathname === rest.href;
+    ? splitURL(router.asPath)[0] === splitURL(rest.href as string)[0]
+    : router.asPath === rest.href;
+
+  // useEffect(() => {
+
+  // },[isCurrent])
 
   // if (!isBrowser) return null;
 
@@ -31,7 +39,7 @@ const Link = ({
       <a
         className={`${className ? className : ''} ${
           isCurrent ? activeClassName : notActiveClassName
-        }`}
+        } ${withHover ? 'hover:underline' : ''}`}
       >
         {children}
       </a>

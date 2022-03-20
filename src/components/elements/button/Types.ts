@@ -4,16 +4,19 @@ export type styleType =
   | 'primary'
   | 'primaryOutline'
   | 'secondary'
-  | 'secondaryOutline';
+  | 'secondaryOutline'
+  | 'transparent';
 
 export type sizeType = 'small' | 'medium' | 'large' | 'extralarge';
 
 // ? Finir le loading du button
 export type BaseProps = {
-  children: React.ReactNode;
+  children?: React.ReactNode;
   styleType: styleType;
   className?: string;
   sizeType?: sizeType;
+  icon?: React.ReactNode;
+  onlyIcon?: boolean;
   isLoading?: boolean;
   rounded?: boolean;
 };
@@ -32,7 +35,7 @@ export type ButtonAsUnstyled = Omit<ButtonAsButton, 'as' | 'styleType'> & {
 export type ButtonAsLink = BaseProps &
   Omit<LinkProps, keyof BaseProps> & {
     as: 'link';
-    linkAs: string;
+    linkAs?: string;
   };
 
 export type ButtonAsExternal = BaseProps &

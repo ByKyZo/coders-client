@@ -3,6 +3,7 @@
   position: fixed;
   width: 0px;
   height: 0px;
+  z-index: 999;
 }
 
 .szh-menu {
@@ -15,6 +16,8 @@
   z-index: 100;
   border: 1px solid rgba(0, 0, 0, 0.1);
   background-color: #fff;
+  z-index: 999;
+
   // transition: 0.3s ease;
 }
 .szh-menu:focus {
