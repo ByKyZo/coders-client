@@ -10,6 +10,7 @@ interface CustomLinkProps extends React.PropsWithChildren<LinkProps> {
   withHover?: boolean;
   notActiveClassName?: string;
   className?: string;
+  ref?: React.Ref<HTMLAnchorElement>;
   activeOnRootPathName?: boolean;
 }
 
@@ -20,6 +21,7 @@ const Link = ({
   activeOnRootPathName,
   withHover,
   children,
+  ref,
   ...rest
 }: CustomLinkProps) => {
   const router = useRouter();
@@ -37,6 +39,7 @@ const Link = ({
   return (
     <NextLink {...rest}>
       <a
+        ref={ref}
         className={`${className ? className : ''} ${
           isCurrent ? activeClassName : notActiveClassName
         } ${withHover ? 'hover:underline' : ''}`}

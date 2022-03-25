@@ -7,6 +7,8 @@ import React from 'react';
 import { initializeApollo } from '../../apollo-client';
 import { UserQuery } from '@graphql/queries/get-user/index.generated';
 import { NextComponent } from '@typescript/index';
+import { usePostsQuery } from '@graphql/queries/get-posts/index.generated';
+import Post from '@components/modules/Post/Post';
 interface TweetsProps {
   data: UserQuery;
   error: any;
@@ -14,11 +16,34 @@ interface TweetsProps {
 
 const Tweets: NextComponent<TweetsProps> = ({ data, error }) => {
   const router = useRouter();
+  const { data: postsQueryData } = usePostsQuery({
+    variables: {
+      username: router.query.username as string,
+    },
+  });
 
-  console.log('SSR Data : ', data?.user);
-  console.log('SSR Error : ', error);
+  const posts = postsQueryData?.user.posts;
 
-  return <div>Tweets</div>;
+  return (
+    <div>
+      {posts?.list.map((post) => {
+        if (post.draftRaw) {
+          return (
+            <Post
+              key={post.id}
+              context="display"
+              raw={JSON.parse(post.draftRaw)}
+              postId={post.id}
+              authorUsername={post.author.username}
+              authorDisplayname={post.author.profile.displayname!}
+              authorAvatar={post.author.profile.displayname!}
+              authorMedias={post.medias}
+            />
+          );
+        }
+      })}
+    </div>
+  );
 };
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {

@@ -1,5 +1,7 @@
+import Button from '@components/elements/button/Button';
 import Heading from '@components/elements/heading/Heading';
 import Header from '@components/modules/Header/Header';
+import { useMeQuery } from '@graphql/queries/get-me/index.generated';
 import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import MediaQuery from 'react-responsive';
@@ -17,6 +19,7 @@ const AppLayout = ({
   onlyHeader = false,
 }: AppLayoutProps) => {
   const router = useRouter();
+  const { data: me } = useMeQuery();
   const currentRootPathname = splitURL(router.asPath)[0];
 
   return (
@@ -36,10 +39,10 @@ const AppLayout = ({
             {/* <ResponsiveContext.Provider value={{ minWidth: 1024 }}> */}
             <MediaQuery minWidth={1024}>
               <div className="py-16">
-                <div className="bg-slate-300 w-[300px] max-w-[300px] sticky top-0 bottom-0">
+                <div className=" w-[300px] max-w-[300px] sticky top-0 bottom-0 border border-l-0">
                   Aside
-                  <div className="h-52 bg-yellow-200 mb-2"></div>
-                  <div className="h-52 bg-yellow-200 mb-2"></div>
+                  <div className="h-52 bg-white mb-2"></div>
+                  <div className="h-52 bg-white mb-2"></div>
                 </div>
               </div>
             </MediaQuery>
@@ -50,6 +53,27 @@ const AppLayout = ({
           children
         )}
       </main>
+      {!me && (
+        <div className="bg-white  border-t fixed bottom-0 w-full py-12 flex justify-center items-center">
+          <Button
+            className="mr-4"
+            as="link"
+            href="/auth/login"
+            styleType="primaryOutline"
+            sizeType="large"
+          >
+            Login
+          </Button>
+          <Button
+            as="link"
+            href="/auth/signup"
+            styleType="primary"
+            sizeType="large"
+          >
+            Sign up
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

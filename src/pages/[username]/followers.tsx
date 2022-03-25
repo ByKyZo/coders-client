@@ -11,16 +11,18 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import Loader from '@components/elements/loader/Loader';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTriggerScrollFix } from '../../hooks/useTriggerScrollFix';
+import { useMeQuery } from '@graphql/queries/get-me/index.generated';
 
 /**
  * TODO : Trouver une solution pour le bug de scroll sans bypass avec le hook useTriggerScrollFix()
  * TODO : Créer une logique réutilisable entre les pages : followers / followings
- * TODO : Fix le probleme de loader qui persiste après avoir supprimer un follower (car le total des followers ne change pas)
+ * TODO : Fix le probleme de loader qui persiste après avoir supprimer un follower ET sur grand écran (car le total des followers ne change pas)
  */
 
 const Followers: NextComponent = () => {
   const router = useRouter();
   const usernameParams = router.query.username as string;
+  const [page, setPage] = useState(0);
   const {
     data: followersQueryData,
     fetchMore,
@@ -30,11 +32,7 @@ const Followers: NextComponent = () => {
       username: usernameParams,
       input: { page: 0 },
     },
-    onCompleted: () => {
-      console.log('COMLETEEDD');
-    },
   });
-  const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
 
   const handleLoadMore = async () => {
@@ -73,11 +71,28 @@ const Followers: NextComponent = () => {
     }
   };
 
-  useTriggerScrollFix([followersQueryData?.user?.followers.list?.length]);
+  // A revoir
+  useEffect(() => {
+    if (followersQueryData?.user?.followers?.list?.length) {
+      setPage(1);
+      setHasMore(true);
+    }
+    console.log(followersQueryData);
+    if (
+      followersQueryData?.user?.followers?.list?.length! >=
+      followersQueryData?.user?.followers?.total!
+    ) {
+      console.log('setHasMore(false)');
+      setHasMore(false);
+    }
+  }, [followersQueryData]);
+
+  useTriggerScrollFix([followersQueryData?.user?.followers.list?.length, page]);
 
   return (
     <>
       <InfiniteScroll
+        className="h-full overflow-auto"
         dataLength={followersQueryData?.user?.followers.list?.length || 0}
         hasMore={hasMore}
         next={handleLoadMore}
@@ -98,7 +113,7 @@ const Followers: NextComponent = () => {
           <AnimatePresence>
             <ul className="overflow-y-hidden">
               {followersQueryData?.user?.followers.list.map(
-                (following: any, i: number) => {
+                (follower: any, i: number) => {
                   return (
                     <motion.li
                       key={i}
@@ -106,7 +121,17 @@ const Followers: NextComponent = () => {
                       animate={{ opacity: 1, translateY: 0 }}
                       exit={{ opacity: 0, translateX: -25 }}
                     >
-                      <Profile withFollow withMenu user={following} />
+                      <Profile
+                        padding="large"
+                        userId={follower.id}
+                        avatar={follower.profile.profilePicture}
+                        username={follower.username}
+                        displayname={follower.profile.displayname}
+                        bio={follower.profile.bio}
+                        withLink
+                        withFollow
+                        withMenu
+                      />
                     </motion.li>
                   );
                 }

@@ -2,7 +2,11 @@ import Toast from '@components/elements/toast/Toast';
 import Cookies from 'js-cookie';
 import Router from 'next/router';
 import { IoCheckmarkCircle } from 'react-icons/io5';
-import { RiErrorWarningFill, RiForbid2Fill } from 'react-icons/ri';
+import {
+  RiErrorWarningFill,
+  RiForbid2Fill,
+  RiInformationFill,
+} from 'react-icons/ri';
 import { toast } from 'react-toastify';
 
 export const isEmpty = (value: any) => {
@@ -81,5 +85,7 @@ export const toastWarning = (content?: string) => {
 };
 
 export const toastInfo = (content?: string) => {
-  return toast.info(<Toast type="info" content={content} />);
+  return toast.info(content, {
+    icon: <RiInformationFill />,
+  });
 };

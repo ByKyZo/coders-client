@@ -8,8 +8,8 @@ documents:
   # skipGraphQLImport: true
 # documents: 'src/**/*.graphql'
 generates:
-  # src/types.ts:
-  #   - typescript
+  src/types.ts:
+    - typescript
   # src/graphql/generated.ts:
   src/:
     preset: near-operation-file

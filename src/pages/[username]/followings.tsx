@@ -92,7 +92,16 @@ const Followings = () => {
                     animate={{ opacity: 1, translateY: 0 }}
                     exit={{ opacity: 0 }}
                   >
-                    <Profile withFollow user={following} />
+                    <Profile
+                      padding="large"
+                      userId={following.id}
+                      avatar={following.profile.profilePicture}
+                      username={following.username}
+                      displayname={following.profile.displayname}
+                      bio={following.profile.bio}
+                      withLink
+                      withFollow
+                    />
                   </motion.li>
                 );
               })}

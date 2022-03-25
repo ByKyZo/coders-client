@@ -12,6 +12,7 @@ export default gql`
           profile {
             displayname
             profilePicture
+            bio
           }
         }
       }

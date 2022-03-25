@@ -15,11 +15,13 @@ const sizeStyle: any = {
 
 const Username = ({ children, size = 'medium', className }: UsernameProps) => {
   return (
-    <span className={`${sizeStyle[size]} ${className}`}>
-      <span className="text-gray-500">@</span>
-      {/* <span className="text-sm text-gray-400">{children}</span> */}
-      <span className="text-gray-500 ">{children}</span>
-    </span>
+    <div className="flex items-center  min-w-0 max-h-full">
+      <span
+        className={`min-w-0 flex-1 break-words overflow-hidden text-ellipsis whitespace-nowrap text-sm text-gray-500 ${sizeStyle[size]} ${className}`}
+      >
+        @{children}
+      </span>
+    </div>
   );
 };
 

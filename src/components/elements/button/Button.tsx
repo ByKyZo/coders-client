@@ -12,7 +12,7 @@ import {
 
 const defaultClassName =
   // 'font-sans font-medium transition-[box-shadow,transform] overflow-hidden disabled:bg-opacity-60 hover:-translate-y-1 active:translate-y-0 active:shadow-none';
-  'font-sans font-medium transition-[box-shadow,transform,background-color] overflow-hidden disabled:bg-opacity-60';
+  'font-sans font-medium transition-[box-shadow,transform,background-color] overflow-hidden disabled:bg-opacity-60 disabled:hover:translate-0';
 
 const styles: any = {
   primary: 'text-white bg-primary hover:shadow-lg',
@@ -32,10 +32,11 @@ const sizes: any = {
 };
 
 const sizesOnlyIcon: any = {
-  small: 'h-6z text-sm p-1',
-  medium: 'h-8z text-base p-2',
-  large: 'h-10z text-base p-3',
-  extralarge: 'h-12z text-base p-4',
+  small: 'text-sm p-1',
+  medium: 'text-base p-2',
+  // large: 'text-lg p-2',
+  large: 'text-xl p-2',
+  extralarge: 'text-lg p-4',
 };
 
 const withIconMarginSize: any = {
@@ -81,7 +82,7 @@ const Button = (props: ButtonProps): JSX.Element => {
     return (
       <Link as={props.linkAs} {...rest}>
         <a
-          className={`flex justify-center  items-center ${defaultClassName} ${allClassNames}`}
+          className={`flex justify-center items-center ${defaultClassName} ${allClassNames}`}
         >
           {children}
         </a>

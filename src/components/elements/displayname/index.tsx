@@ -19,12 +19,13 @@ const Displayname = ({
   className,
 }: UsernameProps) => {
   return (
-    <span
-      // className={`font-bold flex w-full text-gray-800 ${sizeStyle[size]} overflow-ellipsis whitespace-nowrap overflow-hidden`}
-      className={`inline-block min-w-0 max-w-[150px] font-bold text-gray-800 ${sizeStyle[size]} overflow-ellipsis whitespace-nowrap overflow-hidden ${className}`}
-    >
-      {children}
-    </span>
+    <div className="flex items-center  min-w-0 max-h-full">
+      <span
+        className={`min-w-0 flex-1 break-words overflow-hidden text-ellipsis whitespace-nowrap font-bold text-gray-800 ${sizeStyle[size]} ${className}`}
+      >
+        {children}
+      </span>
+    </div>
   );
 };
 

@@ -1,102 +1,142 @@
-import React, { useEffect, useRef, useState } from 'react';
-
-export const removeHTMLTags = (html: string) => {
-  return html.replaceAll(/(<([^>]+)>)/gi, '');
-};
-
-export const removeHtmlClass = (html: string) => {
-  return html.replaceAll(/class="[a-zA-Z0-9:;.\s()\-,]*"/gi, '');
-};
-
-export const removeHtmlStyle = (html: string) => {
-  return html.replaceAll(/(<[^>]+) style=".*?"/gi, '');
-};
-
-export const removeHtmlAttributes = (html: string) => {
-  return html.replaceAll(/<\s*(\w+).*?>/gi, '');
-};
-export const removeScripTag = (html: string) => {
-  return html.replaceAll(/<script[\s\S]*?>[\s\S]*?<\/script>/gi, '');
-};
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  EditorState as DraftEditorState,
+  convertFromRaw,
+  convertToRaw,
+  RawDraftContentState,
+} from 'draft-js';
+import { stateToHTML } from 'draft-js-export-html';
+import DraftEditor from '@draft-js-plugins/editor';
+import '@draft-js-plugins/emoji/lib/plugin.css';
+import '@draft-js-plugins/mention/lib/plugin.css';
+import { useMentionsSuggestions } from '@components/elements/editor/useMentionsSuggestions';
+import { useHashtagsSuggestions } from '@components/elements/editor/useHashtagsSuggestions';
+import ReactDOM from 'react-dom';
+import { useMount } from '@hooks/useMount';
+import { useEmojisPlugin } from '@components/elements/editor/useEmojisPlugin';
 
 interface EditorProps {
+  wrapperClassname?: string;
+  // emojiButtonTriggerPortalDestinationRef?: React.RefObject<HTMLDivElement>;
+  context?: string;
+  emojiButtonTriggerPortalDestinationElement?: HTMLElement;
   className?: string;
-  // value?: (arg: { plain: string; html: string }) => void;
-  value?: { plain: string; html: string };
-  onChange?: (arg: { plain: string; html: string }) => void;
-  searchValues: {
-    value?: string | RegExp;
-    valueCallback?: (content: string) => string;
-    className?: string;
-  }[];
-  readonly?: boolean;
+  initRaw?: RawDraftContentState;
+  onChange?: (arg: {
+    plain: string;
+    html: string;
+    raw: RawDraftContentState;
+  }) => void;
+  readOnly?: boolean;
 }
 
+const parseJson = (value: any) => {
+  return JSON.parse(JSON.stringify(value));
+};
+
 const Editor = ({
-  searchValues,
-  value,
+  context,
   onChange,
-  readonly,
-  className,
+  initRaw,
+  readOnly,
+  wrapperClassname,
+  emojiButtonTriggerPortalDestinationElement,
 }: EditorProps) => {
-  // const [content, setContent] = useState({
-  //   plain: '',
-  //   html: '',
-  // });
-  const [content, setContent] = useState({
-    plain: value?.plain || '',
-    html: value?.html || '',
-  });
+  const [editorState, setEditorState] = useState(
+    DraftEditorState.createWithContent(
+      convertFromRaw(parseJson(initRaw || { blocks: [], entityMap: {} }))
+    )
+  );
+  const isMount = useMount();
 
-  const editorRef = useRef<HTMLDivElement>(null);
-  const outputRef = useRef<HTMLDivElement>(null);
+  const { component: UserMentionsSuggestions, plugins: mentionsPlugin } =
+    useMentionsSuggestions({ readOnly: Boolean(readOnly) });
 
-  const parser = (value: string) => {
-    searchValues.forEach(({ value: searchValue, className, valueCallback }) => {
-      value = valueCallback
-        ? valueCallback(value)
-        : value.replaceAll(
-            searchValue || '',
-            `<span class="${className}">$&</span>`
-          );
+  const { component: HashtagsSuggestions, plugins: hashtagsPlugin } =
+    useHashtagsSuggestions();
+
+  const {
+    EmojiSuggestions,
+    EmojiSelect,
+    plugins: emojiPlugin,
+  } = useEmojisPlugin();
+
+  /**
+   * NOTE : Reset le button emoji
+   * (La librairie @draft-js-plugins/emoji est mal faites....)
+   */
+  useEffect(() => {
+    if (readOnly) {
+      return;
+    }
+
+    const emojiButtonWrapper = [
+      // @ts-ignore
+      ...document.querySelectorAll('.__DraftEmojiButton__'),
+    ];
+
+    let emojiButtons = [];
+
+    if (emojiButtonWrapper) {
+      emojiButtons = Array.from(
+        emojiButtonWrapper.map((e) => e.querySelector('button'))
+      );
+    }
+
+    emojiButtons.forEach((e) => {
+      if (!e) return;
+      e.style.background = 'transparent';
+      e.style.border = 'none';
+      e.style.width = 'auto';
     });
-    return value;
-  };
-
-  const setOutputValue = (value: string) => {
-    if (!outputRef.current) return;
-    outputRef.current.innerHTML = parser(removeScripTag(value));
-    // outputRef.current.innerHTML = parser(value);
-  };
+  }, [isMount, readOnly, emojiButtonTriggerPortalDestinationElement]);
 
   useEffect(() => {
-    onChange && onChange(content);
-    setOutputValue(content.html || content.plain);
-  }, [content]);
+    // !readOnly &&
+    onChange &&
+      onChange({
+        plain: editorState.getCurrentContent().getPlainText(),
+        html: stateToHTML(editorState.getCurrentContent()),
+        raw: convertToRaw(editorState.getCurrentContent()),
+      });
+  }, [editorState.getCurrentContent()]);
 
-  const handleInput = (e: any) => {
-    setOutputValue(e.target.innerHTML);
-    if (!outputRef.current) return;
-    setContent({
-      plain: outputRef.current.innerText,
-      html: outputRef.current.innerHTML,
-    });
-  };
+  useEffect(() => {
+    setEditorState(
+      DraftEditorState.createWithContent(
+        convertFromRaw(parseJson(initRaw || { blocks: [], entityMap: {} }))
+      )
+    );
+  }, [context]);
 
   return (
-    <div className="relative min-h-24">
-      <div
-        spellCheck={false}
-        onInput={handleInput}
-        ref={editorRef}
-        className={`cursor-text ${className}`}
-        contentEditable={!readonly}
-      />
-      <div
-        ref={outputRef}
-        className={`absolute z-0 top-0 left-0 select-none pointer-events-none ${className}`}
-      />
-    </div>
+    <>
+      <div className={`${wrapperClassname}`}>
+        <DraftEditor
+          placeholder={!readOnly ? 'Write something...' : undefined}
+          readOnly={readOnly}
+          editorState={editorState}
+          onChange={setEditorState}
+          plugins={[...emojiPlugin, ...mentionsPlugin, ...hashtagsPlugin]}
+        />
+      </div>
+      {UserMentionsSuggestions}
+      {HashtagsSuggestions}
+      <EmojiSuggestions />
+      {/* 
+        NOTE :Insere le button emoji dans la toolbar de l'editor 
+        (La librairie @draft-js-plugins/emoji est mal faites....)
+      */}
+      {!readOnly &&
+        emojiButtonTriggerPortalDestinationElement &&
+        isMount &&
+        ReactDOM.createPortal(
+          <span className="__DraftEmojiButton__">
+            <EmojiSelect />
+          </span>,
+          emojiButtonTriggerPortalDestinationElement
+        )}
+    </>
   );
 };
 

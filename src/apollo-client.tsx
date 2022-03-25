@@ -92,45 +92,45 @@ function createApolloClient(ctx?: any) {
     // link: authLink.concat(httpLink),
     // link: link,
     cache: new InMemoryCache({
-      typePolicies: {
-        Query: {
-          fields: {
-            // user: {
-            //   // keyArgs: false,
-            //   keyArgs: false,
-            /**
-             * NOTE : Utiliser la fonction merge() pour les paginations plutôt que la 'updateQuery()' de la fonction fetchmore
-             */
-            // merge(existing, incoming) {
-            // let users: Reference[] = [];
-            // // users
-            // if (existing && existing.users) {
-            //   users = users.concat(existing.users);
-            // }
-            // if (incoming && incoming.users) {
-            //   users = users.concat(incoming.users);
-            // }
-            // return {
-            //   ...incoming,
-            //   users,
-            // };
-            // console.log('existing : ', existing);
-            // console.log('incoming : ', incoming);
-            // if (!incoming?.user) {
-            //   console.log('NO DATA');
-            //   console.log('*******');
-            //   // setHasMore(false);
-            //   return existing;
-            // }
-            // const prevEntries = existing.followers.list || [];
-            // const lastEntries = incoming.followers.list || [];
-            // incoming.user.followers.list = [...prevEntries, ...lastEntries];
-            // return { ...incoming };
-            // },
-            // },
-          },
-        },
-      },
+      // typePolicies: {
+      //   Query: {
+      //     fields: {
+      // user: {
+      //   // keyArgs: false,
+      //   keyArgs: false,
+      /**
+       * NOTE : Utiliser la fonction merge() pour les paginations plutôt que la 'updateQuery()' de la fonction fetchmore
+       */
+      // merge(existing, incoming) {
+      // let users: Reference[] = [];
+      // // users
+      // if (existing && existing.users) {
+      //   users = users.concat(existing.users);
+      // }
+      // if (incoming && incoming.users) {
+      //   users = users.concat(incoming.users);
+      // }
+      // return {
+      //   ...incoming,
+      //   users,
+      // };
+      // console.log('existing : ', existing);
+      // console.log('incoming : ', incoming);
+      // if (!incoming?.user) {
+      //   console.log('NO DATA');
+      //   console.log('*******');
+      //   // setHasMore(false);
+      //   return existing;
+      // }
+      // const prevEntries = existing.followers.list || [];
+      // const lastEntries = incoming.followers.list || [];
+      // incoming.user.followers.list = [...prevEntries, ...lastEntries];
+      // return { ...incoming };
+      // },
+      // },
+      //   },
+      // },
+      // },
     }),
   });
 }

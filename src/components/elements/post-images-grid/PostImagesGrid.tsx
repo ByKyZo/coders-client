@@ -5,6 +5,7 @@ import { VscChromeClose } from 'react-icons/vsc';
 interface PostImagesGridProps {
   images: string[] | null;
   context: 'display' | 'edit';
+  wrapperClassname?: string;
   /**
    * Call when image delete button is clicked
    */
@@ -56,9 +57,10 @@ const GridItem = ({
 const PostImagesGrid = ({
   images,
   context,
+  wrapperClassname,
   onClickDelete,
 }: PostImagesGridProps) => {
-  if (!images) {
+  if (!images || images.length === 0) {
     return null;
   }
 
@@ -66,8 +68,10 @@ const PostImagesGrid = ({
   // A Modifier plus tard...
   <div className="d-none mb-1 mb-3"></div>;
 
+  let grid = null;
+
   if (images.length === 1) {
-    return (
+    grid = (
       <div className="grid">
         <GridItem
           index={0}
@@ -80,7 +84,7 @@ const PostImagesGrid = ({
   }
 
   if (images.length === 2) {
-    return (
+    grid = (
       <div className={`${BASE_WRAPPER_CLASS}`}>
         <GridItem
           index={0}
@@ -101,7 +105,7 @@ const PostImagesGrid = ({
   }
 
   if (images.length === 3) {
-    return (
+    grid = (
       <div className={`${BASE_WRAPPER_CLASS}`}>
         <GridItem
           index={0}
@@ -131,7 +135,7 @@ const PostImagesGrid = ({
   }
 
   if (images.length === 4) {
-    return (
+    grid = (
       <div className={`${BASE_WRAPPER_CLASS}`}>
         <div
           className={`flex flex-col h-full basis-1/2 mr-${marginSize[context]}`}
@@ -171,7 +175,7 @@ const PostImagesGrid = ({
     );
   }
 
-  return null;
+  return <div className={wrapperClassname}>{grid}</div>;
 };
 
 export default PostImagesGrid;

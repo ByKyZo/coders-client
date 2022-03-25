@@ -4,10 +4,22 @@ export default gql`
   mutation CreatePost($input: CreatePostInput, $medias: [Upload!]) {
     createPost(input: $input, medias: $medias) {
       id
-      body
-      createdAt
+      draftRaw
       postParentId
       isFollowOnly
+      createdAt
+      medias {
+        id
+        path
+      }
+      author {
+        id
+        username
+        profile {
+          profilePicture
+          displayname
+        }
+      }
     }
   }
 `;

@@ -8,7 +8,7 @@ import { UserQuery } from '@graphql/queries/get-user/index.generated';
 import { useToggleFollowMutation } from '@graphql/mutations/toggle-follow/index.generated';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { MdDateRange } from 'react-icons/md';
 import { useIsCurrentUser } from '@hooks/useIsCurrentUser';
 import ProfilePicture from '@components/elements/profile-picture/ProfilePicture';
@@ -38,7 +38,7 @@ const ProfileLayout: NextComponent<ProfileLayoutProps> = ({
 }) => {
   const [isOpenEditProfileModal, setIsOpenProfileModal] = useState(false);
   // On recupere également le meme user coté client pour pouvoir afficher les followers en temps réel
-  const { data: userCsr } = useUserQuery({
+  const { data: userCsr, refetch } = useUserQuery({
     variables: { username: userSsr?.user.username! },
   });
 
@@ -46,8 +46,15 @@ const ProfileLayout: NextComponent<ProfileLayoutProps> = ({
   const { data: meData } = useMeQuery();
 
   // Socket qui ecoute les follows
-  //! La mise en cache va rafraichir tout seul les utilisateurs return par la query
-  const {} = useFollowSubscription();
+  useFollowSubscription({
+    onSubscriptionData: () => {
+      /**
+       * On refetch a chaque fois que le socket follow est envoyé
+       * Le refetch recupere le cache mit a jour par le socket
+       */
+      refetch();
+    },
+  });
 
   const usernameRouterParams = useRouter().query.username as string;
   const isCurrenUser = useIsCurrentUser({
@@ -84,6 +91,7 @@ const ProfileLayout: NextComponent<ProfileLayoutProps> = ({
           <div className="p-6 pb-0 mb-8">
             <div className="flex justify-end h-16">
               {meData &&
+                userCsr &&
                 (!isCurrenUser ? (
                   <FollowButton followingId={userSsrMemo?.id!} />
                 ) : (
