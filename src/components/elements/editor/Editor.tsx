@@ -31,7 +31,7 @@ interface EditorProps {
 }
 
 const parseJson = (value: any) => {
-  return JSON.parse(JSON.stringify(value));
+  return JSON.parse(JSON.stringify(value || {}));
 };
 
 const Editor = ({
@@ -101,6 +101,7 @@ const Editor = ({
       });
   }, [editorState.getCurrentContent()]);
 
+  // Reset le contenu en changeant de context
   useEffect(() => {
     setEditorState(
       DraftEditorState.createWithContent(

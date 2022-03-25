@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Profile from '@components/modules/profile/Profile';
 import { useCreatePostMutation } from '@graphql/mutations/create-post/index.generated';
 import { useDropzone } from 'react-dropzone';
@@ -22,6 +22,7 @@ import { UserDocument } from '../../../graphql/queries/get-user/index.generated'
 const IMAGE_MAX_SIZE = 10_000_000;
 const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp'];
 
+type media = Omit<PostMedia, '__typename' | 'post'>;
 interface IPostProps {
   context: 'display' | 'edit' | 'create';
   raw?: RawDraftContentState;
@@ -31,7 +32,7 @@ interface IPostProps {
   authorAvatar?: string;
   authorUsername?: string;
   authorDisplayname?: string;
-  authorMedias?: Omit<PostMedia, '__typename' | 'post'>[];
+  authorMedias?: media[];
   authorCreatedAt?: string;
 
   onCreatePost?: () => void;
@@ -59,10 +60,18 @@ const Post = ({
   if (!postId && (context === 'display' || context === 'edit')) {
     throw new Error('Post id is required on create or edit context');
   }
-  // const [initRaw, setInitRaw] = useState<RawDraftContentState>(raw);
+
   const [toolbarRef, setToolbarRef] = useRefUpdate<HTMLDivElement>();
   const displayRaw = useMemo<RawDraftContentState>(() => raw, [raw]);
+  // const authorMediasMemo = useMemo<media[]>(
+  //   () => authorMedias || [],
+  //   [authorMedias]
+  // );
+  // const displayRaw = useMemo<RawDraftContentState>(() => raw, [raw]);
 
+  const [currentMedias, setCurrentMedia] = useState(
+    authorMedias?.map((m) => m.path)
+  );
   const [_context, setContext] = useState(context);
   const [postContent, setPostContent] = useState({
     plain: '',
@@ -74,7 +83,6 @@ const Post = ({
   const [mediasForEdit, setMediasForEdit] = useState<
     { file: File | null; id: number | null; preview: string }[]
   >([]);
-  // const [allMediaPrewiew, setAllMediaPreview] = useState<string[]>([]);
 
   const [medias, setMedias, { clear: clearMedias }] = useMedias({
     maxFiles: 4,
@@ -82,6 +90,23 @@ const Post = ({
       toastWarning('Please choose 4 medias or less');
     },
   });
+
+  const [createPost] = useCreatePostMutation({
+    update: (cache, { data }) => {
+      if (data?.createPost) {
+        const { createPost } = data;
+        cache.modify({
+          fields: {
+            feed(oldFeed = {}) {
+              return { ...oldFeed, list: [createPost, ...oldFeed.list] };
+            },
+          },
+        });
+      }
+    },
+  });
+
+  const [updatePost, { loading }] = useUpdatePostMutation();
 
   const disabledCreatePost = !postContent.plain && medias.medias.length === 0;
 
@@ -112,22 +137,6 @@ const Post = ({
       }
     },
   });
-
-  const [createPost] = useCreatePostMutation({
-    update: (cache, { data }) => {
-      if (data?.createPost) {
-        const { createPost } = data;
-        cache.modify({
-          fields: {
-            feed(oldFeed = {}) {
-              return { ...oldFeed, list: [createPost, ...oldFeed.list] };
-            },
-          },
-        });
-      }
-    },
-  });
-  const [updatePost, { loading }] = useUpdatePostMutation();
 
   const setContextToEdit = () => setContext('edit');
   const setContextToDisplay = () => setContext('display');
@@ -176,8 +185,8 @@ const Post = ({
         .filter(({ file }) => file !== null)
         .map((m) => m.file);
 
-      console.log('correctedMedias', correctedMedias);
-      console.log('deletedMedias', deletedMedias);
+      // console.log('correctedMedias', correctedMedias);
+      // console.log('deletedMedias', deletedMedias);
 
       await updatePost({
         variables: {
@@ -211,16 +220,6 @@ const Post = ({
     }
   };
 
-  const currentMediaDisplay = () => {
-    if (_context === 'edit') {
-      return mediasForEdit.map((m) => m.preview);
-    } else if (_context === 'create') {
-      return medias.medias.map((m) => m.preview);
-    } else {
-      return authorMedias?.map((m) => m.path);
-    }
-  };
-
   const handleMediasDelete = (index: number) => {
     if (_context === 'edit') {
       // @ts-ignore
@@ -238,6 +237,26 @@ const Post = ({
     }
   };
 
+  const currentMediaDisplay = useCallback(() => {
+    if (_context === 'edit') {
+      return mediasForEdit.map((m) => m.preview);
+    } else if (_context === 'create') {
+      return medias.medias.map((m) => m.preview);
+    } else {
+      return authorMedias?.map((m) => m.path);
+    }
+  }, [authorMedias, _context, medias, mediasForEdit]);
+
+  useEffect(() => {
+    if (_context === 'edit') {
+      setCurrentMedia(mediasForEdit.map((m) => m.preview));
+    } else if (_context === 'create') {
+      setCurrentMedia(medias.medias.map((m) => m.preview));
+    } else {
+      setCurrentMedia(authorMedias?.map((m) => m.path));
+    }
+  }, [authorMedias, _context, medias, mediasForEdit]);
+
   useEffect(() => {
     if (!authorMedias) return;
     setMediasForEdit(
@@ -246,8 +265,8 @@ const Post = ({
   }, [_context, authorMedias]);
 
   useEffect(() => {
-    console.log(deletedMedias);
-  }, [deletedMedias]);
+    console.log(authorMedias);
+  }, [authorMedias]);
 
   return (
     <div className="flex items-start px-4 border-b">
@@ -271,9 +290,6 @@ const Post = ({
             username={_context === 'create' ? undefined : authorUsername}
             displayname={_context === 'create' ? undefined : authorDisplayname}
             date={_context === 'create' ? undefined : authorCreatedAt}
-            forCurrentUser={{
-              avatar: true,
-            }}
             info={
               <div className="w-full" {...getRootProps()}>
                 <input {...getInputProps()} />
@@ -285,10 +301,6 @@ const Post = ({
                   context={_context}
                   initRaw={displayRaw}
                   onChange={setPostContent}
-                  // onChange={({ raw }) => {
-                  //   // setEditRaw(raw);
-                  //   setEditRaw(raw);
-                  // }}
                 />
 
                 <PostImagesGrid
@@ -298,7 +310,8 @@ const Post = ({
                       ? 'edit'
                       : 'display'
                   }
-                  images={currentMediaDisplay()!}
+                  // images={currentMediaDisplay()!}
+                  images={currentMedias!}
                   onClickDelete={handleMediasDelete}
                 />
 

@@ -36,7 +36,7 @@ const Tweets: NextComponent<TweetsProps> = ({ data, error }) => {
               postId={post.id}
               authorUsername={post.author.username}
               authorDisplayname={post.author.profile.displayname!}
-              authorAvatar={post.author.profile.displayname!}
+              authorAvatar={post.author.profile.profilePicture!}
               authorMedias={post.medias}
             />
           );

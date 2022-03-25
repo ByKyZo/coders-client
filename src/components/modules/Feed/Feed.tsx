@@ -77,7 +77,7 @@ const Feed: NextComponent = () => {
               authorId={post.author.id}
               authorUsername={post.author.username}
               authorDisplayname={post.author.profile.displayname!}
-              authorAvatar={post.author.profile.displayname!}
+              authorAvatar={post.author.profile.profilePicture!}
               authorMedias={post.medias}
             />
           );
