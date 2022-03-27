@@ -1,4 +1,5 @@
 import Toast from '@components/elements/toast/Toast';
+import { UserRoles } from '@typescript/index';
 import Cookies from 'js-cookie';
 import Router from 'next/router';
 import { IoCheckmarkCircle } from 'react-icons/io5';
@@ -8,6 +9,7 @@ import {
   RiInformationFill,
 } from 'react-icons/ri';
 import { toast } from 'react-toastify';
+import { Role, User } from 'types';
 
 export const isEmpty = (value: any) => {
   return (
@@ -88,4 +90,14 @@ export const toastInfo = (content?: string) => {
   return toast.info(content, {
     icon: <RiInformationFill />,
   });
+};
+
+export const hasAccess = (
+  userRoles: Role[] | { level: number; label: string }[],
+  role: UserRoles
+) => {
+  if (!userRoles) {
+    return false;
+  }
+  return userRoles?.some((userRole: any) => userRole.level >= role);
 };

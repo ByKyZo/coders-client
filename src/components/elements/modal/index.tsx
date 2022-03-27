@@ -31,14 +31,26 @@ const Modal = ({
       {...rest}
     >
       <div className="bg-white backdrop-opacity-60 w-full absolute top-0 left-0 flex justify-between items-center h-12 px-6">
-        <div>
-          <button
+        <div className="flex items-center">
+          {/* <button
             aria-label={`close ${title || ''} modal`}
             className="mr-6"
             onClick={closeFn}
           >
             <MdClose />
-          </button>
+          </button> */}
+          <Button
+            aria-label={`close ${title || ''} modal`}
+            type="submit"
+            as="button"
+            className="mr-6"
+            styleType="transparent"
+            sizeType="large"
+            rounded
+            icon={<MdClose />}
+            onlyIcon
+            onClick={closeFn}
+          />
           <span className="font-semibold text-xl">{title}</span>
           {/* <Heading title="title" noBorder></Heading> */}
         </div>

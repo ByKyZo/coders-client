@@ -512,54 +512,66 @@ export type UserPostsArgs = {
   input?: InputMaybe<GetPostsInput>;
 };
 
-export type UpdatePostMutationVariables = Types.Exact<{
-  input?: Types.InputMaybe<Types.UpdatePostInput>;
-  medias?: Types.InputMaybe<Array<Types.Scalars['Upload']> | Types.Scalars['Upload']>;
+export type GetPostReportedQueryVariables = Types.Exact<{
+  postsInput2?: Types.InputMaybe<Types.FindAllPostInput>;
 }>;
 
 
-export type UpdatePostMutation = { updatePost: { id: number, draftRaw?: string | null, postParentId?: number | null, isFollowOnly?: boolean | null, createdAt: any, medias: Array<{ path: string, id: number }> } };
+export type GetPostReportedQuery = { posts: { total: number, list: Array<{ id: number, createdAt: any, draftRaw?: string | null, author: { id: number, username: string }, reports: { total: number, list: Array<{ reason: string, createdAt: any, user: { id: number, username: string } }> } }> } };
 
 
-export const UpdatePostDocument = gql`
-    mutation UpdatePost($input: UpdatePostInput, $medias: [Upload!]) {
-  updatePost(input: $input, medias: $medias) {
-    id
-    draftRaw
-    postParentId
-    isFollowOnly
-    createdAt
-    medias {
-      path
+export const GetPostReportedDocument = gql`
+    query GetPostReported($postsInput2: FindAllPostInput) {
+  posts(input: $postsInput2) {
+    total
+    list {
       id
+      createdAt
+      draftRaw
+      author {
+        id
+        username
+      }
+      reports {
+        total
+        list {
+          reason
+          createdAt
+          user {
+            id
+            username
+          }
+        }
+      }
     }
   }
 }
     `;
-export type UpdatePostMutationFn = Apollo.MutationFunction<UpdatePostMutation, UpdatePostMutationVariables>;
 
 /**
- * __useUpdatePostMutation__
+ * __useGetPostReportedQuery__
  *
- * To run a mutation, you first call `useUpdatePostMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdatePostMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
+ * To run a query within a React component, call `useGetPostReportedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPostReportedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
  *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const [updatePostMutation, { data, loading, error }] = useUpdatePostMutation({
+ * const { data, loading, error } = useGetPostReportedQuery({
  *   variables: {
- *      input: // value for 'input'
- *      medias: // value for 'medias'
+ *      postsInput2: // value for 'postsInput2'
  *   },
  * });
  */
-export function useUpdatePostMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdatePostMutation, UpdatePostMutationVariables>) {
+export function useGetPostReportedQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetPostReportedQuery, GetPostReportedQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return ApolloReactHooks.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument, options);
+        return ApolloReactHooks.useQuery<GetPostReportedQuery, GetPostReportedQueryVariables>(GetPostReportedDocument, options);
       }
-export type UpdatePostMutationHookResult = ReturnType<typeof useUpdatePostMutation>;
-export type UpdatePostMutationResult = Apollo.MutationResult<UpdatePostMutation>;
-export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<UpdatePostMutation, UpdatePostMutationVariables>;
+export function useGetPostReportedLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetPostReportedQuery, GetPostReportedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return ApolloReactHooks.useLazyQuery<GetPostReportedQuery, GetPostReportedQueryVariables>(GetPostReportedDocument, options);
+        }
+export type GetPostReportedQueryHookResult = ReturnType<typeof useGetPostReportedQuery>;
+export type GetPostReportedLazyQueryHookResult = ReturnType<typeof useGetPostReportedLazyQuery>;
+export type GetPostReportedQueryResult = Apollo.QueryResult<GetPostReportedQuery, GetPostReportedQueryVariables>;

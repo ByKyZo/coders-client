@@ -8,11 +8,27 @@ import { useRouter } from 'next/router';
 import { useFollowingsQuery } from '@graphql/queries/get-followings/index.generated';
 import { useTriggerScrollFix } from '@hooks/useTriggerScrollFix';
 import Loader from '@components/elements/loader/Loader';
+import { FeedOptions } from '@graphql/queries/get-feed/index.generated';
 
-const Feed: NextComponent = () => {
-  const { data: feed, fetchMore } = useFeedQuery({
+interface IFeedProps {
+  options?: FeedOptions;
+}
+
+const Feed = ({ options }: IFeedProps) => {
+  const {
+    data: feed,
+    fetchMore,
+    refetch,
+  } = useFeedQuery({
     variables: {
-      input: { page: 0 },
+      input: {
+        page: 0,
+        take: 10,
+        options: {
+          ...options,
+          // excludeFollowing: true,
+        },
+      },
     },
   });
   const [page, setPage] = useState(1);
@@ -22,24 +38,26 @@ const Feed: NextComponent = () => {
     try {
       const { data } = await fetchMore({
         variables: {
-          input: { page: page, take: 10 },
+          input: {
+            page: page,
+            take: 10,
+            options: {
+              ...options,
+            },
+          },
         },
-
         /**
          * NOTE : Utiliser la fonction merge dans la config du cache apollo plutôt que la 'updateQuery' de la fonction fetchmore
          */
         updateQuery: (prevResult, { fetchMoreResult }) => {
           setPage((old) => old + 1);
-
           if (!fetchMoreResult?.feed) {
             return prevResult;
           }
-
           const prevEntries = prevResult?.feed?.list || [];
           const lastEntries = fetchMoreResult?.feed?.list || [];
-
           fetchMoreResult.feed.list = [...prevEntries, ...lastEntries];
-
+          // fetchMoreResult.feed.list = [...lastEntries, ...prevEntries];
           return { ...fetchMoreResult };
         },
       });
@@ -52,6 +70,11 @@ const Feed: NextComponent = () => {
   };
 
   useTriggerScrollFix([feed?.feed.list.length]);
+
+  // NOTE : Pourquoi j'ai besoin de reftch pour que ça fonctionne ?
+  useEffect(() => {
+    refetch();
+  }, []);
 
   return (
     <div>
@@ -72,13 +95,8 @@ const Feed: NextComponent = () => {
               key={post.id}
               context="display"
               raw={JSON.parse(post.draftRaw!)}
-              withFollow
-              postId={post.id}
-              authorId={post.author.id}
-              authorUsername={post.author.username}
-              authorDisplayname={post.author.profile.displayname!}
-              authorAvatar={post.author.profile.profilePicture!}
-              authorMedias={post.medias}
+              // @ts-ignore
+              post={post}
             />
           );
         })}

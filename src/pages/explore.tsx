@@ -1,10 +1,19 @@
 import AppLayout from '@components/layouts/AppLayout';
+import Feed from '@components/modules/Feed/Feed';
 import { NextComponent } from '@typescript/index';
 import withAccess from 'hoc/withAccess';
 import React from 'react';
 
 const Explore: NextComponent = (props: any) => {
-  return <div className="w-full">Explore</div>;
+  return (
+    <div className="w-full">
+      <Feed
+        options={{
+          excludeFollowing: true,
+        }}
+      />
+    </div>
+  );
 };
 
 const ExploreWithPublic = withAccess<NextComponent>(Explore, {

@@ -1,26 +1,25 @@
 import Link from '@components/elements/link/Link';
 import Profile from '@components/modules/profile/Profile';
 import React, { useEffect, useRef, useState } from 'react';
-import { AiFillHome } from 'react-icons/ai';
-import { FaUser } from 'react-icons/fa';
-import { IoIosNotifications } from 'react-icons/io';
-import { MdSettings } from 'react-icons/md';
-import { RiBookmarkFill, RiCodeLine, RiMessage2Fill } from 'react-icons/ri';
 import { useMediaQuery } from 'react-responsive';
 import { v4 as uuidv4 } from 'uuid';
 import { useMeQuery } from '@graphql/queries/get-me/index.generated';
 import ProfileMenu from '../dropdown/my-profile/MyProfileMenu';
+import { IHeaderLink } from '@components/modules/Header/Header';
+import { UserRoles } from '@typescript/index';
+import { hasAccess } from '../../../helpers/index';
 
-const DesktopHeader = () => {
-  const baseClassName = 'h-7 w-7';
+interface IDesktopHeaderProps {
+  links: IHeaderLink[];
+}
 
+const DesktopHeader = ({ links }: IDesktopHeaderProps) => {
   const headerRef = useRef<HTMLDivElement>(null);
   const [headerWidth, setHeaderWidth] = useState<number>(0);
 
   const { data: user } = useMeQuery();
 
   const isLaptop = useMediaQuery({ minWidth: 1280 });
-  const isMobile = useMediaQuery({ minWidth: 600 });
 
   useEffect(() => {
     const handleResize = () => {
@@ -34,47 +33,6 @@ const DesktopHeader = () => {
       window.removeEventListener('resize', handleResize);
     };
   }, []);
-
-  const nav = [
-    {
-      label: 'Home',
-      href: '/home',
-      icon: <AiFillHome className={baseClassName} />,
-    },
-    {
-      label: 'Explore',
-      href: '/explore',
-      icon: <RiCodeLine className={baseClassName} />,
-      publicLink: true,
-    },
-    // {
-    //   label: 'Notifications',
-    //   href: '/notifications',
-    //   icon: <IoIosNotifications className={baseClassName} />,
-    // },
-    {
-      label: 'Bookmarks',
-      href: '/bookmarks',
-      icon: <RiBookmarkFill className={baseClassName} />,
-    },
-    // {
-    //   label: 'Messages',
-    //   href: '/messages',
-    //   icon: <RiMessage2Fill className={baseClassName} />,
-    // },
-    {
-      label: 'Profile',
-      href: `/${user?.me.username}`,
-      icon: <FaUser className={baseClassName} />,
-      activeOnRootPathName: true,
-    },
-    {
-      label: 'Settings',
-      href: '/settings',
-      icon: <MdSettings className={baseClassName} />,
-      activeOnRootPathName: true,
-    },
-  ];
 
   return (
     <>
@@ -98,15 +56,18 @@ const DesktopHeader = () => {
               <div className="h-full flex flex-col justify-between">
                 <nav>
                   <ul>
-                    {nav.map(
+                    {links.map(
                       ({
                         label,
                         href,
                         icon,
                         activeOnRootPathName,
                         publicLink,
+                        role,
                       }) => {
                         if (!user && !publicLink) return null;
+                        if (role && !hasAccess(user?.me?.roles!, role)) return;
+
                         return (
                           <li className="flex" key={uuidv4()}>
                             <Link

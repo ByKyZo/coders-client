@@ -512,54 +512,52 @@ export type UserPostsArgs = {
   input?: InputMaybe<GetPostsInput>;
 };
 
-export type UpdatePostMutationVariables = Types.Exact<{
-  input?: Types.InputMaybe<Types.UpdatePostInput>;
-  medias?: Types.InputMaybe<Array<Types.Scalars['Upload']> | Types.Scalars['Upload']>;
+export type ReportPostMutationVariables = Types.Exact<{
+  input: Types.PostReportInput;
 }>;
 
 
-export type UpdatePostMutation = { updatePost: { id: number, draftRaw?: string | null, postParentId?: number | null, isFollowOnly?: boolean | null, createdAt: any, medias: Array<{ path: string, id: number }> } };
+export type ReportPostMutation = { reportPost: { reason: string, createdAt: any, user: { id: number, username: string }, post: { id: number } } };
 
 
-export const UpdatePostDocument = gql`
-    mutation UpdatePost($input: UpdatePostInput, $medias: [Upload!]) {
-  updatePost(input: $input, medias: $medias) {
-    id
-    draftRaw
-    postParentId
-    isFollowOnly
+export const ReportPostDocument = gql`
+    mutation ReportPost($input: PostReportInput!) {
+  reportPost(input: $input) {
+    reason
     createdAt
-    medias {
-      path
+    user {
+      id
+      username
+    }
+    post {
       id
     }
   }
 }
     `;
-export type UpdatePostMutationFn = Apollo.MutationFunction<UpdatePostMutation, UpdatePostMutationVariables>;
+export type ReportPostMutationFn = Apollo.MutationFunction<ReportPostMutation, ReportPostMutationVariables>;
 
 /**
- * __useUpdatePostMutation__
+ * __useReportPostMutation__
  *
- * To run a mutation, you first call `useUpdatePostMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdatePostMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useReportPostMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useReportPostMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [updatePostMutation, { data, loading, error }] = useUpdatePostMutation({
+ * const [reportPostMutation, { data, loading, error }] = useReportPostMutation({
  *   variables: {
  *      input: // value for 'input'
- *      medias: // value for 'medias'
  *   },
  * });
  */
-export function useUpdatePostMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<UpdatePostMutation, UpdatePostMutationVariables>) {
+export function useReportPostMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<ReportPostMutation, ReportPostMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return ApolloReactHooks.useMutation<UpdatePostMutation, UpdatePostMutationVariables>(UpdatePostDocument, options);
+        return ApolloReactHooks.useMutation<ReportPostMutation, ReportPostMutationVariables>(ReportPostDocument, options);
       }
-export type UpdatePostMutationHookResult = ReturnType<typeof useUpdatePostMutation>;
-export type UpdatePostMutationResult = Apollo.MutationResult<UpdatePostMutation>;
-export type UpdatePostMutationOptions = Apollo.BaseMutationOptions<UpdatePostMutation, UpdatePostMutationVariables>;
+export type ReportPostMutationHookResult = ReturnType<typeof useReportPostMutation>;
+export type ReportPostMutationResult = Apollo.MutationResult<ReportPostMutation>;
+export type ReportPostMutationOptions = Apollo.BaseMutationOptions<ReportPostMutation, ReportPostMutationVariables>;

@@ -9,7 +9,7 @@ interface EditActionsProps {
   setToolbarRef: (arg: HTMLDivElement) => void;
   disabledCreatePost: boolean;
   onCreatePost: () => void;
-  onCancelEdit: () => void;
+  onCancelEdit?: () => void;
 }
 
 const EditActions = ({

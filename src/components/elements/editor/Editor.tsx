@@ -17,11 +17,11 @@ import { useEmojisPlugin } from '@components/elements/editor/useEmojisPlugin';
 
 interface EditorProps {
   wrapperClassname?: string;
-  // emojiButtonTriggerPortalDestinationRef?: React.RefObject<HTMLDivElement>;
-  context?: string;
   emojiButtonTriggerPortalDestinationElement?: HTMLElement;
   className?: string;
   initRaw?: RawDraftContentState;
+  setRaw?: RawDraftContentState;
+  editorStateValue?: (arg: DraftEditorState) => void;
   onChange?: (arg: {
     plain: string;
     html: string;
@@ -35,11 +35,12 @@ const parseJson = (value: any) => {
 };
 
 const Editor = ({
-  context,
   onChange,
   initRaw,
   readOnly,
+  setRaw,
   wrapperClassname,
+  editorStateValue,
   emojiButtonTriggerPortalDestinationElement,
 }: EditorProps) => {
   const [editorState, setEditorState] = useState(
@@ -103,12 +104,17 @@ const Editor = ({
 
   // Reset le contenu en changeant de context
   useEffect(() => {
+    if (!setRaw) return;
     setEditorState(
       DraftEditorState.createWithContent(
-        convertFromRaw(parseJson(initRaw || { blocks: [], entityMap: {} }))
+        convertFromRaw(parseJson(setRaw || { blocks: [], entityMap: {} }))
       )
     );
-  }, [context]);
+  }, [setRaw]);
+
+  useEffect(() => {
+    editorStateValue && editorStateValue(editorState);
+  }, [editorStateValue]);
 
   return (
     <>

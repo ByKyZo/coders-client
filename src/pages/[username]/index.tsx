@@ -33,11 +33,8 @@ const Tweets: NextComponent<TweetsProps> = ({ data, error }) => {
               key={post.id}
               context="display"
               raw={JSON.parse(post.draftRaw)}
-              postId={post.id}
-              authorUsername={post.author.username}
-              authorDisplayname={post.author.profile.displayname!}
-              authorAvatar={post.author.profile.profilePicture!}
-              authorMedias={post.medias}
+              // @ts-ignore
+              post={post}
             />
           );
         }

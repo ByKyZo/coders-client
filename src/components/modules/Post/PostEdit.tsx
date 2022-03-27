@@ -1,6 +1,5 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDropzone } from 'react-dropzone';
-import { useMedias } from '@hooks/useMedias';
 import { toastWarning, toastError, toastInfo } from '@helpers/index';
 import PostImagesGrid from '@components/elements/post-images-grid/PostImagesGrid';
 import Editor from '@components/elements/editor/Editor';
@@ -13,34 +12,24 @@ import { PostMedia } from 'types';
 const IMAGE_MAX_SIZE = 10_000_000;
 const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp'];
 
-type media = Omit<PostMedia, '__typename' | 'PostEdit'>;
-
 interface IPostProps {
-  context: 'display' | 'edit' | 'create';
-  raw?: RawDraftContentState;
-  postId?: number;
-  initMedias?: media[];
+  postId: number;
+  initMedias: Omit<PostMedia, '__typename' | 'PostEdit'>[];
+  initRaw: RawDraftContentState;
 
+  setContextToDisplay: () => void;
   onCancelEdit: () => void;
-  onCreatePost?: () => void;
 }
 
-// TODO : Faire la modification des images
-// TODO : Rajouter la property id dans le state, l'id peut être null pour les nouveaux medias
-// TODO : Mais les id des medias delete seront push dans un tableau
-
 const PostEdit = ({
-  context,
-  raw = { blocks: [], entityMap: {} },
-
   postId,
   initMedias,
-  onCancelEdit,
+  initRaw,
 
-  onCreatePost,
+  setContextToDisplay,
+  onCancelEdit,
 }: IPostProps) => {
   const [toolbarRef, setToolbarRef] = useRefUpdate<HTMLDivElement>();
-  const displayRaw = useMemo<RawDraftContentState>(() => raw, [raw]);
 
   const [deletedMedias, setDeletedMedias] = useState<number[]>([]);
   const [mediasForEdit, setMediasForEdit] = useState<
@@ -89,8 +78,7 @@ const PostEdit = ({
 
       // console.log('correctedMedias', correctedMedias);
       // console.log('deletedMedias', deletedMedias);
-
-      await updatePost({
+      console.log({
         variables: {
           input: {
             id: postId!,
@@ -103,8 +91,23 @@ const PostEdit = ({
         },
       });
 
+      const { data } = await updatePost({
+        variables: {
+          input: {
+            id: postId!,
+            draftRaw: JSON.stringify(postContent.raw),
+            postParentId: null,
+            isFollowOnly: null,
+            mediasRemovedIds: deletedMedias,
+          },
+          medias: correctedMedias,
+        },
+      });
+
+      console.log('Post edit', data);
+
       //   handleResetDeletedMedias();
-      //   setContextToDisplay();
+      setContextToDisplay();
       toastInfo('PostEdit updated successfully');
     } catch (err) {
       toastError('Error while editing PostEdit, please try again');
@@ -133,7 +136,7 @@ const PostEdit = ({
     setMediasForEdit(
       initMedias.map((m) => ({ file: null, id: m.id, preview: m.path }))
     );
-  }, [context, initMedias]);
+  }, [initMedias]);
 
   return (
     <div className="w-full" {...getRootProps()}>
@@ -142,8 +145,7 @@ const PostEdit = ({
         emojiButtonTriggerPortalDestinationElement={toolbarRef!}
         wrapperClassname="mt-2"
         readOnly={false}
-        context={context}
-        initRaw={displayRaw}
+        initRaw={initRaw}
         onChange={setPostContent}
       />
 

@@ -1,16 +1,16 @@
 import Link from '@components/elements/link/Link';
 import React, { useEffect, useRef } from 'react';
-import { AiFillHome } from 'react-icons/ai';
-import { FaUser } from 'react-icons/fa';
-import { MdSettings } from 'react-icons/md';
-import { RiBookmarkFill, RiCodeLine } from 'react-icons/ri';
 import { useMediaQuery } from 'react-responsive';
 import { v4 as uuidv4 } from 'uuid';
 import { useMeQuery } from '@graphql/queries/get-me/index.generated';
+import { IHeaderLink } from '@components/modules/Header/Header';
+import { hasAccess } from '@helpers/index';
 
-const MobileHeader = () => {
-  const baseClassName = 'h-7 w-7';
+interface IMobileHeaderProps {
+  links: IHeaderLink[];
+}
 
+const MobileHeader = ({ links }: IMobileHeaderProps) => {
   const headerRef = useRef<HTMLDivElement>(null);
 
   const { data: user } = useMeQuery();
@@ -24,51 +24,24 @@ const MobileHeader = () => {
     };
   }, []);
 
-  const nav = [
-    {
-      label: 'Home',
-      href: '/home',
-      icon: <AiFillHome className={baseClassName} />,
-    },
-    {
-      label: 'Explore',
-      href: '/explore',
-      icon: <RiCodeLine className={baseClassName} />,
-      publicLink: true,
-    },
-    // {
-    //   label: 'Notifications',
-    //   href: '/notifications',
-    //   icon: <IoIosNotifications className={baseClassName} />,
-    // },
-    {
-      label: 'Bookmarks',
-      href: '/bookmarks',
-      icon: <RiBookmarkFill className={baseClassName} />,
-    },
-    {
-      label: 'Profile',
-      href: `/${user?.me.username}`,
-      icon: <FaUser className={baseClassName} />,
-      activeOnRootPathName: true,
-    },
-    {
-      label: 'Settings',
-      href: '/settings',
-      icon: <MdSettings className={baseClassName} />,
-      activeOnRootPathName: true,
-    },
-  ];
-
   return (
     <>
       <div ref={headerRef} className="fixed w-full bg-white bottom-0 z-[999]">
         <header className="px-2">
           <nav className="h-full ">
             <ul className="flex justify-between">
-              {nav.map(
-                ({ label, href, icon, activeOnRootPathName, publicLink }) => {
+              {links.map(
+                ({
+                  label,
+                  href,
+                  icon,
+                  activeOnRootPathName,
+                  publicLink,
+                  role,
+                }) => {
                   if (!user && !publicLink) return null;
+                  if (role && !hasAccess(user?.me?.roles!, role)) return;
+
                   return (
                     <li className="flex" key={uuidv4()}>
                       <Link

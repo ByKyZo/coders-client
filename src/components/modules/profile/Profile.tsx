@@ -12,6 +12,10 @@ import { User } from 'types';
 import Displayname from '../../elements/displayname';
 import ProfileMenu from '@components/modules/dropdown/profile/ProfileMenu';
 import useMutationObserver from '@rooks/use-mutation-observer';
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
 interface ProfileProps {
   /**
    * Si le user n'est pas défini ce sera le user connecté qui sera affiché
@@ -81,31 +85,6 @@ const Profile = ({
 }: ProfileProps) => {
   const { data: meData } = useMeQuery();
   const profileBodyRef = React.useRef<HTMLDivElement>(null);
-  const rightPartRef = React.useRef<HTMLDivElement>(null);
-
-  /**
-   * Permet de simuler la place que prends le button follow etc... en position absolute
-   */
-  // const handleSetPlaceholderSize = () => {
-  //   if (profileBodyRef.current && rightPartRef.current) {
-  //     profileBodyRef.current.style.paddingRight = `${rightPartRef.current.offsetWidth}px`;
-  //   }
-  // };
-
-  // useMutationObserver(rightPartRef, () => {
-  //   handleSetPlaceholderSize();
-  // });
-
-  // useEffect(() => {
-  //   if (!rightPartRef.current) return;
-
-  //   handleSetPlaceholderSize();
-  //   window.addEventListener('', handleSetPlaceholderSize);
-  //   window.addEventListener('resize', handleSetPlaceholderSize);
-  //   return () => {
-  //     window.removeEventListener('resize', handleSetPlaceholderSize);
-  //   };
-  // }, []);
 
   const toDisplay = {
     avatar: forCurrentUser?.avatar
@@ -155,6 +134,15 @@ const Profile = ({
                     <Link href={`/${toDisplay.username}`}>
                       <Username>{toDisplay.username}</Username>
                     </Link>
+                  )}
+                  {toDisplay.date && (
+                    <>
+                      <span className="mx-2">-</span>
+                      <span className="text-sm text-gray-600">
+                        {toDisplay.date && dayjs(toDisplay.date).fromNow()}
+                      </span>
+                    </>
+                    // {dayjs(toDis).fromNow()}
                   )}
                 </div>
                 <div className="flex items-center space-x-2">

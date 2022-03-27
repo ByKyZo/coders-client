@@ -1,8 +1,12 @@
 import { getAccessToken, isBrowser } from '@helpers/index';
+import { UserRoles } from '@typescript/index';
 import { useRouter } from 'next/router';
+import { useMeQuery } from '../graphql/queries/get-me/index.generated';
+import { hasAccess } from '../helpers/index';
 
 interface WithAccessProps {
   accessType: 'auth' | 'noAuth' | 'public';
+  role?: UserRoles;
 }
 
 // TODO: Remplacer tout les HOC d'accés (withAuth/withNoAuth/withPublic) par celui-ci
@@ -12,8 +16,18 @@ const withAccess = <T,>(WrappedComponent: any, options: WithAccessProps): T => {
     // Verifie si on est sur le client ou le serveur
     if (isBrowser) {
       const Router = useRouter();
-
+      const { data } = useMeQuery();
       const accessToken = getAccessToken();
+
+      // Si un role est specifié on verifie si l'utilisateur a le role ou plus
+      if (
+        options.role &&
+        data?.me &&
+        !hasAccess(data?.me.roles!, options.role)
+      ) {
+        Router.push('/auth/login');
+        return null;
+      }
 
       switch (options.accessType) {
         case 'auth':

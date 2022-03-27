@@ -56,8 +56,13 @@ export type CreateUserInput = {
 };
 
 export type FeedInput = {
+  options?: InputMaybe<FeedOptions>;
   page?: InputMaybe<Scalars['Int']>;
   take?: InputMaybe<Scalars['Int']>;
+};
+
+export type FeedOptions = {
+  excludeFollowing?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type FeedOuput = {
@@ -65,9 +70,29 @@ export type FeedOuput = {
   total: Scalars['Int'];
 };
 
+export type FindAllPostInput = {
+  options?: InputMaybe<FindAllPostOptions>;
+  page?: InputMaybe<Scalars['Int']>;
+  take?: InputMaybe<Scalars['Int']>;
+};
+
+export type FindAllPostOptions = {
+  page?: InputMaybe<Scalars['Int']>;
+};
+
 export type FindAllPostOutput = {
   list: Array<Post>;
   total: Scalars['Int'];
+};
+
+export type FindAllPostReportInput = {
+  page?: InputMaybe<Scalars['Int']>;
+  take?: InputMaybe<Scalars['Int']>;
+};
+
+export type FindAllPostReportOutput = {
+  list?: Maybe<Array<PostReport>>;
+  total?: Maybe<Scalars['Int']>;
 };
 
 export type FindAllUserInput = {
@@ -95,6 +120,31 @@ export type FollowOutput = {
   total: Scalars['Int'];
 };
 
+export type GetPostReportsInput = {
+  page?: InputMaybe<Scalars['Int']>;
+  take?: InputMaybe<Scalars['Int']>;
+};
+
+export type GetPostReportsOutput = {
+  list: Array<PostReport>;
+  total: Scalars['Int'];
+};
+
+export type GetPostsInput = {
+  options?: InputMaybe<GetPostsOptions>;
+  page?: InputMaybe<Scalars['Int']>;
+  take?: InputMaybe<Scalars['Int']>;
+};
+
+export type GetPostsOptions = {
+  onlyWithMedia?: InputMaybe<Scalars['Boolean']>;
+};
+
+export type GetPostsOutput = {
+  list: Array<Post>;
+  total: Scalars['Int'];
+};
+
 export type LoginInput = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -113,11 +163,11 @@ export type Mutation = {
   createTag: Tag;
   createUser: LoginOutput;
   removeFollower: RemoveFollowerOutput;
-  removePost: Post;
   removePostMedia: PostMedia;
   removePostMention: PostMention;
   removePostTag: PostTag;
   removeTag: Tag;
+  reportPost: PostReport;
   toggleFollow: FollowMutationOutput;
   updatePost: Post;
   updatePostMedia: PostMedia;
@@ -164,11 +214,6 @@ export type MutationRemoveFollowerArgs = {
 };
 
 
-export type MutationRemovePostArgs = {
-  id: Scalars['Int'];
-};
-
-
 export type MutationRemovePostMediaArgs = {
   id: Scalars['Int'];
 };
@@ -186,6 +231,11 @@ export type MutationRemovePostTagArgs = {
 
 export type MutationRemoveTagArgs = {
   id: Scalars['Int'];
+};
+
+
+export type MutationReportPostArgs = {
+  input: PostReportInput;
 };
 
 
@@ -235,7 +285,13 @@ export type Post = {
   isFollowOnly?: Maybe<Scalars['Boolean']>;
   medias: Array<PostMedia>;
   postParentId?: Maybe<Scalars['Int']>;
+  reports: GetPostReportsOutput;
   user: User;
+};
+
+
+export type PostReportsArgs = {
+  input?: InputMaybe<GetPostReportsInput>;
 };
 
 export type PostMedia = {
@@ -247,6 +303,18 @@ export type PostMedia = {
 export type PostMention = {
   post: Post;
   user: User;
+};
+
+export type PostReport = {
+  createdAt: Scalars['DateTime'];
+  post: Post;
+  reason: Scalars['String'];
+  user: User;
+};
+
+export type PostReportInput = {
+  postId: Scalars['Float'];
+  reason: Scalars['String'];
 };
 
 export type PostTag = {
@@ -276,10 +344,11 @@ export type Query = {
   isFollow: Scalars['Boolean'];
   login: LoginOutput;
   me: User;
-  post: Post;
   postMedia: PostMedia;
   postMention: PostMention;
+  postReport: FindAllPostReportOutput;
   postTag: PostTag;
+  posts: FindAllPostOutput;
   rememberMe: LoginOutput;
   tag: Tag;
   user: User;
@@ -303,11 +372,6 @@ export type QueryLoginArgs = {
 };
 
 
-export type QueryPostArgs = {
-  id: Scalars['Int'];
-};
-
-
 export type QueryPostMediaArgs = {
   id: Scalars['Int'];
 };
@@ -318,8 +382,18 @@ export type QueryPostMentionArgs = {
 };
 
 
+export type QueryPostReportArgs = {
+  input?: InputMaybe<FindAllPostReportInput>;
+};
+
+
 export type QueryPostTagArgs = {
   id: Scalars['Int'];
+};
+
+
+export type QueryPostsArgs = {
+  input?: InputMaybe<FindAllPostInput>;
 };
 
 
@@ -343,13 +417,13 @@ export type RemoveFollowerOutput = {
 
 export type Role = {
   label: Scalars['String'];
-  level: Scalars['String'];
+  level: Scalars['Int'];
   users: User;
 };
 
 export type RoleWithoutUser = {
   label: Scalars['String'];
-  level: Scalars['String'];
+  level: Scalars['Int'];
 };
 
 export type SubUpdateProfileInput = {
@@ -416,7 +490,7 @@ export type User = {
   id: Scalars['Int'];
   isFollow: Scalars['Boolean'];
   /** Get user post */
-  posts: FindAllPostOutput;
+  posts: GetPostsOutput;
   /** Get user profile */
   profile: ProfileWithoutUser;
   roles: Array<RoleWithoutUser>;
@@ -435,7 +509,7 @@ export type UserFollowingsArgs = {
 
 
 export type UserPostsArgs = {
-  input?: InputMaybe<FollowInput>;
+  input?: InputMaybe<GetPostsInput>;
 };
 
 export type ToggleFollowMutationVariables = Types.Exact<{
