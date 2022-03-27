@@ -1,0 +1,48 @@
+.auth-input {
+  ~ .auth-label {
+    transition: 200ms ease;
+  }
+
+  &.auth-error {
+    ~ .auth-label {
+      @apply text-red-500;
+    }
+    @apply border-red-500;
+  }
+
+  &.auth-neutral {
+    &:focus,
+    &:not(:placeholder-shown) {
+      ~ .auth-label {
+        @apply text-primary;
+      }
+      @apply border-primary;
+    }
+  }
+
+  &.auth-success {
+    ~ .auth-label {
+      @apply text-primary;
+    }
+    @apply border-primary;
+  }
+
+  &:focus,
+  &:not(:placeholder-shown) {
+    ~ .auth-label {
+      background-color: white;
+      transform: translateY(-110%);
+      //   @apply text-sm;
+    }
+  }
+
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus,
+  &:-webkit-autofill:active {
+    // border: 1px solid green;
+    // -webkit-text-fill-color: green;
+    // -webkit-box-shadow: 0 0 0px 1000px #000 inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+}
