@@ -6,7 +6,7 @@ import AdminLayout, { getAdminLayout } from '@components/layouts/AdminLayout';
 import { useRedirectOnMount } from '../../hooks/useRedirectOnMount';
 
 const Admin: NextComponent = () => {
-  useRedirectOnMount('/admin/report/user');
+  useRedirectOnMount('/admin/report/post');
 
   return <div>Admin</div>;
 };

@@ -24,11 +24,11 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             </Link>
           </MenuItem>
           <SubMenu title="Report">
-            <MenuItem>
+            {/* <MenuItem>
               <Link className="block" href="/admin/report/user">
                 User
               </Link>
-            </MenuItem>
+            </MenuItem> */}
             <MenuItem>
               <Link className="block" href="/admin/report/post">
                 Post

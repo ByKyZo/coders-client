@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Profile from '@components/modules/profile/Profile';
-import { RawDraftContentState } from 'draft-js';
+import { Editor, RawDraftContentState } from 'draft-js';
 
 import PostMenu from '@components/modules/dropdown/post/PostMenu';
 import { PostMedia } from 'types';
@@ -12,16 +12,9 @@ import { Post as PostType } from 'types';
 interface IPostProps {
   context: 'display' | 'edit' | 'create';
   raw?: RawDraftContentState;
-  // withFollow?: boolean;
-
   post?: Partial<PostType>;
-
   onCreatePost?: () => void;
 }
-
-// TODO : Faire la modification des images
-// TODO : Rajouter la property id dans le state, l'id peut être null pour les nouveaux medias
-// TODO : Mais les id des medias delete seront push dans un tableau
 
 const Post = ({
   context,
@@ -51,7 +44,13 @@ const Post = ({
         />
       );
     } else {
-      return <PostDisplay initRaw={raw} initMedias={post?.medias} />;
+      return (
+        <PostDisplay
+          postId={post?.id!}
+          initRaw={raw}
+          initMedias={post?.medias}
+        />
+      );
     }
   };
 

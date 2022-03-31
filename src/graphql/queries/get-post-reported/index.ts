@@ -7,21 +7,12 @@ export default gql`
       list {
         id
         createdAt
-        draftRaw
         author {
           id
           username
         }
         reports {
           total
-          list {
-            reason
-            createdAt
-            user {
-              id
-              username
-            }
-          }
         }
       }
     }

@@ -71,7 +71,7 @@ const Followers: NextComponent = () => {
     }
   };
 
-  // A revoir
+  // TODO : A revoir
   useEffect(() => {
     if (followersQueryData?.user?.followers?.list?.length) {
       setPage(1);

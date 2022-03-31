@@ -6,6 +6,8 @@ import { useIsCurrentUser } from '@hooks/useIsCurrentUser';
 import { Menu, MenuItem } from '@szhsin/react-menu';
 import React, { useEffect, useState } from 'react';
 import { useReportPostMutation } from '../../../../graphql/mutations/report-post/index.generated';
+import { useDeletePostMutation } from '../../../../graphql/mutations/delete-post/index.generated';
+import { toastError, toastInfo } from '../../../../helpers/index';
 
 interface MyProfileMenuProps {
   postId: number;
@@ -21,9 +23,11 @@ const PostMenu = ({
   postId,
 }: MyProfileMenuProps) => {
   const [isOpenPostReportModal, setIsOpenPostReportModal] = useState(false);
+  const [deletePost] = useDeletePostMutation();
   const isCurrentUser = useIsCurrentUser({
     username: username,
   });
+  const { data } = useMeQuery();
 
   // TODO : Bug le menu ne reste pas sur lelement au scroll
 
@@ -31,6 +35,28 @@ const PostMenu = ({
     setIsOpenPostReportModal(false);
   };
   const handleOpenPostReportModal = () => setIsOpenPostReportModal(true);
+
+  const handleDeletePost = async () => {
+    try {
+      await deletePost({
+        variables: {
+          postId,
+        },
+        update: (cache) => {
+          const normalizedId = cache.identify({
+            id: postId,
+            __typename: 'Post',
+          });
+          cache.evict({ id: normalizedId });
+          cache.gc();
+        },
+      });
+
+      toastInfo('Post successfully deleted');
+    } catch {
+      toastError('Error while deleting post');
+    }
+  };
 
   return (
     <>
@@ -41,8 +67,10 @@ const PostMenu = ({
       />
       <Menu menuClassName="w-64" arrow menuButton={menuButton}>
         {isCurrentUser && <MenuItem onClick={onEdit}>Edit</MenuItem>}
-        {isCurrentUser && <MenuItem disabled>Delete</MenuItem>}
-        {!isCurrentUser && (
+        {isCurrentUser && (
+          <MenuItem onClick={handleDeletePost}>Delete</MenuItem>
+        )}
+        {data?.me && !isCurrentUser && (
           <MenuItem onClick={handleOpenPostReportModal}>Report</MenuItem>
         )}
       </Menu>

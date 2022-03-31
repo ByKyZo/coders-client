@@ -29,11 +29,6 @@ export type CreatePostInput = {
   postParentId?: InputMaybe<Scalars['Int']>;
 };
 
-export type CreatePostMediaInput = {
-  /** Example field (placeholder) */
-  exampleField: Scalars['Int'];
-};
-
 export type CreatePostMentionInput = {
   /** Example field (placeholder) */
   exampleField: Scalars['Int'];
@@ -145,6 +140,11 @@ export type GetPostsOutput = {
   total: Scalars['Int'];
 };
 
+export type GetSavedPostsOutput = {
+  list: Array<PostSave>;
+  total: Scalars['Int'];
+};
+
 export type LoginInput = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -157,20 +157,19 @@ export type LoginOutput = {
 
 export type Mutation = {
   createPost: Post;
-  createPostMedia: PostMedia;
   createPostMention: PostMention;
   createPostTag: PostTag;
   createTag: Tag;
   createUser: LoginOutput;
+  deletePost: Scalars['Int'];
   removeFollower: RemoveFollowerOutput;
-  removePostMedia: PostMedia;
   removePostMention: PostMention;
   removePostTag: PostTag;
   removeTag: Tag;
   reportPost: PostReport;
   toggleFollow: FollowMutationOutput;
+  toggleSavePost: PostSave;
   updatePost: Post;
-  updatePostMedia: PostMedia;
   updatePostMention: PostMention;
   updatePostTag: PostTag;
   updateSelf: User;
@@ -181,11 +180,6 @@ export type Mutation = {
 export type MutationCreatePostArgs = {
   input?: InputMaybe<CreatePostInput>;
   medias?: InputMaybe<Array<Scalars['Upload']>>;
-};
-
-
-export type MutationCreatePostMediaArgs = {
-  createPostMediaInput: CreatePostMediaInput;
 };
 
 
@@ -209,13 +203,13 @@ export type MutationCreateUserArgs = {
 };
 
 
-export type MutationRemoveFollowerArgs = {
-  followerId: Scalars['Int'];
+export type MutationDeletePostArgs = {
+  postId?: InputMaybe<Scalars['Float']>;
 };
 
 
-export type MutationRemovePostMediaArgs = {
-  id: Scalars['Int'];
+export type MutationRemoveFollowerArgs = {
+  followerId: Scalars['Int'];
 };
 
 
@@ -244,14 +238,14 @@ export type MutationToggleFollowArgs = {
 };
 
 
-export type MutationUpdatePostArgs = {
-  input?: InputMaybe<UpdatePostInput>;
-  medias?: InputMaybe<Array<Scalars['Upload']>>;
+export type MutationToggleSavePostArgs = {
+  postId: Scalars['Int'];
 };
 
 
-export type MutationUpdatePostMediaArgs = {
-  updatePostMediaInput: UpdatePostMediaInput;
+export type MutationUpdatePostArgs = {
+  input?: InputMaybe<UpdatePostInput>;
+  medias?: InputMaybe<Array<Scalars['Upload']>>;
 };
 
 
@@ -317,6 +311,12 @@ export type PostReportInput = {
   reason: Scalars['String'];
 };
 
+export type PostSave = {
+  createdAt: Scalars['DateTime'];
+  post: Post;
+  user: User;
+};
+
 export type PostTag = {
   post: Post;
   tag: Tag;
@@ -342,9 +342,10 @@ export type ProfileWithoutUser = {
 export type Query = {
   feed: FeedOuput;
   isFollow: Scalars['Boolean'];
+  isSavedPost: Scalars['Boolean'];
   login: LoginOutput;
   me: User;
-  postMedia: PostMedia;
+  post: Post;
   postMention: PostMention;
   postReport: FindAllPostReportOutput;
   postTag: PostTag;
@@ -367,13 +368,18 @@ export type QueryIsFollowArgs = {
 };
 
 
+export type QueryIsSavedPostArgs = {
+  postId: Scalars['Int'];
+};
+
+
 export type QueryLoginArgs = {
   input: LoginInput;
 };
 
 
-export type QueryPostMediaArgs = {
-  id: Scalars['Int'];
+export type QueryPostArgs = {
+  postId: Scalars['Int'];
 };
 
 
@@ -435,6 +441,7 @@ export type SubUpdateProfileInput = {
 
 export type Subscription = {
   follow: FollowMutationOutput;
+  reportPost: PostReport;
 };
 
 export type Tag = {
@@ -449,12 +456,6 @@ export type UpdatePostInput = {
   isFollowOnly?: InputMaybe<Scalars['Boolean']>;
   mediasRemovedIds?: InputMaybe<Array<Scalars['Int']>>;
   postParentId?: InputMaybe<Scalars['Int']>;
-};
-
-export type UpdatePostMediaInput = {
-  /** Example field (placeholder) */
-  exampleField?: InputMaybe<Scalars['Int']>;
-  id: Scalars['Int'];
 };
 
 export type UpdatePostMentionInput = {
@@ -494,6 +495,8 @@ export type User = {
   /** Get user profile */
   profile: ProfileWithoutUser;
   roles: Array<RoleWithoutUser>;
+  /** Get user post */
+  savedPost: GetSavedPostsOutput;
   username: Scalars['String'];
 };
 
@@ -512,12 +515,17 @@ export type UserPostsArgs = {
   input?: InputMaybe<GetPostsInput>;
 };
 
+
+export type UserSavedPostArgs = {
+  input?: InputMaybe<GetPostsInput>;
+};
+
 export type GetPostReportedQueryVariables = Types.Exact<{
   postsInput2?: Types.InputMaybe<Types.FindAllPostInput>;
 }>;
 
 
-export type GetPostReportedQuery = { posts: { total: number, list: Array<{ id: number, createdAt: any, draftRaw?: string | null, author: { id: number, username: string }, reports: { total: number, list: Array<{ reason: string, createdAt: any, user: { id: number, username: string } }> } }> } };
+export type GetPostReportedQuery = { posts: { total: number, list: Array<{ id: number, createdAt: any, author: { id: number, username: string }, reports: { total: number } }> } };
 
 
 export const GetPostReportedDocument = gql`
@@ -527,21 +535,12 @@ export const GetPostReportedDocument = gql`
     list {
       id
       createdAt
-      draftRaw
       author {
         id
         username
       }
       reports {
         total
-        list {
-          reason
-          createdAt
-          user {
-            id
-            username
-          }
-        }
       }
     }
   }

@@ -10,9 +10,11 @@ import { PostMedia } from 'types';
 interface IPostProps {
   initRaw?: RawDraftContentState;
   initMedias?: Omit<PostMedia, '__typename' | 'PostEdit'>[];
+  postId: number;
 }
 
 const PostDisplay = ({
+  postId,
   initRaw = { blocks: [], entityMap: {} },
   initMedias,
 }: IPostProps) => {
@@ -25,9 +27,8 @@ const PostDisplay = ({
         context={'display'}
         images={initMedias?.map((m) => m.path)!}
       />
-
       <div className="mt-2">
-        <DisplayActions />
+        <DisplayActions postId={postId} />
       </div>
     </div>
   );

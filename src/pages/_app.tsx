@@ -2,7 +2,6 @@ import { ApolloProvider } from '@apollo/client';
 import PageLoader from '@components/modules/PageLoader/PageLoader';
 import { RememberMeDocument } from '@graphql/queries/remember-me/index.generated';
 import { isBrowser, removeAccessToken } from '@helpers/index';
-import { store } from '@redux/store';
 import 'react-toastify/dist/ReactToastify.css';
 import '@styles/index.scss';
 import '@styles/tailwind.css';
@@ -12,7 +11,6 @@ import { useRouter } from 'next/router';
 import NProgress from 'nprogress';
 import { ReactElement, ReactNode, useEffect, useState } from 'react';
 import ReactModal from 'react-modal';
-import { Provider } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import { useApollo } from '../apollo-client';
 import { getAccessToken } from '../helpers/index';
@@ -72,24 +70,22 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
   const getLayout = Component.getLayout || ((page) => page);
 
   return (
-    <Provider store={store}>
-      <ApolloProvider client={apollo}>
-        <ToastContainer
-          position="bottom-center"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          limit={3}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-        />
-        <PageLoader isVisible={isLoading} />
-        {!isLoading && getLayout(<Component {...pageProps} />)}
-      </ApolloProvider>
-    </Provider>
+    <ApolloProvider client={apollo}>
+      <ToastContainer
+        position="bottom-center"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        limit={3}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+      />
+      <PageLoader isVisible={isLoading} />
+      {!isLoading && getLayout(<Component {...pageProps} />)}
+    </ApolloProvider>
   );
 };
 
