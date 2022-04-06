@@ -9,7 +9,6 @@ export default gql`
           post {
             id
             draftRaw
-            postParentId
             isFollowOnly
             createdAt
             medias {

@@ -25,7 +25,7 @@ const ConfirmModal = ({
   return (
     <ReactModal
       onRequestClose={onRequestClose}
-      overlayClassName="fixed top-0 left-0 w-full h-screen bg-black bg-opacity-60 flex justify-center items-center"
+      overlayClassName="fixed top-0 left-0 w-full h-screen bg-black bg-opacity-60 flex justify-center items-center z-50"
       className={'relative bg-white md:w-[600px] w-full flex flex-col'}
       {...rest}
     >

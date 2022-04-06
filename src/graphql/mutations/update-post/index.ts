@@ -5,7 +5,6 @@ export default gql`
     updatePost(input: $input, medias: $medias) {
       id
       draftRaw
-      postParentId
       isFollowOnly
       createdAt
       medias {

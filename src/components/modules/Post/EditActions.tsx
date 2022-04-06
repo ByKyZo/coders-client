@@ -10,6 +10,7 @@ interface EditActionsProps {
   disabledCreatePost: boolean;
   onCreatePost: () => void;
   onCancelEdit?: () => void;
+  buttonCreateLabel?: string;
 }
 
 const EditActions = ({
@@ -19,6 +20,7 @@ const EditActions = ({
   onCreatePost,
   onCancelEdit,
   context,
+  buttonCreateLabel,
   disabledCreatePost,
 }: EditActionsProps) => {
   return (
@@ -62,7 +64,11 @@ const EditActions = ({
             disabled={disabledCreatePost}
             rounded
           >
-            {context === 'edit' ? 'Save' : 'Tweet'}
+            {buttonCreateLabel
+              ? buttonCreateLabel
+              : context === 'edit'
+              ? 'Save'
+              : 'Tweet'}
           </Button>
         </div>
       </div>

@@ -540,56 +540,48 @@ export type UserSavedPostArgs = {
   input?: InputMaybe<GetPostsInput>;
 };
 
-export type GetPostReportsQueryVariables = Types.Exact<{
+export type TotalRepliesQueryVariables = Types.Exact<{
   postId: Types.Scalars['Int'];
 }>;
 
 
-export type GetPostReportsQuery = { post: { reports: { total: number, list: Array<{ createdAt: any, reason: string, user: { id: number, username: string } }> } } };
+export type TotalRepliesQuery = { post: { replies: { total: number } } };
 
 
-export const GetPostReportsDocument = gql`
-    query GetPostReports($postId: Int!) {
+export const TotalRepliesDocument = gql`
+    query TotalReplies($postId: Int!) {
   post(postId: $postId) {
-    reports {
+    replies {
       total
-      list {
-        createdAt
-        reason
-        user {
-          id
-          username
-        }
-      }
     }
   }
 }
     `;
 
 /**
- * __useGetPostReportsQuery__
+ * __useTotalRepliesQuery__
  *
- * To run a query within a React component, call `useGetPostReportsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPostReportsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useTotalRepliesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useTotalRepliesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetPostReportsQuery({
+ * const { data, loading, error } = useTotalRepliesQuery({
  *   variables: {
  *      postId: // value for 'postId'
  *   },
  * });
  */
-export function useGetPostReportsQuery(baseOptions: ApolloReactHooks.QueryHookOptions<GetPostReportsQuery, GetPostReportsQueryVariables>) {
+export function useTotalRepliesQuery(baseOptions: ApolloReactHooks.QueryHookOptions<TotalRepliesQuery, TotalRepliesQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return ApolloReactHooks.useQuery<GetPostReportsQuery, GetPostReportsQueryVariables>(GetPostReportsDocument, options);
+        return ApolloReactHooks.useQuery<TotalRepliesQuery, TotalRepliesQueryVariables>(TotalRepliesDocument, options);
       }
-export function useGetPostReportsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetPostReportsQuery, GetPostReportsQueryVariables>) {
+export function useTotalRepliesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<TotalRepliesQuery, TotalRepliesQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return ApolloReactHooks.useLazyQuery<GetPostReportsQuery, GetPostReportsQueryVariables>(GetPostReportsDocument, options);
+          return ApolloReactHooks.useLazyQuery<TotalRepliesQuery, TotalRepliesQueryVariables>(TotalRepliesDocument, options);
         }
-export type GetPostReportsQueryHookResult = ReturnType<typeof useGetPostReportsQuery>;
-export type GetPostReportsLazyQueryHookResult = ReturnType<typeof useGetPostReportsLazyQuery>;
-export type GetPostReportsQueryResult = Apollo.QueryResult<GetPostReportsQuery, GetPostReportsQueryVariables>;
+export type TotalRepliesQueryHookResult = ReturnType<typeof useTotalRepliesQuery>;
+export type TotalRepliesLazyQueryHookResult = ReturnType<typeof useTotalRepliesLazyQuery>;
+export type TotalRepliesQueryResult = Apollo.QueryResult<TotalRepliesQuery, TotalRepliesQueryVariables>;

@@ -78,26 +78,14 @@ const PostEdit = ({
 
       // console.log('correctedMedias', correctedMedias);
       // console.log('deletedMedias', deletedMedias);
-      console.log({
-        variables: {
-          input: {
-            id: postId!,
-            draftRaw: JSON.stringify(postContent.raw),
-            postParentId: null,
-            isFollowOnly: null,
-            mediasRemovedIds: deletedMedias,
-          },
-          medias: correctedMedias,
-        },
-      });
 
       const { data } = await updatePost({
         variables: {
           input: {
             id: postId!,
             draftRaw: JSON.stringify(postContent.raw),
-            postParentId: null,
-            isFollowOnly: null,
+            // postParentId: null,
+            // isFollowOnly: null,
             mediasRemovedIds: deletedMedias,
           },
           medias: correctedMedias,

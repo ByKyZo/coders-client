@@ -4,7 +4,6 @@ import PostImagesGrid from '@components/elements/post-images-grid/PostImagesGrid
 import Editor from '@components/elements/editor/Editor';
 import { RawDraftContentState } from 'draft-js';
 import DisplayActions from './DisplayActions';
-
 import { PostMedia } from 'types';
 
 interface IPostProps {

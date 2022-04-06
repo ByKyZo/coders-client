@@ -24,7 +24,7 @@ const Modal = ({
   return (
     <ReactModal
       onRequestClose={closeFn}
-      overlayClassName="fixed top-0 left-0 w-full h-screen bg-black bg-opacity-60 flex justify-center items-center"
+      overlayClassName="fixed top-0 left-0 w-full h-screen bg-black bg-opacity-60 flex justify-center items-center z-50"
       className={
         'relative bg-white md:w-[600px] md:h-3/5 h-full w-full flex flex-col'
       }
@@ -32,13 +32,6 @@ const Modal = ({
     >
       <div className="bg-white backdrop-opacity-60 w-full absolute top-0 left-0 flex justify-between items-center h-12 px-6">
         <div className="flex items-center">
-          {/* <button
-            aria-label={`close ${title || ''} modal`}
-            className="mr-6"
-            onClick={closeFn}
-          >
-            <MdClose />
-          </button> */}
           <Button
             aria-label={`close ${title || ''} modal`}
             type="submit"

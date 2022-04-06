@@ -278,9 +278,20 @@ export type Post = {
   id: Scalars['Int'];
   isFollowOnly?: Maybe<Scalars['Boolean']>;
   medias: Array<PostMedia>;
-  postParentId?: Maybe<Scalars['Int']>;
+  parents: PostPaginationOuput;
+  replies: PostPaginationOuput;
   reports: GetPostReportsOutput;
   user: User;
+};
+
+
+export type PostParentsArgs = {
+  input?: InputMaybe<PostPaginationInput>;
+};
+
+
+export type PostRepliesArgs = {
+  input?: InputMaybe<PostPaginationInput>;
 };
 
 
@@ -297,6 +308,16 @@ export type PostMedia = {
 export type PostMention = {
   post: Post;
   user: User;
+};
+
+export type PostPaginationInput = {
+  page?: InputMaybe<Scalars['Int']>;
+  take?: InputMaybe<Scalars['Int']>;
+};
+
+export type PostPaginationOuput = {
+  list: Array<Post>;
+  total: Scalars['Int'];
 };
 
 export type PostReport = {
@@ -455,7 +476,6 @@ export type UpdatePostInput = {
   id: Scalars['Int'];
   isFollowOnly?: InputMaybe<Scalars['Boolean']>;
   mediasRemovedIds?: InputMaybe<Array<Scalars['Int']>>;
-  postParentId?: InputMaybe<Scalars['Int']>;
 };
 
 export type UpdatePostMentionInput = {
@@ -525,7 +545,7 @@ export type PostQueryVariables = Types.Exact<{
 }>;
 
 
-export type PostQuery = { post: { id: number, draftRaw?: string | null, postParentId?: number | null, isFollowOnly?: boolean | null, createdAt: any, medias: Array<{ id: number, path: string }>, author: { id: number, username: string, profile: { profilePicture?: string | null, displayname?: string | null } } } };
+export type PostQuery = { post: { id: number, draftRaw?: string | null, isFollowOnly?: boolean | null, createdAt: any, medias: Array<{ id: number, path: string }>, author: { id: number, username: string, profile: { profilePicture?: string | null, displayname?: string | null } } } };
 
 
 export const PostDocument = gql`
@@ -533,7 +553,6 @@ export const PostDocument = gql`
   post(postId: $postId) {
     id
     draftRaw
-    postParentId
     isFollowOnly
     createdAt
     medias {

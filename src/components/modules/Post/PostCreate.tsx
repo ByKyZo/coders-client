@@ -12,10 +12,17 @@ import { EditorState } from 'draft-js';
 const IMAGE_MAX_SIZE = 10_000_000;
 const ALLOWED_MIME = ['image/jpeg', 'image/png', 'image/webp'];
 
-interface IPostProps {}
+interface IPostProps {
+  parentPostId?: number;
+  editorPlacerholder?: string;
+  buttonCreateLabel?: string;
+}
 
-const PostCreate = ({}: IPostProps) => {
-  //   const [editorState, setEditorState] = useState<EditorState>();
+const PostCreate = ({
+  parentPostId,
+  editorPlacerholder,
+  buttonCreateLabel,
+}: IPostProps) => {
   const [toolbarRef, setToolbarRef] = useRefUpdate<HTMLDivElement>();
   const [postContent, setPostContent] = useState({
     plain: '',
@@ -36,7 +43,21 @@ const PostCreate = ({}: IPostProps) => {
         cache.modify({
           fields: {
             feed(oldFeed = {}) {
+              if (parentPostId) return;
+
               return { ...oldFeed, list: [createPost, ...oldFeed.list] };
+            },
+            post(oldPost = {}) {
+              if (!parentPostId) return;
+              if (+parentPostId !== +oldPost.id) return;
+
+              return {
+                ...oldPost,
+                replies: {
+                  ...(oldPost.replies || {}),
+                  list: [createPost, ...(oldPost.replies?.list || [])],
+                },
+              };
             },
           },
         });
@@ -76,7 +97,7 @@ const PostCreate = ({}: IPostProps) => {
         variables: {
           input: {
             draftRaw: JSON.stringify(postContent.raw),
-            postParentId: null,
+            postParentId: parentPostId,
             isFollowOnly: null,
           },
           medias: medias.medias.map((m) => m.file),
@@ -109,6 +130,7 @@ const PostCreate = ({}: IPostProps) => {
         wrapperClassname="mt-2"
         readOnly={false}
         onChange={setPostContent}
+        placeholder={editorPlacerholder}
         // editorStateValue={setEditorState}
       />
 
@@ -121,6 +143,7 @@ const PostCreate = ({}: IPostProps) => {
 
       <div className="mt-2">
         <EditActions
+          buttonCreateLabel={buttonCreateLabel}
           context={'create'}
           loading={loading}
           onCreatePost={handleSubmit}

@@ -93,6 +93,21 @@ function createApolloClient(ctx?: any) {
     // link: link,
     cache: new InMemoryCache({
       // typePolicies: {
+      //   Feed: {
+      //     fields: {
+      //       list: {
+      //         merge(existing: any, incoming: any) {
+      //           console.log('MERGE LIST');
+      //           console.log('MERGE LIST');
+      //           console.log('MERGE LIST');
+      //           console.log('MERGE LIST');
+      //           return [...existing, ...incoming];
+      //         },
+      //       },
+      //     },
+      //   },
+      // },
+      // typePolicies: {
       //   Query: {
       //     fields: {
       // user: {

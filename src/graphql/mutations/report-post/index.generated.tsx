@@ -278,9 +278,20 @@ export type Post = {
   id: Scalars['Int'];
   isFollowOnly?: Maybe<Scalars['Boolean']>;
   medias: Array<PostMedia>;
-  postParentId?: Maybe<Scalars['Int']>;
+  parents: PostPaginationOuput;
+  replies: PostPaginationOuput;
   reports: GetPostReportsOutput;
   user: User;
+};
+
+
+export type PostParentsArgs = {
+  input?: InputMaybe<PostPaginationInput>;
+};
+
+
+export type PostRepliesArgs = {
+  input?: InputMaybe<PostPaginationInput>;
 };
 
 
@@ -297,6 +308,16 @@ export type PostMedia = {
 export type PostMention = {
   post: Post;
   user: User;
+};
+
+export type PostPaginationInput = {
+  page?: InputMaybe<Scalars['Int']>;
+  take?: InputMaybe<Scalars['Int']>;
+};
+
+export type PostPaginationOuput = {
+  list: Array<Post>;
+  total: Scalars['Int'];
 };
 
 export type PostReport = {
@@ -455,7 +476,6 @@ export type UpdatePostInput = {
   id: Scalars['Int'];
   isFollowOnly?: InputMaybe<Scalars['Boolean']>;
   mediasRemovedIds?: InputMaybe<Array<Scalars['Int']>>;
-  postParentId?: InputMaybe<Scalars['Int']>;
 };
 
 export type UpdatePostMentionInput = {

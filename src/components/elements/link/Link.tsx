@@ -12,6 +12,7 @@ interface CustomLinkProps extends React.PropsWithChildren<LinkProps> {
   className?: string;
   ref?: React.Ref<HTMLAnchorElement>;
   activeOnRootPathName?: boolean;
+  onClick?: (arg: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void;
 }
 
 const Link = ({
@@ -22,6 +23,7 @@ const Link = ({
   withHover,
   children,
   ref,
+  onClick,
   ...rest
 }: CustomLinkProps) => {
   const router = useRouter();
@@ -40,6 +42,7 @@ const Link = ({
     <NextLink {...rest}>
       <a
         ref={ref}
+        onClick={onClick}
         className={`${className ? className : ''} ${
           isCurrent ? activeClassName : notActiveClassName
         } ${withHover ? 'hover:underline' : ''}`}

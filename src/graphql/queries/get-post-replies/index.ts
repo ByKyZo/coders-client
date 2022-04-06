@@ -1,9 +1,9 @@
 import { gql } from '@apollo/client';
 
 export default gql`
-  query Posts($username: String!, $input: GetPostsInput) {
-    user(username: $username) {
-      posts(input: $input) {
+  query PostReplies($postId: Int!) {
+    post(postId: $postId) {
+      replies {
         total
         list {
           id

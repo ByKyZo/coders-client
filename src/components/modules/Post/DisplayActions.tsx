@@ -7,15 +7,23 @@ import { AiOutlineHeart, AiOutlineRetweet } from 'react-icons/ai';
 import { useIsSavedPostQuery } from '../../../graphql/queries/is-saved-post/index.generated';
 import { useToggleSavePostMutation } from '../../../graphql/mutations/toggle-save-post/index.generated';
 import { toastError } from '../../../helpers/index';
+import { useTotalRepliesQuery } from '../../../graphql/queries/get-total-replies/index.generated';
 interface IDisplayActionsProps {
   postId: number;
 }
 const DisplayActions = ({ postId }: IDisplayActionsProps) => {
+  const { data: totalRepliees } = useTotalRepliesQuery({
+    variables: {
+      postId,
+    },
+  });
+
   const { data: isSavedPost, refetch } = useIsSavedPostQuery({
     variables: {
       postId,
     },
   });
+
   const [toggleSavePost] = useToggleSavePostMutation({
     variables: {
       postId,
@@ -33,9 +41,12 @@ const DisplayActions = ({ postId }: IDisplayActionsProps) => {
     <div className="flex items-center justify-between max-w-[80%]">
       <Button
         icon={<VscComment />}
+        disabled
         onlyIcon
+        className="pointer-events-none"
         styleType="transparent"
         sizeType="large"
+        label={totalRepliees?.post.replies.total!}
         rounded
       />
       <Button

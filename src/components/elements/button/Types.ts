@@ -19,6 +19,7 @@ export type BaseProps = {
   onlyIcon?: boolean;
   isLoading?: boolean;
   rounded?: boolean;
+  label?: string | number;
 };
 
 export type ButtonAsButton = BaseProps &

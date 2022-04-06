@@ -54,7 +54,7 @@ const AppLayout = ({
         )}
       </main>
       {!me && (
-        <div className="bg-white  border-t fixed bottom-0 w-full py-12 flex justify-center items-center">
+        <div className="bg-white  border-t fixed bottom-0 w-full py-12 flex justify-center items-center z-50">
           <Button
             className="mr-4"
             as="link"

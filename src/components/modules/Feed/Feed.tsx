@@ -1,11 +1,8 @@
 import Post from '@components/modules/Post/Post';
-import { NextComponent } from '@typescript/index';
 import React, { useEffect, useState } from 'react';
 import { useFeedQuery } from '@graphql/queries/get-feed/index.generated';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import { isEmpty, toastError } from '@helpers/index';
-import { useRouter } from 'next/router';
-import { useFollowingsQuery } from '@graphql/queries/get-followings/index.generated';
+import { toastError } from '@helpers/index';
 import { useTriggerScrollFix } from '@hooks/useTriggerScrollFix';
 import Loader from '@components/elements/loader/Loader';
 import { FeedOptions } from '@graphql/queries/get-feed/index.generated';
@@ -20,6 +17,7 @@ const Feed = ({ options }: IFeedProps) => {
     fetchMore,
     refetch,
   } = useFeedQuery({
+    fetchPolicy: 'cache-and-network',
     variables: {
       input: {
         page: 0,

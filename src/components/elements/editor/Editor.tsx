@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   EditorState as DraftEditorState,
   convertFromRaw,
@@ -28,11 +28,10 @@ interface EditorProps {
     raw: RawDraftContentState;
   }) => void;
   readOnly?: boolean;
+  placeholder?: string;
 }
 
-const parseJson = (value: any) => {
-  return JSON.parse(JSON.stringify(value || {}));
-};
+const parseJson = (value: any) => JSON.parse(JSON.stringify(value || {}));
 
 const Editor = ({
   onChange,
@@ -40,14 +39,23 @@ const Editor = ({
   readOnly,
   setRaw,
   wrapperClassname,
+  placeholder,
   editorStateValue,
   emojiButtonTriggerPortalDestinationElement,
 }: EditorProps) => {
-  const [editorState, setEditorState] = useState(
-    DraftEditorState.createWithContent(
-      convertFromRaw(parseJson(initRaw || { blocks: [], entityMap: {} }))
-    )
-  );
+  const getValidContentState = useCallback(() => {
+    try {
+      return DraftEditorState.createWithContent(
+        convertFromRaw(parseJson(initRaw))
+      );
+    } catch {
+      return DraftEditorState.createWithContent(
+        convertFromRaw({ blocks: [], entityMap: {} })
+      );
+    }
+  }, [initRaw]);
+
+  const [editorState, setEditorState] = useState(getValidContentState());
   const isMount = useMount();
 
   const { component: UserMentionsSuggestions, plugins: mentionsPlugin } =
@@ -120,7 +128,13 @@ const Editor = ({
     <>
       <div className={`${wrapperClassname}`}>
         <DraftEditor
-          placeholder={!readOnly ? 'Write something...' : undefined}
+          placeholder={
+            !readOnly
+              ? placeholder
+                ? placeholder
+                : 'Write something...'
+              : undefined
+          }
           readOnly={readOnly}
           editorState={editorState}
           onChange={setEditorState}

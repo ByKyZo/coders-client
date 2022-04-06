@@ -540,25 +540,35 @@ export type UserSavedPostArgs = {
   input?: InputMaybe<GetPostsInput>;
 };
 
-export type GetPostReportsQueryVariables = Types.Exact<{
+export type PostRepliesQueryVariables = Types.Exact<{
   postId: Types.Scalars['Int'];
 }>;
 
 
-export type GetPostReportsQuery = { post: { reports: { total: number, list: Array<{ createdAt: any, reason: string, user: { id: number, username: string } }> } } };
+export type PostRepliesQuery = { post: { replies: { total: number, list: Array<{ id: number, draftRaw?: string | null, isFollowOnly?: boolean | null, createdAt: any, medias: Array<{ id: number, path: string }>, author: { id: number, username: string, profile: { profilePicture?: string | null, displayname?: string | null } } }> } } };
 
 
-export const GetPostReportsDocument = gql`
-    query GetPostReports($postId: Int!) {
+export const PostRepliesDocument = gql`
+    query PostReplies($postId: Int!) {
   post(postId: $postId) {
-    reports {
+    replies {
       total
       list {
+        id
+        draftRaw
+        isFollowOnly
         createdAt
-        reason
-        user {
+        medias {
+          id
+          path
+        }
+        author {
           id
           username
+          profile {
+            profilePicture
+            displayname
+          }
         }
       }
     }
@@ -567,29 +577,29 @@ export const GetPostReportsDocument = gql`
     `;
 
 /**
- * __useGetPostReportsQuery__
+ * __usePostRepliesQuery__
  *
- * To run a query within a React component, call `useGetPostReportsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPostReportsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `usePostRepliesQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePostRepliesQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetPostReportsQuery({
+ * const { data, loading, error } = usePostRepliesQuery({
  *   variables: {
  *      postId: // value for 'postId'
  *   },
  * });
  */
-export function useGetPostReportsQuery(baseOptions: ApolloReactHooks.QueryHookOptions<GetPostReportsQuery, GetPostReportsQueryVariables>) {
+export function usePostRepliesQuery(baseOptions: ApolloReactHooks.QueryHookOptions<PostRepliesQuery, PostRepliesQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return ApolloReactHooks.useQuery<GetPostReportsQuery, GetPostReportsQueryVariables>(GetPostReportsDocument, options);
+        return ApolloReactHooks.useQuery<PostRepliesQuery, PostRepliesQueryVariables>(PostRepliesDocument, options);
       }
-export function useGetPostReportsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetPostReportsQuery, GetPostReportsQueryVariables>) {
+export function usePostRepliesLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<PostRepliesQuery, PostRepliesQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return ApolloReactHooks.useLazyQuery<GetPostReportsQuery, GetPostReportsQueryVariables>(GetPostReportsDocument, options);
+          return ApolloReactHooks.useLazyQuery<PostRepliesQuery, PostRepliesQueryVariables>(PostRepliesDocument, options);
         }
-export type GetPostReportsQueryHookResult = ReturnType<typeof useGetPostReportsQuery>;
-export type GetPostReportsLazyQueryHookResult = ReturnType<typeof useGetPostReportsLazyQuery>;
-export type GetPostReportsQueryResult = Apollo.QueryResult<GetPostReportsQuery, GetPostReportsQueryVariables>;
+export type PostRepliesQueryHookResult = ReturnType<typeof usePostRepliesQuery>;
+export type PostRepliesLazyQueryHookResult = ReturnType<typeof usePostRepliesLazyQuery>;
+export type PostRepliesQueryResult = Apollo.QueryResult<PostRepliesQuery, PostRepliesQueryVariables>;

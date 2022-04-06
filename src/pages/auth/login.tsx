@@ -42,12 +42,9 @@ const Login = () => {
           throw new Error();
         }
 
-        console.log('Connected', data);
-
         loginUser(data.login.accessToken);
       } catch (err: any) {
         setIsError(true);
-        console.log('Authentication failed : ', err.message);
       }
 
       setIsLoading(false);

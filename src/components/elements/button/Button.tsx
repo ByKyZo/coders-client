@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useRef } from 'react';
 import { Transition } from 'react-transition-group';
 import Loader from '../loader/Loader';
+import { isEmpty } from '../../../helpers/index';
 import {
   ButtonAsButton,
   ButtonAsExternal,
@@ -115,6 +116,7 @@ const Button = (props: ButtonProps): JSX.Element => {
       rounded,
       icon,
       onlyIcon,
+      label,
       as,
       ...rest
     } = props;
@@ -135,7 +137,6 @@ const Button = (props: ButtonProps): JSX.Element => {
           </span>
         ) : (
           <>
-            {/* <span>{icon}</span> */}
             {icon}
             {!onlyIcon && (
               <span
@@ -149,6 +150,7 @@ const Button = (props: ButtonProps): JSX.Element => {
             )}
           </>
         )}
+        {!isEmpty(label) && <span className="ml-2 text-sm">{label}</span>}
       </button>
     );
   }
