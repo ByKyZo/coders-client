@@ -34,9 +34,14 @@ export type ButtonAsUnstyled = Omit<ButtonAsButton, 'as' | 'styleType'> & {
 };
 
 export type ButtonAsLink = BaseProps &
-  Omit<LinkProps, keyof BaseProps> & {
+  Omit<
+    LinkProps & {
+      linkAs?: string;
+    },
+    keyof BaseProps
+  > & {
     as: 'link';
-    linkAs?: string;
+    // linkAs?: string;
   };
 
 export type ButtonAsExternal = BaseProps &
