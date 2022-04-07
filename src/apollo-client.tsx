@@ -13,15 +13,15 @@ function createApolloClient(ctx?: any) {
 
   // TODO : Penser a changer les endpoint en fonction de l'environnement
   const httpEndpoint: TNodeEnv = {
-    // production: 'https://coders-gql-api.herokuapp.com/graphql',
-    production: 'http://localhost:8000/graphql',
+    production: 'https://coders-gql-api.herokuapp.com/graphql',
+    // production: 'http://localhost:8000/graphql',
     development: 'http://localhost:8000/graphql',
     test: 'http://localhost:8000/graphql',
   };
 
   const wsEndpoint: TNodeEnv = {
-    // production: 'ws://coders-gql-api.herokuapp.com/graphql',
-    production: 'ws://localhost:8000/graphql',
+    production: 'ws://coders-gql-api.herokuapp.com/graphql',
+    // production: 'ws://localhost:8000/graphql',
     development: 'ws://localhost:8000/graphql',
     test: 'ws://localhost:8000/graphql',
   };
