@@ -16,6 +16,7 @@ function createApolloClient(ctx?: any) {
     production: 'https://coders-gql-api.herokuapp.com/graphql',
     // production: 'http://localhost:8000/graphql',
     development: 'http://localhost:8000/graphql',
+    // development: 'https://coders-gql-api.herokuapp.com/graphql',
     test: 'http://localhost:8000/graphql',
   };
 
@@ -23,6 +24,7 @@ function createApolloClient(ctx?: any) {
     production: 'ws://coders-gql-api.herokuapp.com/graphql',
     // production: 'ws://localhost:8000/graphql',
     development: 'ws://localhost:8000/graphql',
+    // development: 'ws://coders-gql-api.herokuapp.com/graphql',
     test: 'ws://localhost:8000/graphql',
   };
 
