@@ -21,8 +21,8 @@ function createApolloClient(ctx?: any) {
   };
 
   const wsEndpoint: TNodeEnv = {
-    // production: 'ws://coders-gql-api.herokuapp.com/graphql',
-    production: 'ws://localhost:8000/graphql',
+    production: 'ws://coders-gql-api.herokuapp.com/graphql',
+    // production: 'ws://localhost:8000/graphql',
     development: 'ws://localhost:8000/graphql',
     // development: 'ws://coders-gql-api.herokuapp.com/graphql',
     test: 'ws://localhost:8000/graphql',
