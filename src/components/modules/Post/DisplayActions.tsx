@@ -1,9 +1,7 @@
 import Button from '@components/elements/button/Button';
-import React from 'react';
-import { BsBookmark, BsHeart } from 'react-icons/bs';
-import { GoComment } from 'react-icons/go';
+import React, { useEffect, useState } from 'react';
 import { VscComment } from 'react-icons/vsc';
-import { AiFillHeart, AiOutlineHeart, AiOutlineRetweet } from 'react-icons/ai';
+import { AiFillHeart, AiOutlineHeart } from 'react-icons/ai';
 import { useIsSavedPostQuery } from '../../../graphql/queries/is-saved-post/index.generated';
 import { useToggleSavePostMutation } from '../../../graphql/mutations/toggle-save-post/index.generated';
 import { toastError } from '../../../helpers/index';
@@ -13,22 +11,45 @@ import { useLikeSubscription } from '../../../graphql/subscriptions/like/index.g
 import { usePostLikeQuery } from '../../../graphql/queries/get-post-likes/index.generated';
 import { useIsLikedPostQuery } from '../../../graphql/queries/is-liked-post/index.generated';
 import { useGetCurrentUserIdQuery } from '../../../graphql/queries/get-current-userId/index.generated';
-import { useRouter } from 'next/router';
 import { RiBookmarkFill, RiBookmarkLine } from 'react-icons/ri';
 interface IDisplayActionsProps {
   postId: number;
 }
 const DisplayActions = ({ postId }: IDisplayActionsProps) => {
   const { data: currentUserId } = useGetCurrentUserIdQuery();
-  const router = useRouter();
 
-  const { data: totalRepliees } = useTotalRepliesQuery({
+  const {
+    data: isLikedPost,
+    loading: zezelz,
+    refetch: refetchIsLikedPost,
+  } = useIsLikedPostQuery({
     variables: {
       postId,
     },
   });
 
-  const { data: isSavedPost, refetch } = useIsSavedPostQuery({
+  const {
+    data: isSavedPost,
+    loading: loadQQ,
+    refetch,
+  } = useIsSavedPostQuery({
+    variables: {
+      postId,
+    },
+  });
+
+  const [isLiked, setIsLiked] = useState(Boolean(isLikedPost?.isLikedPost));
+  const [isSaved, setisSaved] = useState(Boolean(isSavedPost?.isSavedPost));
+
+  useEffect(() => {
+    setisSaved(Boolean(isSavedPost?.isSavedPost));
+  }, [isSavedPost]);
+
+  useEffect(() => {
+    setIsLiked(Boolean(isLikedPost?.isLikedPost));
+  }, [isLikedPost]);
+
+  const { data: totalRepliees } = useTotalRepliesQuery({
     variables: {
       postId,
     },
@@ -53,23 +74,32 @@ const DisplayActions = ({ postId }: IDisplayActionsProps) => {
     },
   });
 
+  const handkeToggleLikePost = async () => {
+    try {
+      setIsLiked((oldState) => !oldState);
+      await toggleLikePost();
+    } catch {
+      setIsLiked((oldState) => !oldState);
+    }
+  };
+
+  const handkeToggleSavePost = async () => {
+    try {
+      setisSaved((oldState) => !oldState);
+      await toggleSavePost();
+    } catch {
+      setisSaved((oldState) => !oldState);
+    }
+  };
+
   const { data: postLike, refetch: refetchPostLike } = usePostLikeQuery({
     variables: {
       postId,
     },
   });
 
-  const { data: isLikedPost, refetch: refetchIsLikedPost } =
-    useIsLikedPostQuery({
-      variables: {
-        postId,
-      },
-    });
-
   useLikeSubscription({
     onSubscriptionData: async (data) => {
-      console.log('like subscript');
-
       if (data.subscriptionData.data?.toggle_like.post.id === postId) {
         try {
           await refetchPostLike();
@@ -106,29 +136,14 @@ const DisplayActions = ({ postId }: IDisplayActionsProps) => {
       /> */}
       <Button
         icon={
-          isLikedPost?.isLikedPost ? (
+          isLiked ? (
             <AiFillHeart className="text-red-500" />
           ) : (
             <AiOutlineHeart />
           )
-
-          // <BsHeart
-          //   className={`${
-          //     isLikedPost?.isLikedPost ? ' stroke-blue-500 stroke-[1px]' : ''
-          //   }`}
-          // />
         }
         // @ts-ignore
-        onClick={() => {
-          try {
-            (async () => {
-              await toggleLikePost();
-            })();
-          } catch (err) {
-            // toastError('')
-            // router.push('/auth/login');
-          }
-        }}
+        onClick={handkeToggleLikePost}
         onlyIcon
         styleType="transparent"
         sizeType="large"
@@ -137,20 +152,15 @@ const DisplayActions = ({ postId }: IDisplayActionsProps) => {
       />
       <Button
         icon={
-          isSavedPost?.isSavedPost ? (
+          isSaved ? (
             <RiBookmarkFill className="text-gray-900" />
           ) : (
             <RiBookmarkLine />
           )
-          // <BsBookmark
-          //   className={`${
-          //     isSavedPost?.isSavedPost ? ' stroke-blue-500 stroke-[1px]' : ''
-          //   }`}
-          // />
         }
         onlyIcon
         // @ts-ignore
-        onClick={toggleSavePost}
+        onClick={handkeToggleSavePost}
         styleType="transparent"
         sizeType="large"
         rounded
