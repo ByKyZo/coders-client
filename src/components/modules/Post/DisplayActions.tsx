@@ -56,13 +56,6 @@ const DisplayActions = ({ postId }: IDisplayActionsProps) => {
     variables: {
       postId,
     },
-    onError: (err) => {
-      console.log('like error : ', err.extraInfo);
-      console.log('like error : ', err.clientErrors);
-      console.log('like error : ', err.cause);
-      console.log('like error : ', err.graphQLErrors);
-      // err.
-    },
   });
 
   const { data: isLikedPost, refetch: refetchIsLikedPost } =
