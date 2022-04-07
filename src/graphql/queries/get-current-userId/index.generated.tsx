@@ -580,56 +580,43 @@ export type UserSavedPostArgs = {
   input?: InputMaybe<GetPostsInput>;
 };
 
-export type GetPostReportsQueryVariables = Types.Exact<{
-  postId: Types.Scalars['Int'];
-}>;
+export type GetCurrentUserIdQueryVariables = Types.Exact<{ [key: string]: never; }>;
 
 
-export type GetPostReportsQuery = { post: { reports: { total: number, list: Array<{ createdAt: any, reason: string, user: { id: number, username: string } }> } } };
+export type GetCurrentUserIdQuery = { me: { id: number } };
 
 
-export const GetPostReportsDocument = gql`
-    query GetPostReports($postId: Int!) {
-  post(postId: $postId) {
-    reports {
-      total
-      list {
-        createdAt
-        reason
-        user {
-          id
-          username
-        }
-      }
-    }
+export const GetCurrentUserIdDocument = gql`
+    query getCurrentUserId {
+  me {
+    id
   }
 }
     `;
 
 /**
- * __useGetPostReportsQuery__
+ * __useGetCurrentUserIdQuery__
  *
- * To run a query within a React component, call `useGetPostReportsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPostReportsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetCurrentUserIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCurrentUserIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetPostReportsQuery({
+ * const { data, loading, error } = useGetCurrentUserIdQuery({
  *   variables: {
- *      postId: // value for 'postId'
  *   },
  * });
  */
-export function useGetPostReportsQuery(baseOptions: ApolloReactHooks.QueryHookOptions<GetPostReportsQuery, GetPostReportsQueryVariables>) {
+export function useGetCurrentUserIdQuery(baseOptions?: ApolloReactHooks.QueryHookOptions<GetCurrentUserIdQuery, GetCurrentUserIdQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return ApolloReactHooks.useQuery<GetPostReportsQuery, GetPostReportsQueryVariables>(GetPostReportsDocument, options);
+        return ApolloReactHooks.useQuery<GetCurrentUserIdQuery, GetCurrentUserIdQueryVariables>(GetCurrentUserIdDocument, options);
       }
-export function useGetPostReportsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetPostReportsQuery, GetPostReportsQueryVariables>) {
+export function useGetCurrentUserIdLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetCurrentUserIdQuery, GetCurrentUserIdQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return ApolloReactHooks.useLazyQuery<GetPostReportsQuery, GetPostReportsQueryVariables>(GetPostReportsDocument, options);
+          return ApolloReactHooks.useLazyQuery<GetCurrentUserIdQuery, GetCurrentUserIdQueryVariables>(GetCurrentUserIdDocument, options);
         }
-export type GetPostReportsQueryHookResult = ReturnType<typeof useGetPostReportsQuery>;
-export type GetPostReportsLazyQueryHookResult = ReturnType<typeof useGetPostReportsLazyQuery>;
-export type GetPostReportsQueryResult = Apollo.QueryResult<GetPostReportsQuery, GetPostReportsQueryVariables>;
+export type GetCurrentUserIdQueryHookResult = ReturnType<typeof useGetCurrentUserIdQuery>;
+export type GetCurrentUserIdLazyQueryHookResult = ReturnType<typeof useGetCurrentUserIdLazyQuery>;
+export type GetCurrentUserIdQueryResult = Apollo.QueryResult<GetCurrentUserIdQuery, GetCurrentUserIdQueryVariables>;

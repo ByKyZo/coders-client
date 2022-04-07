@@ -158,7 +158,7 @@ const ProfileLayout: NextComponent<ProfileLayoutProps> = ({
                 <HorizontalTabItem href={`/${userSsrMemo?.username}`}>
                   Tweets
                 </HorizontalTabItem>
-                <HorizontalTabItem
+                {/* <HorizontalTabItem
                   href={`/${userSsrMemo?.username}/with_replies`}
                 >
                   Tweets & Replies
@@ -174,7 +174,7 @@ const ProfileLayout: NextComponent<ProfileLayoutProps> = ({
                   href={`/${userSsrMemo?.username}/followings`}
                 >
                   Likes
-                </HorizontalTabItem>
+                </HorizontalTabItem> */}
               </ul>
             </nav>
           )}

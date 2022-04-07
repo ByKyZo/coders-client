@@ -145,6 +145,11 @@ export type GetSavedPostsOutput = {
   total: Scalars['Int'];
 };
 
+export type LikeMutationOutput = {
+  post: Post;
+  user: User;
+};
+
 export type LoginInput = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -168,6 +173,7 @@ export type Mutation = {
   removeTag: Tag;
   reportPost: PostReport;
   toggleFollow: FollowMutationOutput;
+  toggleLike: PostLike;
   toggleSavePost: PostSave;
   updatePost: Post;
   updatePostMention: PostMention;
@@ -238,6 +244,11 @@ export type MutationToggleFollowArgs = {
 };
 
 
+export type MutationToggleLikeArgs = {
+  postId: Scalars['Float'];
+};
+
+
 export type MutationToggleSavePostArgs = {
   postId: Scalars['Int'];
 };
@@ -277,11 +288,17 @@ export type Post = {
   draftRaw?: Maybe<Scalars['String']>;
   id: Scalars['Int'];
   isFollowOnly?: Maybe<Scalars['Boolean']>;
+  likes: PostLikeOutput;
   medias: Array<PostMedia>;
   parents: PostPaginationOuput;
   replies: PostPaginationOuput;
   reports: GetPostReportsOutput;
   user: User;
+};
+
+
+export type PostLikesArgs = {
+  input?: InputMaybe<PostLikeInput>;
 };
 
 
@@ -297,6 +314,22 @@ export type PostRepliesArgs = {
 
 export type PostReportsArgs = {
   input?: InputMaybe<GetPostReportsInput>;
+};
+
+export type PostLike = {
+  createdAt: Scalars['DateTime'];
+  post: Post;
+  user: User;
+};
+
+export type PostLikeInput = {
+  page?: InputMaybe<Scalars['Int']>;
+  take?: InputMaybe<Scalars['Int']>;
+};
+
+export type PostLikeOutput = {
+  list: Array<User>;
+  total: Scalars['Int'];
 };
 
 export type PostMedia = {
@@ -363,6 +396,7 @@ export type ProfileWithoutUser = {
 export type Query = {
   feed: FeedOuput;
   isFollow: Scalars['Boolean'];
+  isLikedPost: Scalars['Boolean'];
   isSavedPost: Scalars['Boolean'];
   login: LoginOutput;
   me: User;
@@ -386,6 +420,11 @@ export type QueryFeedArgs = {
 export type QueryIsFollowArgs = {
   followerId: Scalars['Int'];
   followingId: Scalars['Int'];
+};
+
+
+export type QueryIsLikedPostArgs = {
+  postId: Scalars['Int'];
 };
 
 
@@ -463,6 +502,7 @@ export type SubUpdateProfileInput = {
 export type Subscription = {
   follow: FollowMutationOutput;
   reportPost: PostReport;
+  toggle_like: LikeMutationOutput;
 };
 
 export type Tag = {

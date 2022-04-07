@@ -580,56 +580,48 @@ export type UserSavedPostArgs = {
   input?: InputMaybe<GetPostsInput>;
 };
 
-export type GetPostReportsQueryVariables = Types.Exact<{
+export type PostLikeQueryVariables = Types.Exact<{
   postId: Types.Scalars['Int'];
 }>;
 
 
-export type GetPostReportsQuery = { post: { reports: { total: number, list: Array<{ createdAt: any, reason: string, user: { id: number, username: string } }> } } };
+export type PostLikeQuery = { post: { likes: { total: number } } };
 
 
-export const GetPostReportsDocument = gql`
-    query GetPostReports($postId: Int!) {
+export const PostLikeDocument = gql`
+    query PostLike($postId: Int!) {
   post(postId: $postId) {
-    reports {
+    likes {
       total
-      list {
-        createdAt
-        reason
-        user {
-          id
-          username
-        }
-      }
     }
   }
 }
     `;
 
 /**
- * __useGetPostReportsQuery__
+ * __usePostLikeQuery__
  *
- * To run a query within a React component, call `useGetPostReportsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPostReportsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `usePostLikeQuery` and pass it any options that fit your needs.
+ * When your component renders, `usePostLikeQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetPostReportsQuery({
+ * const { data, loading, error } = usePostLikeQuery({
  *   variables: {
  *      postId: // value for 'postId'
  *   },
  * });
  */
-export function useGetPostReportsQuery(baseOptions: ApolloReactHooks.QueryHookOptions<GetPostReportsQuery, GetPostReportsQueryVariables>) {
+export function usePostLikeQuery(baseOptions: ApolloReactHooks.QueryHookOptions<PostLikeQuery, PostLikeQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return ApolloReactHooks.useQuery<GetPostReportsQuery, GetPostReportsQueryVariables>(GetPostReportsDocument, options);
+        return ApolloReactHooks.useQuery<PostLikeQuery, PostLikeQueryVariables>(PostLikeDocument, options);
       }
-export function useGetPostReportsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetPostReportsQuery, GetPostReportsQueryVariables>) {
+export function usePostLikeLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<PostLikeQuery, PostLikeQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return ApolloReactHooks.useLazyQuery<GetPostReportsQuery, GetPostReportsQueryVariables>(GetPostReportsDocument, options);
+          return ApolloReactHooks.useLazyQuery<PostLikeQuery, PostLikeQueryVariables>(PostLikeDocument, options);
         }
-export type GetPostReportsQueryHookResult = ReturnType<typeof useGetPostReportsQuery>;
-export type GetPostReportsLazyQueryHookResult = ReturnType<typeof useGetPostReportsLazyQuery>;
-export type GetPostReportsQueryResult = Apollo.QueryResult<GetPostReportsQuery, GetPostReportsQueryVariables>;
+export type PostLikeQueryHookResult = ReturnType<typeof usePostLikeQuery>;
+export type PostLikeLazyQueryHookResult = ReturnType<typeof usePostLikeLazyQuery>;
+export type PostLikeQueryResult = Apollo.QueryResult<PostLikeQuery, PostLikeQueryVariables>;

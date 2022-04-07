@@ -8,10 +8,19 @@ import { useIsSavedPostQuery } from '../../../graphql/queries/is-saved-post/inde
 import { useToggleSavePostMutation } from '../../../graphql/mutations/toggle-save-post/index.generated';
 import { toastError } from '../../../helpers/index';
 import { useTotalRepliesQuery } from '../../../graphql/queries/get-total-replies/index.generated';
+import { useToggleLikeMutation } from '../../../graphql/mutations/like-post/index.generated';
+import { useLikeSubscription } from '../../../graphql/subscriptions/like/index.generated';
+import { usePostLikeQuery } from '../../../graphql/queries/get-post-likes/index.generated';
+import { useIsLikedPostQuery } from '../../../graphql/queries/is-liked-post/index.generated';
+import { useGetCurrentUserIdQuery } from '../../../graphql/queries/get-current-userId/index.generated';
+import { useRouter } from 'next/router';
 interface IDisplayActionsProps {
   postId: number;
 }
 const DisplayActions = ({ postId }: IDisplayActionsProps) => {
+  const { data: currentUserId } = useGetCurrentUserIdQuery();
+  const router = useRouter();
+
   const { data: totalRepliees } = useTotalRepliesQuery({
     variables: {
       postId,
@@ -37,6 +46,49 @@ const DisplayActions = ({ postId }: IDisplayActionsProps) => {
     },
   });
 
+  const [toggleLikePost] = useToggleLikeMutation({
+    variables: {
+      postId,
+    },
+  });
+
+  const { data: postLike, refetch: refetchPostLike } = usePostLikeQuery({
+    variables: {
+      postId,
+    },
+    onError: (err) => {
+      console.log('like error : ', err.extraInfo);
+      console.log('like error : ', err.clientErrors);
+      console.log('like error : ', err.cause);
+      console.log('like error : ', err.graphQLErrors);
+      // err.
+    },
+  });
+
+  const { data: isLikedPost, refetch: refetchIsLikedPost } =
+    useIsLikedPostQuery({
+      variables: {
+        postId,
+      },
+    });
+
+  useLikeSubscription({
+    onSubscriptionData: async (data) => {
+      if (data.subscriptionData.data?.toggle_like.post.id === postId) {
+        try {
+          await refetchPostLike();
+        } catch {
+          console.log('retch like error');
+        }
+      }
+      if (
+        data.subscriptionData.data?.toggle_like.user.id === currentUserId?.me.id
+      ) {
+        await refetchIsLikedPost();
+      }
+    },
+  });
+
   return (
     <div className="flex items-center justify-between max-w-[80%]">
       <Button
@@ -49,18 +101,34 @@ const DisplayActions = ({ postId }: IDisplayActionsProps) => {
         label={totalRepliees?.post.replies.total!}
         rounded
       />
-      <Button
+      {/* <Button
         icon={<AiOutlineRetweet />}
         onlyIcon
         styleType="transparent"
         sizeType="large"
         rounded
-      />
+      /> */}
       <Button
-        icon={<BsHeart />}
+        icon={
+          <BsHeart
+            className={`${
+              isLikedPost?.isLikedPost ? ' stroke-blue-500 stroke-[1px]' : ''
+            }`}
+          />
+        }
+        // @ts-ignore
+        onClick={async () => {
+          try {
+            await toggleLikePost();
+          } catch (err) {
+            // toastError('')
+            // router.push('/auth/login');
+          }
+        }}
         onlyIcon
         styleType="transparent"
         sizeType="large"
+        label={postLike?.post.likes.total}
         rounded
       />
       <Button

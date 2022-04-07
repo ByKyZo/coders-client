@@ -122,7 +122,11 @@ const Profile = ({
                   className={`flex min-w-0 ${namesDirectionClass[namesDirection]}`}
                 >
                   {toDisplay.displayname && (
-                    <Link withHover href={`/${toDisplay.username}`}>
+                    <Link
+                      withHover
+                      className="min-w-0"
+                      href={`/${toDisplay.username}`}
+                    >
                       <Displayname
                         className={`${namesDirection === 'row' ? 'mr-1' : ''}`}
                       >
@@ -131,14 +135,14 @@ const Profile = ({
                     </Link>
                   )}
                   {toDisplay.username && (
-                    <Link href={`/${toDisplay.username}`}>
+                    <Link className="min-w-0" href={`/${toDisplay.username}`}>
                       <Username>{toDisplay.username}</Username>
                     </Link>
                   )}
                   {toDisplay.date && (
                     <>
                       <span className="mx-2">-</span>
-                      <span className="text-sm text-gray-600">
+                      <span className="text-sm text-gray-600 min-w-0 break-words overflow-hidden text-ellipsis whitespace-nowrap">
                         {toDisplay.date && dayjs(toDisplay.date).fromNow()}
                       </span>
                     </>

@@ -580,56 +580,50 @@ export type UserSavedPostArgs = {
   input?: InputMaybe<GetPostsInput>;
 };
 
-export type GetPostReportsQueryVariables = Types.Exact<{
-  postId: Types.Scalars['Int'];
+export type ToggleLikeMutationVariables = Types.Exact<{
+  postId: Types.Scalars['Float'];
 }>;
 
 
-export type GetPostReportsQuery = { post: { reports: { total: number, list: Array<{ createdAt: any, reason: string, user: { id: number, username: string } }> } } };
+export type ToggleLikeMutation = { toggleLike: { user: { id: number, username: string }, post: { id: number } } };
 
 
-export const GetPostReportsDocument = gql`
-    query GetPostReports($postId: Int!) {
-  post(postId: $postId) {
-    reports {
-      total
-      list {
-        createdAt
-        reason
-        user {
-          id
-          username
-        }
-      }
+export const ToggleLikeDocument = gql`
+    mutation ToggleLike($postId: Float!) {
+  toggleLike(postId: $postId) {
+    user {
+      id
+      username
+    }
+    post {
+      id
     }
   }
 }
     `;
+export type ToggleLikeMutationFn = Apollo.MutationFunction<ToggleLikeMutation, ToggleLikeMutationVariables>;
 
 /**
- * __useGetPostReportsQuery__
+ * __useToggleLikeMutation__
  *
- * To run a query within a React component, call `useGetPostReportsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPostReportsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
+ * To run a mutation, you first call `useToggleLikeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useToggleLikeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
  *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const { data, loading, error } = useGetPostReportsQuery({
+ * const [toggleLikeMutation, { data, loading, error }] = useToggleLikeMutation({
  *   variables: {
  *      postId: // value for 'postId'
  *   },
  * });
  */
-export function useGetPostReportsQuery(baseOptions: ApolloReactHooks.QueryHookOptions<GetPostReportsQuery, GetPostReportsQueryVariables>) {
+export function useToggleLikeMutation(baseOptions?: ApolloReactHooks.MutationHookOptions<ToggleLikeMutation, ToggleLikeMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return ApolloReactHooks.useQuery<GetPostReportsQuery, GetPostReportsQueryVariables>(GetPostReportsDocument, options);
+        return ApolloReactHooks.useMutation<ToggleLikeMutation, ToggleLikeMutationVariables>(ToggleLikeDocument, options);
       }
-export function useGetPostReportsLazyQuery(baseOptions?: ApolloReactHooks.LazyQueryHookOptions<GetPostReportsQuery, GetPostReportsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return ApolloReactHooks.useLazyQuery<GetPostReportsQuery, GetPostReportsQueryVariables>(GetPostReportsDocument, options);
-        }
-export type GetPostReportsQueryHookResult = ReturnType<typeof useGetPostReportsQuery>;
-export type GetPostReportsLazyQueryHookResult = ReturnType<typeof useGetPostReportsLazyQuery>;
-export type GetPostReportsQueryResult = Apollo.QueryResult<GetPostReportsQuery, GetPostReportsQueryVariables>;
+export type ToggleLikeMutationHookResult = ReturnType<typeof useToggleLikeMutation>;
+export type ToggleLikeMutationResult = Apollo.MutationResult<ToggleLikeMutation>;
+export type ToggleLikeMutationOptions = Apollo.BaseMutationOptions<ToggleLikeMutation, ToggleLikeMutationVariables>;
