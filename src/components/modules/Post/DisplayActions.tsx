@@ -3,7 +3,7 @@ import React from 'react';
 import { BsBookmark, BsHeart } from 'react-icons/bs';
 import { GoComment } from 'react-icons/go';
 import { VscComment } from 'react-icons/vsc';
-import { AiOutlineHeart, AiOutlineRetweet } from 'react-icons/ai';
+import { AiFillHeart, AiOutlineHeart, AiOutlineRetweet } from 'react-icons/ai';
 import { useIsSavedPostQuery } from '../../../graphql/queries/is-saved-post/index.generated';
 import { useToggleSavePostMutation } from '../../../graphql/mutations/toggle-save-post/index.generated';
 import { toastError } from '../../../helpers/index';
@@ -14,6 +14,7 @@ import { usePostLikeQuery } from '../../../graphql/queries/get-post-likes/index.
 import { useIsLikedPostQuery } from '../../../graphql/queries/is-liked-post/index.generated';
 import { useGetCurrentUserIdQuery } from '../../../graphql/queries/get-current-userId/index.generated';
 import { useRouter } from 'next/router';
+import { RiBookmarkFill, RiBookmarkLine } from 'react-icons/ri';
 interface IDisplayActionsProps {
   postId: number;
 }
@@ -67,6 +68,8 @@ const DisplayActions = ({ postId }: IDisplayActionsProps) => {
 
   useLikeSubscription({
     onSubscriptionData: async (data) => {
+      console.log('like subscript');
+
       if (data.subscriptionData.data?.toggle_like.post.id === postId) {
         try {
           await refetchPostLike();
@@ -103,16 +106,24 @@ const DisplayActions = ({ postId }: IDisplayActionsProps) => {
       /> */}
       <Button
         icon={
-          <BsHeart
-            className={`${
-              isLikedPost?.isLikedPost ? ' stroke-blue-500 stroke-[1px]' : ''
-            }`}
-          />
+          isLikedPost?.isLikedPost ? (
+            <AiFillHeart className="text-red-500" />
+          ) : (
+            <AiOutlineHeart />
+          )
+
+          // <BsHeart
+          //   className={`${
+          //     isLikedPost?.isLikedPost ? ' stroke-blue-500 stroke-[1px]' : ''
+          //   }`}
+          // />
         }
         // @ts-ignore
-        onClick={async () => {
+        onClick={() => {
           try {
-            await toggleLikePost();
+            (async () => {
+              await toggleLikePost();
+            })();
           } catch (err) {
             // toastError('')
             // router.push('/auth/login');
@@ -126,11 +137,16 @@ const DisplayActions = ({ postId }: IDisplayActionsProps) => {
       />
       <Button
         icon={
-          <BsBookmark
-            className={`${
-              isSavedPost?.isSavedPost ? ' stroke-blue-500 stroke-[1px]' : ''
-            }`}
-          />
+          isSavedPost?.isSavedPost ? (
+            <RiBookmarkFill className="text-gray-900" />
+          ) : (
+            <RiBookmarkLine />
+          )
+          // <BsBookmark
+          //   className={`${
+          //     isSavedPost?.isSavedPost ? ' stroke-blue-500 stroke-[1px]' : ''
+          //   }`}
+          // />
         }
         onlyIcon
         // @ts-ignore
