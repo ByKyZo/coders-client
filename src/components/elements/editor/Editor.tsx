@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from 'react';
 import {
   EditorState as DraftEditorState,
   convertFromRaw,
@@ -33,132 +39,173 @@ interface EditorProps {
 
 const parseJson = (value: any) => JSON.parse(JSON.stringify(value || {}));
 
-const Editor = ({
-  onChange,
-  initRaw,
-  readOnly,
-  setRaw,
-  wrapperClassname,
-  placeholder,
-  editorStateValue,
-  emojiButtonTriggerPortalDestinationElement,
-}: EditorProps) => {
-  const getValidContentState = useCallback(() => {
-    try {
-      return DraftEditorState.createWithContent(
-        convertFromRaw(parseJson(initRaw))
-      );
-    } catch {
-      return DraftEditorState.createWithContent(
-        convertFromRaw({ blocks: [], entityMap: {} })
-      );
-    }
-  }, [initRaw]);
+const Editor = (
+  {
+    onChange,
+    initRaw,
+    readOnly,
+    setRaw,
+    wrapperClassname,
+    placeholder,
+    editorStateValue,
+    emojiButtonTriggerPortalDestinationElement,
+  }: EditorProps,
+  ref: any
+) =>
+  // ref: any
+  {
+    const getValidContentState = useCallback(() => {
+      try {
+        return DraftEditorState.createWithContent(
+          convertFromRaw(parseJson(initRaw))
+        );
+      } catch {
+        return DraftEditorState.createWithContent(
+          convertFromRaw({ blocks: [], entityMap: {} })
+        );
+      }
+    }, [initRaw]);
 
-  const [editorState, setEditorState] = useState(getValidContentState());
-  const isMount = useMount();
+    const [editorState, setEditorState] = useState(getValidContentState());
+    const isMount = useMount();
 
-  const { component: UserMentionsSuggestions, plugins: mentionsPlugin } =
-    useMentionsSuggestions({ readOnly: Boolean(readOnly) });
+    const { component: UserMentionsSuggestions, plugins: mentionsPlugin } =
+      useMentionsSuggestions({ readOnly: Boolean(readOnly) });
 
-  const { component: HashtagsSuggestions, plugins: hashtagsPlugin } =
-    useHashtagsSuggestions();
+    const { component: HashtagsSuggestions, plugins: hashtagsPlugin } =
+      useHashtagsSuggestions();
 
-  const {
-    EmojiSuggestions,
-    EmojiSelect,
-    plugins: emojiPlugin,
-  } = useEmojisPlugin();
+    const {
+      EmojiSuggestions,
+      EmojiSelect,
+      plugins: emojiPlugin,
+    } = useEmojisPlugin();
 
-  /**
-   * NOTE : Reset le button emoji
-   * (La librairie @draft-js-plugins/emoji est mal faites....)
-   */
-  useEffect(() => {
-    if (readOnly) {
-      return;
-    }
+    /**
+     * NOTE : Reset le button emoji
+     * (La librairie @draft-js-plugins/emoji est mal faites....)
+     */
+    useEffect(() => {
+      if (readOnly) {
+        return;
+      }
 
-    const emojiButtonWrapper = [
-      // @ts-ignore
-      ...document.querySelectorAll('.__DraftEmojiButton__'),
-    ];
+      const emojiButtonWrapper = [
+        // @ts-ignore
+        ...document.querySelectorAll('.__DraftEmojiButton__'),
+      ];
 
-    let emojiButtons = [];
+      let emojiButtons = [];
 
-    if (emojiButtonWrapper) {
-      emojiButtons = Array.from(
-        emojiButtonWrapper.map((e) => e.querySelector('button'))
-      );
-    }
+      if (emojiButtonWrapper) {
+        emojiButtons = Array.from(
+          emojiButtonWrapper.map((e) => e.querySelector('button'))
+        );
+      }
 
-    emojiButtons.forEach((e) => {
-      if (!e) return;
-      e.style.background = 'transparent';
-      e.style.border = 'none';
-      e.style.width = 'auto';
-    });
-  }, [isMount, readOnly, emojiButtonTriggerPortalDestinationElement]);
-
-  useEffect(() => {
-    // !readOnly &&
-    onChange &&
-      onChange({
-        plain: editorState.getCurrentContent().getPlainText(),
-        html: stateToHTML(editorState.getCurrentContent()),
-        raw: convertToRaw(editorState.getCurrentContent()),
+      emojiButtons.forEach((e) => {
+        if (!e) return;
+        e.style.background = 'transparent';
+        e.style.border = 'none';
+        e.style.width = 'auto';
       });
-  }, [editorState.getCurrentContent()]);
+    }, [isMount, readOnly, emojiButtonTriggerPortalDestinationElement]);
 
-  // Reset le contenu en changeant de context
-  useEffect(() => {
-    if (!setRaw) return;
-    setEditorState(
-      DraftEditorState.createWithContent(
-        convertFromRaw(parseJson(setRaw || { blocks: [], entityMap: {} }))
-      )
+    useImperativeHandle(
+      ref,
+      () => ({
+        handleResetEditor() {
+          console.log('REST EDITTOROR');
+
+          setEditorState(
+            DraftEditorState.createWithContent(
+              convertFromRaw({ blocks: [], entityMap: {} })
+            )
+          );
+          onChange &&
+            onChange({
+              plain: editorState.getCurrentContent().getPlainText(),
+              html: stateToHTML(editorState.getCurrentContent()),
+              raw: convertToRaw(editorState.getCurrentContent()),
+            });
+        },
+      }),
+      []
     );
-  }, [setRaw]);
 
-  useEffect(() => {
-    editorStateValue && editorStateValue(editorState);
-  }, [editorStateValue]);
+    useEffect(() => {
+      // !readOnly &&
+      onChange &&
+        onChange({
+          plain: editorState.getCurrentContent().getPlainText(),
+          html: stateToHTML(editorState.getCurrentContent()),
+          raw: convertToRaw(editorState.getCurrentContent()),
+        });
+    }, [editorState.getCurrentContent()]);
 
-  return (
-    <>
-      <div className={`${wrapperClassname}`}>
-        <DraftEditor
-          placeholder={
-            !readOnly
-              ? placeholder
+    // const handleResetEditor = () => {
+    //   setEditorState(
+    //     DraftEditorState.createWithContent(
+    //       convertFromRaw({ blocks: [], entityMap: {} })
+    //     )
+    //   );
+    //   onChange &&
+    //     onChange({
+    //       plain: editorState.getCurrentContent().getPlainText(),
+    //       html: stateToHTML(editorState.getCurrentContent()),
+    //       raw: convertToRaw(editorState.getCurrentContent()),
+    //     });
+    // };
+
+    // Reset le contenu en changeant de context
+    useEffect(() => {
+      if (!setRaw) return;
+      setEditorState(
+        DraftEditorState.createWithContent(
+          convertFromRaw(parseJson(setRaw || { blocks: [], entityMap: {} }))
+        )
+      );
+    }, [setRaw]);
+
+    useEffect(() => {
+      editorStateValue && editorStateValue(editorState);
+    }, [editorStateValue]);
+
+    return (
+      <>
+        <div className={`${wrapperClassname}`}>
+          <DraftEditor
+            placeholder={
+              !readOnly
                 ? placeholder
-                : 'Write something...'
-              : undefined
-          }
-          readOnly={readOnly}
-          editorState={editorState}
-          onChange={setEditorState}
-          plugins={[...emojiPlugin, ...mentionsPlugin, ...hashtagsPlugin]}
-        />
-      </div>
-      {UserMentionsSuggestions}
-      {HashtagsSuggestions}
-      <EmojiSuggestions />
-      {/* 
+                  ? placeholder
+                  : 'Write something...'
+                : undefined
+            }
+            readOnly={readOnly}
+            editorState={editorState}
+            onChange={setEditorState}
+            plugins={[...emojiPlugin, ...mentionsPlugin, ...hashtagsPlugin]}
+          />
+        </div>
+        {UserMentionsSuggestions}
+        {HashtagsSuggestions}
+        <EmojiSuggestions />
+        {/* 
         NOTE :Insere le button emoji dans la toolbar de l'editor 
         (La librairie @draft-js-plugins/emoji est mal faites....)
       */}
-      {!readOnly &&
-        emojiButtonTriggerPortalDestinationElement &&
-        isMount &&
-        ReactDOM.createPortal(
-          <span className="__DraftEmojiButton__">
-            <EmojiSelect />
-          </span>,
-          emojiButtonTriggerPortalDestinationElement
-        )}
-    </>
-  );
-};
+        {!readOnly &&
+          emojiButtonTriggerPortalDestinationElement &&
+          isMount &&
+          ReactDOM.createPortal(
+            <span className="__DraftEmojiButton__">
+              <EmojiSelect />
+            </span>,
+            emojiButtonTriggerPortalDestinationElement
+          )}
+      </>
+    );
+  };
 
-export default Editor;
+export default forwardRef(Editor);

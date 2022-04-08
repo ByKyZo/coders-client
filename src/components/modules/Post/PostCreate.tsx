@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useCreatePostMutation } from '@graphql/mutations/create-post/index.generated';
 import { useDropzone } from 'react-dropzone';
 import { useMedias } from '@hooks/useMedias';
@@ -23,6 +23,7 @@ const PostCreate = ({
   editorPlacerholder,
   buttonCreateLabel,
 }: IPostProps) => {
+  const editorRef = useRef<any>(null);
   const [toolbarRef, setToolbarRef] = useRefUpdate<HTMLDivElement>();
   const [postContent, setPostContent] = useState({
     plain: '',
@@ -87,6 +88,7 @@ const PostCreate = ({
   };
 
   const handleResetForm = () => {
+    editorRef.current.handleResetEditor();
     clearMedias();
     handleResetContent();
   };
@@ -126,6 +128,8 @@ const PostCreate = ({
     <div className="w-full" {...getRootProps()}>
       <input {...getInputProps()} />
       <Editor
+        // ref= {editorRef}
+        ref={editorRef}
         emojiButtonTriggerPortalDestinationElement={toolbarRef!}
         wrapperClassname="mt-2"
         readOnly={false}
